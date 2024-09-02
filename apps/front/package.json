@@ -1,12 +1,32 @@
 {
-  "name": "front",
-  "version": "1.0.0",
-  "main": "dist/index.js",
+  "name": "seminar",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "start:dev": "node dist/index.js",
-    "build": "echo \u001b[1m\u001b[31m--!-- AJOUTE LE SCRIPT DE BUILD --!--\u001b[0m"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "dependencies": {
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.438.0",
+    "next": "14.2.7",
+    "react": "^18",
+    "react-dom": "^18",
+    "tailwind-merge": "^2.5.2",
+    "tailwindcss-animate": "^1.0.7",
+    "undefined": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.7",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
 }
