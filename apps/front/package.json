@@ -4,8 +4,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start:dev": "node dist/index.js",
-    "build2": "echo \u001b[1m\u001b[31m--!-- AJOUTE LE SCRIPT DE BUILD --!--\u001b[0m",
-    "build": "tsc"
+    "build": "echo \u001b[1m\u001b[31m--!-- AJOUTE LE SCRIPT DE BUILD --!--\u001b[0m",
   },
   "author": "",
   "license": "ISC",
