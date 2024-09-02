@@ -1,7 +1,7 @@
 # 📲 Survivor seminar
 Improvise. Adapt. Overcome.
 
-- [📦 Epitech repository](https://github.com/EpitechPromo2027/B-OOP-400-NAN-4-1-raytracer-matheo.coquet)
+- [📦 Epitech repository](https://github.com/EpitechPromo2027/B-SVR-500-NAN-5-1-survivor-matheo.coquet)
 - [📄 PDF Project](./docs/subject.pdf)
 
 ### Usage
