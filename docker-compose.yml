@@ -9,7 +9,7 @@ services:
       - back-network
     restart: always
     ports:
-      - "5433:5432"
+      - "5432:5432"
 
   back:
     platform: linux/amd64
@@ -17,7 +17,7 @@ services:
     image: seminar-back-image
     container_name: back
     env_file:
-      - ".env"
+      - .env
     ports:
       - "4000:4000"
     depends_on:
@@ -25,7 +25,7 @@ services:
     networks:
       - back-network
     volumes:
-      - ./back/src:/app/src
+      - ./apps/back/src:/app/src
     restart: always
 
   front:
@@ -39,8 +39,8 @@ services:
     networks:
       - back-network
     volumes:
-      - ./front/src:/app/src
-      - ./front/public:/app/public
+      - ./apps/front/src:/app/src
+      - ./apps/front/public:/app/public
     restart: always
 
 volumes:
