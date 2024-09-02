@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - back-network
+    restart: always
+    ports:
+      - "5433:5432"
+
+  back:
+    platform: linux/amd64
+    build: ./apps/back
+    image: seminar-back-image
+    container_name: back
+    env_file:
+      - ".env"
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres
+    networks:
+      - back-network
+    volumes:
+      - ./back/src:/app/src
+    restart: always
+
+  front:
+    build: ./apps/front
+    image: seminar-front-image
+    container_name: front
+    ports:
+      - "3000:3000"
+    depends_on:
+      - back
+    networks:
+      - back-network
+    volumes:
+      - ./front/src:/app/src
+      - ./front/public:/app/public
+    restart: always
+
+volumes:
+  db-data:
+
+networks:
+  back-network:
