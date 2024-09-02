@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 COPY tailwind.config.ts ./
+COPY postcss.config.mjs ./
 COPY next.config.mjs ./
 COPY tsconfig.json ./
 
