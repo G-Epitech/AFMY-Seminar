@@ -8,4 +8,4 @@ Improvise. Adapt. Overcome.
 To use this project, run it with `npm start`.
 
 #
-Made by [Renard Fute](https://github.com/RenardFute), [Flavien Chenu](https://github.com/flavien-chenu),[TekMath](https://github.com/tekmath) & [Yann Masson](https://github.com/Yann-Masson)
+Made by [Flavien Chenu](https://github.com/flavien-chenu), [Renard Fute](https://github.com/RenardFute), [TekMath](https://github.com/tekmath) & [Yann Masson](https://github.com/Yann-Masson)
