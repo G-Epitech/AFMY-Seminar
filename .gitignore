@@ -74,3 +74,5 @@ front/.vercel
 # typescript
 front/*.tsbuildinfo
 front/next-env.d.ts
+
+**/dist
