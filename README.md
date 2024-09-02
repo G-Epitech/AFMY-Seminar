@@ -5,7 +5,7 @@ Improvise. Adapt. Overcome.
 - [📄 PDF Project](./docs/subject.pdf)
 
 ### Usage
-To use this project, run it with `npm start`.
+If it's the first time you use this project, run `npm install` to install all the dependencies and then run `npm run dev:back` or `npm run dev:front`, or both (depending on what you need) to start the project.
 
 #
 Made by [Renard Fute](https://github.com/RenardFute), [Flavien Chenu](https://github.com/flavien-chenu),[TekMath](https://github.com/tekmath) & [Yann Masson](https://github.com/Yann-Masson)
