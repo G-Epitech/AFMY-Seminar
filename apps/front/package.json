@@ -1,0 +1,12 @@
+{
+  "name": "front",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "start:dev": "node dist/index.js",
+    "build": "echo \u001b[1m\u001b[31m--!-- AJOUTE LE SCRIPT DE BUILD --!--\u001b[0m"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
