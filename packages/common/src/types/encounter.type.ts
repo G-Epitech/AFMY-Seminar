@@ -1,13 +1,13 @@
 import { Customer } from './customer.type';
 import { IdOf } from '../utils';
 
-enum EncounterStatus {
+export enum EncounterStatus {
   PENDING = 'Pending',
   DONE = 'Done',
   CANCELED = 'Canceled'
 }
 
-type Encounter = {
+export type Encounter = {
   id: number;
   customerId: IdOf<Customer>;
   date: Date;
