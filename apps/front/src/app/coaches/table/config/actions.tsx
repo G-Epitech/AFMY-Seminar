@@ -3,12 +3,14 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
 import { Coach } from "@/types/coach";
+import { useRouter } from "next/navigation";
 
 export const actionsColumn: ColumnDef<Coach> = {
   id: "actions",
   enableHiding: false,
   cell: ({ row }) => {
-    const payment = row.original
+    const coach = row.original;
+    const router = useRouter();
 
     return (
       <DropdownMenu>
@@ -21,13 +23,17 @@ export const actionsColumn: ColumnDef<Coach> = {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem
-            onClick={() => navigator.clipboard.writeText(payment.email)}
+            onClick={() => router.push(`/coaches/${coach.id}`)}
+          >
+            view profile
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => navigator.clipboard.writeText(coach.email)}
           >
             Copy coach email
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem>Promote</DropdownMenuItem>
-          <DropdownMenuItem>Demote</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     )
