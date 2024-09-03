@@ -7,6 +7,7 @@ Improvise. Adapt. Overcome.
 ### Prerequisites
 - [Node.js](https://nodejs.org/en/)
 - [npm](https://www.npmjs.com/)
+- [Docker](https://www.docker.com/)
 
 ### Setup
 1. Clone this repository
