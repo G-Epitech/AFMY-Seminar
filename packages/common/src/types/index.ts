@@ -1,4 +1,5 @@
 export * from './response.type';
+export * from './page.type';
 export * from './clothe.type';
 export * from './tip.type';
 export * from './customer.type';
