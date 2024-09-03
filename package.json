@@ -9,13 +9,8 @@
     "packages/*"
   ],
   "scripts": {
-    "dev:build": "docker compose build",
-    "dev:start": "docker compose up",
-    "dev:clean": "docker compose down",
-    "prebuild": "npm run build --workspace=common",
-    "dev:back": "npm run start:dev --workspace=@seminar/back",
-    "dev:front": "npm run dev --workspace=@seminar/front",
-    "postinstall": "npm run build --workspace=@seminar/common",
-    "build": "tsc"
+    "build": "docker compose build",
+    "start": "docker compose up",
+    "clean": "docker compose down"
   }
 }
