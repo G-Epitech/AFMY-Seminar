@@ -1,10 +1,16 @@
 FROM node:22
 
-WORKDIR /app
+WORKDIR /seminar/apps/back
+COPY apps/back/package.json ./
+COPY apps/back/tsconfig.json ./
 
+
+WORKDIR /seminar/packages
+COPY packages ./
+
+WORKDIR /seminar
 COPY package.json ./
-COPY tsconfig.json ./
 
 RUN npm install
 
-CMD [ "npm", "run", "start:dev" ]
+CMD [ "npm", "run", "back:dev" ]
