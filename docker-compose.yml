@@ -13,7 +13,9 @@ services:
 
   back:
     platform: linux/amd64
-    build: ./apps/back
+    build:
+      context: ./
+      dockerfile: ./apps/back/Dockerfile
     image: seminar-back-image
     container_name: back
     env_file:
@@ -25,11 +27,13 @@ services:
     networks:
       - back-network
     volumes:
-      - ./apps/back/src:/app/src
+      - ./apps/back/src:/seminar/apps/back/src
     restart: always
 
   front:
-    build: ./apps/front
+    build:
+      context: ./
+      dockerfile: ./apps/front/Dockerfile
     image: seminar-front-image
     container_name: front
     env_file:
@@ -41,8 +45,8 @@ services:
     networks:
       - back-network
     volumes:
-      - ./apps/front/src:/app/src
-      - ./apps/front/public:/app/public
+      - ./apps/front/src:/seminar/apps/front/src
+      - ./apps/front/public:/seminar/apps/public
     restart: always
 
 volumes:
