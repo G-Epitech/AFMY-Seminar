@@ -51,6 +51,7 @@ model Customer {
   events      Event[]          @relation("EventAttendees")
   encounters  Encounter[]
   payements   Payement[]
+  clothes     Clothe[]         @relation("ClotheOwner")
 }
 
 model Payement {
@@ -63,24 +64,25 @@ model Payement {
   customerId Int
 }
 
-enum Role {
-  MASTER
+enum Permission {
+  MANAGER
   COACH
 }
 
 model Employee {
-  id        Int        @id @default(autoincrement())
-  email     String     @unique
-  name      String
-  surname   String
-  birthDate DateTime
-  gender    Gender
-  phone     String?
-  photo     String?
-  address   String?
-  role      Role
-  coachees  Customer[]
-  Event     Event[]
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
+  name       String
+  surname    String
+  birthDate  DateTime
+  gender     Gender
+  phone      String?
+  photo      String?
+  address    String?
+  permission Permission
+  role       String
+  coachees   Customer[]
+  Event      Event[]
 }
 
 model Location {
@@ -120,8 +122,16 @@ model Tip {
   content String
 }
 
+enum ClothesType {
+  HAT_CAP
+  BOTTOM
+  TOP
+  SHOES
+}
+
 model Clothe {
-  id    Int    @id @default(autoincrement())
-  type  String
-  image String
+  id        Int         @id @default(autoincrement())
+  type      ClothesType
+  image     String
+  customers Customer[]  @relation("ClotheOwner")
 }
