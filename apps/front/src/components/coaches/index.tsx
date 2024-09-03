@@ -3,16 +3,7 @@ import React, { useState } from 'react';
 import { Page } from '@seminar/common';
 import CoachesTableHeader from './table/header';
 import CoachesTable from './table';
-
-export type Coach = {
-    id: number;
-    lastName: string;
-    firstName: string;
-    email: string;
-    phone: string;
-    picture?: string;
-    numberOfCustomers?: number;
-};
+import { Coach } from '@/types/coach';
 
 export default function Coaches() {
     const [coachesPage, setCoachesPage] = useState<Page<Coach>>({

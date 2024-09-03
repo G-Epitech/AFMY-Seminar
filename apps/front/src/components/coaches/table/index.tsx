@@ -1,5 +1,5 @@
 import { Table } from "@/components/ui/table";
-import { Coach } from "..";
+import { Coach } from "@/types/coach";
 import { ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import CoachTableFooter from "./footer";

@@ -3,7 +3,7 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 import { Input } from "@/components/ui/input"
 import { ChevronDownIcon } from "@radix-ui/react-icons"
 import { useReactTable } from "@tanstack/react-table";
-import { Coach } from "..";
+import { Coach } from "@/types/coach";
 
 export interface CoachesTableFiltersProps {
   table: ReturnType<typeof useReactTable<Coach>>;

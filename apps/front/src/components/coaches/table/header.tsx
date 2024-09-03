@@ -1,6 +1,6 @@
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { flexRender, useReactTable } from "@tanstack/react-table"
-import { Coach } from "..";
+import { Coach } from "@/types/coach";
 
 export interface CoachesTableHeaderProps {
   table: ReturnType<typeof useReactTable<Coach>>;

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useReactTable } from "@tanstack/react-table";
-import { Coach } from "..";
+import { Coach } from "@/types/coach";
 
 export interface CoachTableFooterProps {
   table: ReturnType<typeof useReactTable<Coach>>;

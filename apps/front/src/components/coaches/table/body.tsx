@@ -1,6 +1,6 @@
 import { TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { flexRender, useReactTable } from "@tanstack/react-table";
-import { Coach } from "..";
+import { Coach } from "@/types/coach";
 import { columns } from "./config";
 
 export interface CoachesTableBodyProps {
