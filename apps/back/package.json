@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@seminar/common": "file:../../packages/common"
+    "@seminar/common": "file:../../packages/common",
     "prisma": "^5.19.1"
   }
 }
