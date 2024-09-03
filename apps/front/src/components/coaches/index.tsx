@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { Page } from '@seminar/common';
-import CoachesTable from './table';
+import CoachesTableHeader from './table/header';
 
 export type Coach = {
     id: number;
@@ -28,9 +28,9 @@ export default function Coaches() {
           Coaches List
         </h1>
         <h3 className="text-lg font-bold mb-4">
-          You have total {numberOfCoaches} coaches
+          You have total {numberOfCoaches} coaches.
         </h3>
-        <CoachesTable coaches={coachesPage.items} />
+        <CoachesTableHeader coaches={temporaryCoaches} selectedCoaches={[]} handleSelectAllCoaches={() => {}} />
       </div>
     </div>;
 }
