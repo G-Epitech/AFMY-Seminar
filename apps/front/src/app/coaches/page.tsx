@@ -14,15 +14,13 @@ export default function Coaches() {
   const [numberOfCoaches, setNumberOfCoaches] = useState<number>(temporaryCoaches.length);
 
   return <div>
-    <div className='p-8'>
-      <h1 className="scroll-m-20 text-2xl font-extrabold tracking-tight lg:text-5xl mb-1">
-        Coaches List
-      </h1>
-      <h3 className="text-lg font-bold mb-4">
-        You have total {numberOfCoaches} coaches.
-      </h3>
-      <CoachesTable coaches={coachesPage.items} />
-    </div>
+    <h1 className="scroll-m-20 text-2xl font-extrabold tracking-tight lg:text-5xl mb-1">
+      Coaches List
+    </h1>
+    <h3 className="text-lg font-bold mb-4">
+      You have total {numberOfCoaches} coaches.
+    </h3>
+    <CoachesTable coaches={coachesPage.items} />
   </div>;
 }
 
