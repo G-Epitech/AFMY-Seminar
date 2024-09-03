@@ -4,13 +4,17 @@ import {
   EncounterStatus as PrismaEncounterStatus,
   Gender as PrismaGender,
   PayementMethod as PrismaPaymentMethod,
+  Permission as PrismaPermission,
+  Employee as PrismaEmployee,
 } from '@prisma/client';
 import {
   AstrologicalSign,
   ClothesType,
+  Employee,
   EncounterStatus,
   Gender,
   PaymentMethod,
+  Permission,
 } from '@seminar/common';
 
 export function convertGender(gender: PrismaGender): Gender {
@@ -173,4 +177,32 @@ export function convertClothesTypeToPrisma(
     case ClothesType.SHOES:
       return PrismaClotheType.SHOES;
   }
+}
+
+export function convertPermissionToPrisma(
+  permission: Permission,
+): PrismaPermission {
+  switch (permission) {
+    case Permission.MANAGER:
+      return PrismaPermission.MANAGER;
+    case Permission.COACH:
+      return PrismaPermission.COACH;
+  }
+}
+
+export function convertPermission(permission: PrismaPermission): Permission {
+  switch (permission) {
+    case PrismaPermission.MANAGER:
+      return Permission.MANAGER;
+    case PrismaPermission.COACH:
+      return Permission.COACH;
+  }
+}
+
+export function convertEmployee(employee: PrismaEmployee): Employee {
+  return {
+    ...employee,
+    gender: convertGender(employee.gender),
+    permission: convertPermission(employee.permission),
+  };
 }
