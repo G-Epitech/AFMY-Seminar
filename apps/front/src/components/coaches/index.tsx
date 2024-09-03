@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Page } from '@seminar/common';
 import CoachesTableHeader from './table/header';
+import CoachesTable from './table';
 
 export type Coach = {
     id: number;
@@ -30,7 +31,7 @@ export default function Coaches() {
         <h3 className="text-lg font-bold mb-4">
           You have total {numberOfCoaches} coaches.
         </h3>
-        <CoachesTableHeader coaches={temporaryCoaches} selectedCoaches={[]} handleSelectAllCoaches={() => {}} />
+        <CoachesTable coaches={coachesPage.items} />
       </div>
     </div>;
 }
@@ -51,6 +52,4 @@ const temporaryCoaches: Coach[] = [
   { id: 13, firstName: 'Kevin', lastName: 'Spacey', email: 'kevin.spacey@example.com', phone: '+1122334456', numberOfCustomers: 10 },
   { id: 14, firstName: 'Laura', lastName: 'Palmer', email: 'laura.palmer@example.com', phone: '+1223344556', numberOfCustomers: 14 },
   { id: 15, firstName: 'Michael', lastName: 'Jordan', email: 'michael.jordan@example.com', phone: '+1334455667', numberOfCustomers: 19 },
-  { id: 16, firstName: 'Natalie', lastName: 'Portman', email: 'natalie.portman@example.com', phone: '+1445566778', numberOfCustomers: 21 },
-  { id: 17, firstName: 'Oscar', lastName: 'Wilde', email: 'oscar.wilde@example.com', phone: '+1556677889', numberOfCustomers: 11 },
 ];
