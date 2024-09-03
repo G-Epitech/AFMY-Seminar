@@ -3,6 +3,7 @@ FROM node:22
 WORKDIR /seminar/apps/back
 COPY apps/back/package.json ./
 COPY apps/back/tsconfig.json ./
+COPY apps/back/prisma ./
 
 
 WORKDIR /seminar/packages
@@ -13,4 +14,10 @@ COPY package.json ./
 
 RUN npm install
 
-CMD [ "npm", "run", "back:dev" ]
+WORKDIR /seminar/apps/back
+
+RUN npx prisma generate
+
+WORKDIR /seminar
+
+CMD [ "npm", "run", "back:dev"]

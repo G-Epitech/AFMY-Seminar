@@ -1,0 +1,161 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  MA
+  FE
+  OT
+}
+
+enum AstrologicalSign {
+  ARIES
+  TAURUS
+  GEMINI
+  CANCER
+  LEO
+  VIRGO
+  LIBRA
+  SCORPIO
+  SAGITTARIUS
+  CAPRICORN
+  AQUARIUS
+  PISCES
+}
+
+model Customer {
+  id          Int              @id @default(autoincrement())
+  email       String           @unique
+  name        String
+  surname     String
+  description String
+  birthDate   DateTime
+  gender      Gender
+  sign        AstrologicalSign
+  phone       String?
+  photo       String?
+  address     String?
+  coach       Employee         @relation(fields: [coachId], references: [id])
+  coachId     Int
+  events      Event[]          @relation("EventAttendees")
+  encounters  Encounter[]
+  payements   Payement[]
+  clothes     Clothe[]         @relation("ClotheOwner")
+  createdAt   DateTime         @default(now())
+}
+
+enum PayementMethod {
+  CARD
+  BANK_TRANSFER
+  PAYPAL
+}
+
+model Payement {
+  id         Int            @id @default(autoincrement())
+  date       DateTime
+  amount     Float
+  method     PayementMethod
+  comment    String?
+  customer   Customer       @relation(fields: [customerId], references: [id])
+  customerId Int
+}
+
+enum Permission {
+  MANAGER
+  COACH
+}
+
+model Employee {
+  id          Int           @id @default(autoincrement())
+  email       String        @unique
+  name        String
+  surname     String
+  birthDate   DateTime
+  gender      Gender
+  phone       String?
+  photo       String?
+  address     String?
+  permission  Permission
+  role        String
+  coachees    Customer[]
+  Event       Event[]
+  Credentials Credentials[]
+}
+
+model Credentials {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  password   String
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+}
+
+model Location {
+  id     Int     @id @default(autoincrement())
+  name   String
+  x      String
+  y      String
+  events Event[]
+}
+
+model Event {
+  id              String     @id @default(cuid())
+  title           String
+  date            DateTime
+  maxParticipants Int
+  location        Location   @relation(fields: [locationId], references: [id])
+  locationId      Int
+  type            String
+  attendees       Customer[] @relation("EventAttendees")
+  employee        Employee   @relation(fields: [employeeId], references: [id])
+  employeeId      Int
+}
+
+enum EncounterStatus {
+  PENDING
+  DONE
+  CANCELED
+}
+
+model Encounter {
+  id         Int             @id @default(autoincrement())
+  customer   Customer        @relation(fields: [customerId], references: [id])
+  customerId Int
+  date       DateTime
+  rating     Int?            @default(0)
+  comment    String?
+  source     String
+  status     EncounterStatus
+  isPositive Boolean?
+}
+
+model Tip {
+  id      Int    @id @default(autoincrement())
+  title   String
+  content String
+}
+
+enum ClothesType {
+  HAT_CAP
+  BOTTOM
+  TOP
+  SHOES
+}
+
+model Clothe {
+  id        Int         @id @default(autoincrement())
+  type      ClothesType
+  image     String
+  customers Customer[]  @relation("ClotheOwner")
+}
