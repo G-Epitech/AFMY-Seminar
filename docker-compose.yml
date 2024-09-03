@@ -13,7 +13,9 @@ services:
 
   back:
     platform: linux/amd64
-    build: ./apps/back
+    build:
+      context: ./
+      dockerfile: ./apps/back/Dockerfile
     image: seminar-back-image
     container_name: back
     env_file:
@@ -25,7 +27,7 @@ services:
     networks:
       - back-network
     volumes:
-      - ./apps/back/src:/app/src
+      - ./apps/back/src:/seminar/apps/back/src
     restart: always
 
   front:
