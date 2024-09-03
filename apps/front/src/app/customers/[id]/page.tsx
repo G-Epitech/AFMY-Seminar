@@ -1,10 +1,21 @@
-'use client';
+"use client";
 
+import { CustomerProfile } from "@/components/customer/profile";
 import { Subtitle } from "@/components/text/subtitle";
-import { AstrologicalSign, Customer, Employee, Gender, MeetingEvent, Payment, Permission } from "@seminar/common";
+import {
+    AstrologicalSign,
+    Customer,
+    Employee,
+    Encounter,
+    EncounterStatus,
+    Gender,
+    MeetingEvent,
+    Payment,
+    Permission,
+} from "@seminar/common";
 import { useParams } from "next/navigation";
 
-export default function CustomerProfile() {
+export default function CustomerPage() {
     const id = useParams().id;
 
     const customer: Customer = {
@@ -20,8 +31,8 @@ export default function CustomerProfile() {
         photo: "https://media.discordapp.net/attachments/1126062012456243201/1280542247812731014/508aa1a0-923b-49b1-a38b-1b05a7c1571d.png?ex=66d87567&is=66d723e7&hm=a313bd00ddf8d799f6c561f5ba67335a50ab2657180eb0517ee4bc12ec0773be&=",
         address: "551 Swanson Street, Melbourne, Victoria 3053 Australia",
         coachId: 2,
-        createdAt: new Date("2022-01-01")
-    }
+        createdAt: new Date("2022-01-01"),
+    };
 
     const coach: Employee = {
         id: 2,
@@ -35,9 +46,32 @@ export default function CustomerProfile() {
         address: "551 Swanson Street, Melbourne, Victoria 3053 Australia",
         permission: Permission.COACH,
         role: "Coach",
-    }
+    };
 
-    return <main>
-        <Subtitle text="Customer Details"/>
-    </main>;
+    const encounters: Encounter[] = [];
+    const payments: Payment[] = [];
+
+    const totalEncounters = encounters.length;
+    const positiveEncounters = encounters.filter(
+        (e) => e.rating && e.rating > 3
+    ).length;
+    const inProgressEncounters = encounters.filter(
+        (e) => e.status === EncounterStatus.PENDING
+    ).length;
+
+    return (
+        <main>
+            <Subtitle text="Customer Details" />
+
+            <div className="py-6">
+                <CustomerProfile
+                    customer={customer}
+                    coach={coach}
+                    totalEncounters={totalEncounters}
+                    positiveEncounters={positiveEncounters}
+                    inProgressEncounters={inProgressEncounters}
+                />
+            </div>
+        </main>
+    );
 }
