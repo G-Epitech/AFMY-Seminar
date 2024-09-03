@@ -34,7 +34,7 @@ front/.idea
 !.vscode/launch.json
 !.vscode/extensions.json
 
-.env
+database/.env
 
 
 # dependencies
