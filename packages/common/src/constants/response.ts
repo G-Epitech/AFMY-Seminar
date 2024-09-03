@@ -1,0 +1,12 @@
+export const INVALID_EMAIL = 'INVALID_EMAIL';
+export const ALREADY_USED = 'ALREADY_USED';
+export const TOO_SHORT = 'TOO_SHORT';
+export const TOO_LONG = 'TOO_LONG';
+export const EMPTY = 'EMPTY';
+export const MUST_BE_STRING = 'MUST_BE_STRING';
+export const INVALID_TYPE = 'INVALID_TYPE';
+export const INVALID_FIELD = 'INVALID_FIELD';
+export const REQUIRED = 'REQUIRED';
+export const NOT_FOUND = 'NOT_FOUND';
+export const INVALID_NUMBER = 'INVALID_NUMBER';
+export const INVALID_DATE = 'INVALID_DATE';
