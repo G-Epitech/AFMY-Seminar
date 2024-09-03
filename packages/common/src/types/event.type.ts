@@ -1,5 +1,5 @@
-import { IdOf } from '../utils';
-import { Employee } from './employee.type';
+import { IdOf } from "../utils";
+import { Employee } from "./employee.type";
 
 export type EventLocation = {
   id: number;
@@ -7,15 +7,16 @@ export type EventLocation = {
   location: {
     lat: number;
     lng: number;
-  }
-}
+  };
+};
 
 export type MeetingEvent = {
   id: number;
+  legacyId?: number;
   title: string;
   date: Date;
   maxParticipants: number;
   locationId: IdOf<EventLocation>;
   type: string;
   employeeId: IdOf<Employee>;
-}
+};

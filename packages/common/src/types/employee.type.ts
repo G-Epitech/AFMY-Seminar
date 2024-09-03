@@ -1,12 +1,13 @@
-import { Gender } from './customer.type';
+import { Gender } from "./customer.type";
 
 export enum Permission {
   MANAGER,
-  COACH
+  COACH,
 }
 
 export type Employee = {
   id: number;
+  legacyId?: number;
   email: string;
   name: string;
   surname: string;
@@ -17,4 +18,4 @@ export type Employee = {
   address: string | null;
   permission: Permission;
   role: string;
-}
+};
