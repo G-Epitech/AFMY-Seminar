@@ -9,9 +9,9 @@
     "packages/*"
   ],
   "scripts": {
-    "dev:build": "docker compsoer build",
-    "dev:start": "docker composer up",
-    "dev:stop": "docker composer down",
+    "dev:build": "docker compose build",
+    "dev:start": "docker compose up",
+    "dev:clean": "docker compose down",
     "prebuild": "npm run build --workspace=common",
     "dev:back": "npm run start:dev --workspace=@seminar/back",
     "dev:front": "npm run dev --workspace=@seminar/front",
