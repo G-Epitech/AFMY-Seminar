@@ -1,11 +1,16 @@
 FROM node:22
 
-WORKDIR /app
+WORKDIR /seminar/apps/front
+COPY apps/front/package.json ./
+COPY apps/front/postcss.config.mjs apps/front/tailwind.config.ts ./
+COPY apps/front/tsconfig.json apps/front/next.config.mjs ./
 
+WORKDIR /seminar/packages
+COPY packages ./
+
+WORKDIR /seminar
 COPY package.json ./
-COPY postcss.config.mjs tailwind.config.ts ./
-COPY tsconfig.json next.config.mjs ./
 
 RUN npm install
 
-CMD [ "npm", "run", "dev" ]
+CMD [ "npm", "run", "front:dev" ]
