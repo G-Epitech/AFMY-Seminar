@@ -70,19 +70,28 @@ enum Permission {
 }
 
 model Employee {
-  id         Int        @id @default(autoincrement())
-  email      String     @unique
-  name       String
-  surname    String
-  birthDate  DateTime
-  gender     Gender
-  phone      String?
-  photo      String?
-  address    String?
-  permission Permission
-  role       String
-  coachees   Customer[]
-  Event      Event[]
+  id          Int           @id @default(autoincrement())
+  email       String        @unique
+  name        String
+  surname     String
+  birthDate   DateTime
+  gender      Gender
+  phone       String?
+  photo       String?
+  address     String?
+  permission  Permission
+  role        String
+  coachees    Customer[]
+  Event       Event[]
+  Credentials Credentials[]
+}
+
+model Credentials {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  password   String
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
 }
 
 model Location {
