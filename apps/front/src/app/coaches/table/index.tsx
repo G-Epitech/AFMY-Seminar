@@ -1,12 +1,13 @@
 import { Table } from "@/components/ui/table";
 import { Coach } from "@/types/coach";
 import { ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CoachTableFooter from "./footer";
 import { columns } from "./config";
 import CoachesTableBody from "./body";
 import CoachesTableHeader from "./header";
-import CoachesTableFilters from "./filter";
+import CoachesTableFilters from "./filters";
+import CoachesTableActions from "./actions";
 
 export interface CoachesTableProps {
   coaches: Coach[];
@@ -39,13 +40,13 @@ export default function CoachesTable(
     },
   })
 
-  useEffect(() => {
-    console.log(rowSelection)
-  }, [rowSelection])
-
   return (
     <div className="w-full">
-      <CoachesTableFilters table={table} />
+      <div className="flex flex-wrap items-center justify-center py-4 gap-3">
+        <CoachesTableActions table={table} />
+        <CoachesTableFilters table={table} />
+      </div>
+      
       <div className="rounded-md border">
         <Table>
           <CoachesTableHeader table={table} />
