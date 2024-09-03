@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.INVALID_DATE = exports.INVALID_NUMBER = exports.NOT_FOUND = exports.REQUIRED = exports.INVALID_FIELD = exports.INVALID_TYPE = exports.MUST_BE_STRING = exports.EMPTY = exports.TOO_LONG = exports.TOO_SHORT = exports.ALREADY_USED = exports.INVALID_EMAIL = void 0;
+exports.INVALID_EMAIL = 'INVALID_EMAIL';
+exports.ALREADY_USED = 'ALREADY_USED';
+exports.TOO_SHORT = 'TOO_SHORT';
+exports.TOO_LONG = 'TOO_LONG';
+exports.EMPTY = 'EMPTY';
+exports.MUST_BE_STRING = 'MUST_BE_STRING';
+exports.INVALID_TYPE = 'INVALID_TYPE';
+exports.INVALID_FIELD = 'INVALID_FIELD';
+exports.REQUIRED = 'REQUIRED';
+exports.NOT_FOUND = 'NOT_FOUND';
+exports.INVALID_NUMBER = 'INVALID_NUMBER';
+exports.INVALID_DATE = 'INVALID_DATE';
