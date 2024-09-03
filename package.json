@@ -9,9 +9,9 @@
     "packages/*"
   ],
   "scripts": {
-    "dev:back": "npm run start:dev --workspace=back",
-    "dev:front": "npm run start:dev --workspace=front",
-    "prebuild": "npm run build --workspace=common",
+    "dev:back": "npm run start:dev --workspace=@seminar/back",
+    "dev:front": "npm run dev --workspace=@seminar/front",
+    "postinstall": "npm run build --workspace=@seminar/common",
     "build": "tsc"
   }
 }
