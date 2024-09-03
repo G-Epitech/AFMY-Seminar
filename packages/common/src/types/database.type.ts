@@ -34,13 +34,20 @@ type Customer = {
   photo: string | null;
   address: string | null;
   coachId: IdOf<Employee>;
+  createdAt: Date;
+}
+
+enum PaymentMethod {
+  PAYPAL = 'Paypal',
+  BANK_TRANSFER = 'Bank Transfer',
+  CREDIT_CARD = 'Credit Card'
 }
 
 type Payment = {
   id: number;
   date: Date;
   amount: number;
-  method: string;
+  method: PaymentMethod;
   comment: string | null;
   customerId: IdOf<Customer>;
 }
@@ -83,13 +90,21 @@ type MeetingEvent = {
   employeeId: IdOf<Employee>;
 }
 
+enum EncounterStatus {
+  PENDING = 'Pending',
+  DONE = 'Done',
+  CANCELED = 'Canceled'
+}
+
 type Encounter = {
   id: number;
   customerId: IdOf<Customer>;
   date: Date;
-  rating: number;
+  rating: number | null;
   comment: string | null;
   source: string;
+  status: EncounterStatus;
+  isPositive: boolean | null;
 }
 
 type Tip = {

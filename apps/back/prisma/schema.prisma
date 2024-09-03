@@ -52,15 +52,22 @@ model Customer {
   encounters  Encounter[]
   payements   Payement[]
   clothes     Clothe[]         @relation("ClotheOwner")
+  createdAt   DateTime         @default(now())
+}
+
+enum PayementMethod {
+  CARD
+  BANK_TRANSFER
+  PAYPAL
 }
 
 model Payement {
-  id         Int      @id @default(autoincrement())
+  id         Int            @id @default(autoincrement())
   date       DateTime
   amount     Float
-  method     String
+  method     PayementMethod
   comment    String?
-  customer   Customer @relation(fields: [customerId], references: [id])
+  customer   Customer       @relation(fields: [customerId], references: [id])
   customerId Int
 }
 
@@ -115,14 +122,22 @@ model Event {
   employeeId      Int
 }
 
+enum EncounterStatus {
+  PENDING
+  DONE
+  CANCELED
+}
+
 model Encounter {
-  id         Int      @id @default(autoincrement())
-  customer   Customer @relation(fields: [customerId], references: [id])
+  id         Int             @id @default(autoincrement())
+  customer   Customer        @relation(fields: [customerId], references: [id])
   customerId Int
   date       DateTime
-  rating     Int      @default(0)
+  rating     Int?            @default(0)
   comment    String?
   source     String
+  status     EncounterStatus
+  isPositive Boolean?
 }
 
 model Tip {
