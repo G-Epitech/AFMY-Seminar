@@ -1,6 +1,7 @@
 "use client";
 
 import { EncountersList } from "@/components/customer/encounters/encounters";
+import { PaymentsList } from "@/components/customer/payments/payments";
 import { CustomerProfile } from "@/components/customer/profile";
 import { Subtitle } from "@/components/text/subtitle";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -13,6 +14,7 @@ import {
     Gender,
     MeetingEvent,
     Payment,
+    PaymentMethod,
     Permission,
 } from "@seminar/common";
 import { useParams } from "next/navigation";
@@ -110,9 +112,59 @@ export default function CustomerPage() {
             status: EncounterStatus.DONE,
             source: "Yann",
             isPositive: true,
-        }
+        },
     ];
-    const payments: Payment[] = [];
+
+    const payments: Payment[] = [
+        {
+            id: 1,
+            customerId: customer.id,
+            date: new Date("2024-07-20"),
+            method: PaymentMethod.CREDIT_CARD,
+            amount: 49,
+            comment: "Monthly Subscription",
+        },
+        {
+            id: 2,
+            customerId: customer.id,
+            date: new Date("2024-06-20"),
+            method: PaymentMethod.CREDIT_CARD,
+            amount: 49,
+            comment: "Monthly Subscription",
+        },
+        {
+            id: 2,
+            customerId: customer.id,
+            date: new Date("2024-06-12"),
+            method: PaymentMethod.BANK_TRANSFER,
+            amount: 15.99,
+            comment: "Training bonus",
+        },
+        {
+            id: 3,
+            customerId: customer.id,
+            date: new Date("2024-05-20"),
+            method: PaymentMethod.CREDIT_CARD,
+            amount: 49,
+            comment: "Monthly Subscription",
+        },
+        {
+            id: 4,
+            customerId: customer.id,
+            date: new Date("2024-04-20"),
+            method: PaymentMethod.PAYPAL,
+            amount: 49,
+            comment: "Monthly Subscription",
+        },
+        {
+            id: 5,
+            customerId: customer.id,
+            date: new Date("2024-03-20"),
+            method: PaymentMethod.PAYPAL,
+            amount: 49,
+            comment: "Monthly Subscription",
+        },
+    ];
 
     const totalEncounters = encounters.length;
     const positiveEncounters = encounters.filter(
@@ -136,8 +188,9 @@ export default function CustomerPage() {
                 />
 
                 <Card className="lg:basis-3/4 pt-4">
-                    <CardContent>
+                    <CardContent className="flex flex-col gap-5">
                         <EncountersList encounters={encounters} />
+                        <PaymentsList payments={payments} />
                     </CardContent>
                 </Card>
             </div>
