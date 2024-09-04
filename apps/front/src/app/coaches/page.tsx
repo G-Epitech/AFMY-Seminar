@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Employee, Gender, Page, Permission } from '@seminar/common';
 import CoachesTable from '@/components/coaches/table';
 import { Subtitle } from '@/components/text/subtitle';
