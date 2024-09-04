@@ -1,44 +1,31 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Employee, Gender, Page, Permission } from '@seminar/common';
 import CoachesTable from '@/components/coaches/table';
 import { Subtitle } from '@/components/text/subtitle';
 
 export default function Coaches() {
-  const [employeePage, setEmployeePage] = useState<Page<Employee>>({
+  const [coachesPage, setCoachesPage] = useState<Page<Employee>>({
     index: 0,
     size: 15,
     isLast: false,
     items: temporaryCoaches,
   });
-  const [numberOfCoaches, setNumberOfCoaches] = useState<number>(temporaryCoaches.length);
+  const [numberOfCoaches, setNumberOfCoaches] = useState<number>(coachesPage.items.length);
 
   return (
     <main>
-        <Subtitle text="Coaches List" />
+      <Subtitle text="Coaches List" />
 
-        <h3 className="mb-4 text-stone-500">
-            You have total {numberOfCoaches} coaches.
-        </h3>
-        <CoachesTable coaches={employeePage.items} />
+      <h3 className="mb-4 text-stone-500">
+        You have total {numberOfCoaches} coaches.
+      </h3>
+      <CoachesTable coaches={coachesPage.items} />
     </main>
-);
+  );
 }
 
 const temporaryCoaches: Employee[] = [
-  {
-    id: 1,
-    email: "john.doe@example.com",
-    name: "John",
-    surname: "Doe",
-    birthDate: new Date("1985-03-15"),
-    gender: Gender.MA,
-    phone: "123-456-7890",
-    photo: null,
-    address: "123 Main St, Springfield",
-    permission: Permission.MANAGER,
-    role: "General Manager"
-  },
   {
     id: 2,
     email: "jane.smith@example.com",
@@ -50,7 +37,8 @@ const temporaryCoaches: Employee[] = [
     photo: null,
     address: "456 Elm St, Metropolis",
     permission: Permission.COACH,
-    role: "Fitness Coach"
+    role: "Fitness Coach",
+    numberOfCustomers: 20
   },
   {
     id: 3,
@@ -62,7 +50,7 @@ const temporaryCoaches: Employee[] = [
     phone: "345-678-9012",
     photo: null,
     address: "789 Oak St, Smallville",
-    permission: Permission.MANAGER,
+    permission: Permission.COACH,
     role: "Operations Manager"
   },
   {
@@ -101,7 +89,7 @@ const temporaryCoaches: Employee[] = [
     phone: "678-901-2345",
     photo: null,
     address: "303 Cedar St, Gotham",
-    permission: Permission.MANAGER,
+    permission: Permission.COACH,
     role: "HR Manager"
   },
   {
@@ -140,7 +128,7 @@ const temporaryCoaches: Employee[] = [
     phone: "901-234-5678",
     photo: null,
     address: "606 Redwood St, Coast City",
-    permission: Permission.MANAGER,
+    permission: Permission.COACH,
     role: "Sales Manager"
   },
   {
@@ -192,7 +180,7 @@ const temporaryCoaches: Employee[] = [
     phone: "345-678-9012",
     photo: null,
     address: "1010 Fir St, Blüdhaven",
-    permission: Permission.MANAGER,
+    permission: Permission.COACH,
     role: "Marketing Manager"
   },
   {
@@ -244,7 +232,7 @@ const temporaryCoaches: Employee[] = [
     phone: "789-012-3456",
     photo: null,
     address: "1414 Sycamore St, Opal City",
-    permission: Permission.MANAGER,
+    permission: Permission.COACH,
     role: "Finance Manager"
   }
 ];

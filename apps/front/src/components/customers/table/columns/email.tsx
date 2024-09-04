@@ -8,7 +8,8 @@ export const emailColumn: ColumnDef<Customer> = {
   header: ({ column }) => {
     return (
       <Button
-        variant="ghost"
+        className="p-0 text-stone-500"
+        variant="link"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Email

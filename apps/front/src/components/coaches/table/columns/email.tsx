@@ -11,7 +11,6 @@ export const emailColumn: ColumnDef<Employee> = {
         className="p-0 text-stone-500"
         variant="link"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="p-0"
       >
         Email
         <CaretSortIcon className="ml-2 h-4 w-4" />

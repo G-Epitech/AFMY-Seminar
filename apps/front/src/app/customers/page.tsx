@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { AstrologicalSign, Customer, Gender, Page, PaymentMethod } from '@seminar/common';
 import CustomersTable from '@/components/customers/table';
+import { Subtitle } from '@/components/text/subtitle';
 
 export default function Customers() {
   const [customersPage, setCustomersPage] = useState<Page<Customer>>({
@@ -12,15 +13,16 @@ export default function Customers() {
   });
   const [numberOfCustomers, setNumberOfCustomers] = useState<number>(temporaryCustomers.length);
 
-  return <div>
-    <h1 className="scroll-m-20 text-2xl font-extrabold tracking-tight lg:text-5xl mb-1">
-      Customers List
-    </h1>
-    <h3 className="text-lg font-bold mb-4">
-      You have total {numberOfCustomers} customers.
-    </h3>
-    <CustomersTable customers={customersPage.items} />
-  </div>;
+  return (
+    <main>
+      <Subtitle text="Customers List" />
+
+      <h3 className="mb-4 text-stone-500">
+        You have total {numberOfCustomers} customers.
+      </h3>
+      <CustomersTable customers={customersPage.items} />
+    </main>
+  );
 }
 
 const temporaryCustomers: Customer[] = [

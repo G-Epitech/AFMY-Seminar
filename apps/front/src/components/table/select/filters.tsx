@@ -56,7 +56,7 @@ export default function SelectTableFilters<T>(
 
       {
         filterColumns !== false && <>
-          <DropdownMenu modal={false}>
+          <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
                 Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
