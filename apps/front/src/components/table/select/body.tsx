@@ -1,14 +1,13 @@
-import { TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { TableBody, TableCell, TableRow } from "@/components/ui/datat-table";
 import { flexRender, useReactTable } from "@tanstack/react-table";
-import { Coach } from "@/types/coach";
-import { columns } from "./config";
+import { coachesColumns } from "../../coaches/table/columns";
 
-export interface CoachesTableBodyProps {
-  table: ReturnType<typeof useReactTable<Coach>>;
+export interface SelectTableBodyProps<T> {
+  table: ReturnType<typeof useReactTable<T>>;
 }
 
-export default function CoachesTableBody(
-  { table }: CoachesTableBodyProps
+export default function SelectTableBody<T>(
+  { table }: SelectTableBodyProps<T>
 ) {
   return <>
     <TableBody>
@@ -31,7 +30,7 @@ export default function CoachesTableBody(
       ) : (
         <TableRow>
           <TableCell
-            colSpan={columns.length}
+            colSpan={coachesColumns.length}
             className="h-24 text-center"
           >
             No results.

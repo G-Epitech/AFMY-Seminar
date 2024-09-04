@@ -1,13 +1,12 @@
-import { TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { TableHead, TableHeader, TableRow } from "@/components/ui/datat-table"
 import { flexRender, useReactTable } from "@tanstack/react-table"
-import { Coach } from "@/types/coach";
 
-export interface CoachesTableHeaderProps {
-  table: ReturnType<typeof useReactTable<Coach>>;
+export interface SelectTableHeaderProps<T> {
+  table: ReturnType<typeof useReactTable<T>>;
 }
 
-export default function CoachesTableHeader(
-  { table }: CoachesTableHeaderProps
+export default function SelectTableHeader<T>(
+  { table }: SelectTableHeaderProps<T>
 ) {
   return <>
     <TableHeader>

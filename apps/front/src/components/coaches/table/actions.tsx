@@ -9,7 +9,7 @@ export interface CoachesTableActionsProps {
   table: ReturnType<typeof useReactTable<Coach>>;
 }
 
-export type Action = "delete" | "export";
+export type Action = "delete" | "export" | "promote" | "demote";
 
 export default function CoachesTableActions(
   { table }: CoachesTableActionsProps

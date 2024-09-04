@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { Page } from '@seminar/common';
-import CoachesTable from './table';
+import CoachesTable from '@/components/coaches/table';
 import { Coach } from '@/types/coach';
 
 export default function Coaches() {

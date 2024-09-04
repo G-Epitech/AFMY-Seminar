@@ -1,13 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { useReactTable } from "@tanstack/react-table";
-import { Coach } from "@/types/coach";
 
-export interface CoachTableFooterProps {
-  table: ReturnType<typeof useReactTable<Coach>>;
+export interface SelectTableFooterProps<T> {
+  table: ReturnType<typeof useReactTable<T>>;
 }
 
-export default function CoachTableFooter(
-  { table }: CoachTableFooterProps
+export default function SelectTableFooter<T>(
+  { table }: SelectTableFooterProps<T>
 ) {
   return <>
     <div className="flex items-center justify-end space-x-2 py-4">
