@@ -1,7 +1,9 @@
 "use client";
 
+import { EncountersList } from "@/components/customer/encounters/encounters";
 import { CustomerProfile } from "@/components/customer/profile";
 import { Subtitle } from "@/components/text/subtitle";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
     AstrologicalSign,
     Customer,
@@ -48,7 +50,68 @@ export default function CustomerPage() {
         role: "Coach",
     };
 
-    const encounters: Encounter[] = [];
+    const encounters: Encounter[] = [
+        {
+            id: 1,
+            rating: 4,
+            comment: "Great session, very insightful",
+            customerId: customer.id,
+            date: new Date("2024-07-23"),
+            status: EncounterStatus.DONE,
+            source: "Dating App",
+            isPositive: true,
+        },
+        {
+            id: 2,
+            rating: 3,
+            comment: "Not bad, but could be better",
+            customerId: customer.id,
+            date: new Date("2024-07-21"),
+            status: EncounterStatus.DONE,
+            source: "Friends",
+            isPositive: false,
+        },
+        {
+            id: 3,
+            rating: 0,
+            comment: "I don't know what to say, it was very awkward",
+            customerId: customer.id,
+            date: new Date("2024-06-19"),
+            status: EncounterStatus.DONE,
+            source: "Dating App",
+            isPositive: false,
+        },
+        {
+            id: 4,
+            rating: 2,
+            comment: "Not a good match",
+            customerId: customer.id,
+            date: new Date("2024-06-02"),
+            status: EncounterStatus.DONE,
+            source: "Dating App",
+            isPositive: false,
+        },
+        {
+            id: 5,
+            rating: 3,
+            comment: "Not bad, but could be better",
+            customerId: customer.id,
+            date: new Date("2024-05-12"),
+            status: EncounterStatus.DONE,
+            source: "Social Network",
+            isPositive: true,
+        },
+        {
+            id: 5,
+            rating: 1,
+            comment: "Not bad, but could be better",
+            customerId: customer.id,
+            date: new Date("2024-05-12"),
+            status: EncounterStatus.DONE,
+            source: "Yann",
+            isPositive: true,
+        }
+    ];
     const payments: Payment[] = [];
 
     const totalEncounters = encounters.length;
@@ -63,7 +126,7 @@ export default function CustomerPage() {
         <main>
             <Subtitle text="Customer Details" />
 
-            <div className="py-6">
+            <div className="py-6 flex lg:flex-row flex-col gap-5">
                 <CustomerProfile
                     customer={customer}
                     coach={coach}
@@ -71,6 +134,12 @@ export default function CustomerPage() {
                     positiveEncounters={positiveEncounters}
                     inProgressEncounters={inProgressEncounters}
                 />
+
+                <Card className="lg:basis-3/4 pt-4">
+                    <CardContent>
+                        <EncountersList encounters={encounters} />
+                    </CardContent>
+                </Card>
             </div>
         </main>
     );

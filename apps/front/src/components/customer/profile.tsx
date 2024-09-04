@@ -26,7 +26,7 @@ export function CustomerProfile({
     inProgressEncounters: number;
 }) {
     return (
-        <Card className="lg:w-[30%]">
+        <Card className="lg:basis-1/4">
             <CardHeader className="flex flex-col gap-2 items-center">
                 <Avatar className="h-16 w-16">
                     <AvatarImage src={customer.photo || undefined} />
