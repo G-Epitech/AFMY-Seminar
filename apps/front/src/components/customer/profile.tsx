@@ -15,7 +15,7 @@ function ShortDetail({
 }) {
     return (
         <div className="flex flex-col text-sm py-2 w-[70%]">
-            <p className="text-gray-500">{label}:</p>
+            <p className="text-stone-500">{label}:</p>
 
             <div className="flex items-center gap-1">
                 <p>{value}</p>
@@ -52,7 +52,7 @@ export function CustomerProfile({
 
                 <div>
                     <h3 className="font-semibold text-lg">{customer.name}</h3>
-                    <p className="text-sm font-light text-gray-500">
+                    <p className="text-sm font-light text-stone-500">
                         {customer.description}
                     </p>
                 </div>
@@ -66,7 +66,7 @@ export function CustomerProfile({
                         <h3 className="font-semibold text-lg">
                             {totalEncounters}
                         </h3>
-                        <p className="text-gray-500 text-sm">
+                        <p className="text-stone-500 text-sm">
                             Total Encounters
                         </p>
                     </div>
@@ -75,14 +75,14 @@ export function CustomerProfile({
                         <h3 className="font-semibold text-lg">
                             {positiveEncounters}
                         </h3>
-                        <p className="text-gray-500 text-sm">Positives</p>
+                        <p className="text-stone-500 text-sm">Positives</p>
                     </div>
 
                     <div className="flex flex-col gap-1 items-center">
                         <h3 className="font-semibold text-lg">
                             {inProgressEncounters}
                         </h3>
-                        <p className="text-gray-500 text-sm">In Progress</p>
+                        <p className="text-stone-500 text-sm">In Progress</p>
                     </div>
                 </div>
 

@@ -20,7 +20,7 @@ export default function CoachesPage() {
         <main>
             <Subtitle text="Coaches List" />
 
-            <h3 className="mb-4 text-gray-500">
+            <h3 className="mb-4 text-stone-500">
                 You have total {numberOfCoaches} coaches.
             </h3>
             <CoachesTable coaches={coachesPage.items} />
