@@ -1,8 +1,8 @@
 "use client";
 
-import { EncountersList } from "@/components/customer/encounters/encounters";
-import { PaymentsList } from "@/components/customer/payments/payments";
-import { CustomerProfile } from "@/components/customer/profile";
+import { EncountersList } from "@/components/customers/encounters/encounters";
+import { PaymentsList } from "@/components/customers/payments/payments";
+import { CustomerProfile } from "@/components/customers/profile";
 import { Subtitle } from "@/components/text/subtitle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";

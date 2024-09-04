@@ -1,10 +1,10 @@
-import { Coach } from "@/types/coach";
+import { Employee } from "@seminar/common";
 import SelectTable from "../../table/select";
 import CoachesTableActions from "./actions";
 import { coachesColumns } from "./columns";
 
 export interface CoachesTableProps {
-  coaches: Coach[];
+  coaches: Employee[];
 }
 
 export default function CoachesTable(

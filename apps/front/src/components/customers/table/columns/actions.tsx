@@ -2,15 +2,15 @@ import { Button } from "@/components/ui/button";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
-import { Employee } from "@seminar/common";
+import { Customer } from "@seminar/common";
 import { useRouter } from "next/navigation";
 
-export const actionsColumn: ColumnDef<Employee> = {
+export const actionsColumn: ColumnDef<Customer> = {
   id: "actions",
   header: () => (<div className="text-right">Actions</div>),
   enableHiding: false,
   cell: ({ row }) => {
-    const coach = row.original;
+    const customer = row.original;
     const router = useRouter();
 
     return (
@@ -25,17 +25,15 @@ export const actionsColumn: ColumnDef<Employee> = {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => router.push(`/coaches/${coach.id}`)}
+              onClick={() => router.push(`/customers/${customer.id}`)}
             >
               View profile
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(coach.email)}
+              onClick={() => navigator.clipboard.writeText(customer.email)}
             >
-              Copy coach email
+              Copy customer email
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Promote</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
