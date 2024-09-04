@@ -54,7 +54,7 @@ export default function SelectTable<T>(
   })
 
   return (
-    <Card className="m-4 p-4">
+    <Card className="p-4">
       <CardHeader className="pt-2 pb-4 pl-4 pr-4">
         <div className="flex flex-wrap items-center justify-center gap-3">
           {actionComponent && actionComponent({ table })}

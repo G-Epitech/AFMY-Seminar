@@ -10,11 +10,11 @@ export function MainMenu() {
                     <i className="fa-solid fa-message-heart" style={{color: "#f97316"}} />
                 </div>
 
-                <Link href="#">Dashboard</Link>
-                <Link href="#">Coaches</Link>
-                <Link href="#">Customers</Link>
-                <Link href="#">Tips</Link>
-                <Link href="#">Events</Link>
+                <Link href="/">Dashboard</Link>
+                <Link href="/coaches">Coaches</Link>
+                <Link href="/customers">Customers</Link>
+                <Link href="/tips">Tips</Link>
+                <Link href="/events">Events</Link>
 
                 <Avatar className="ml-auto h-7 w-7">
                     <AvatarFallback className="text-xs">JD</AvatarFallback>
