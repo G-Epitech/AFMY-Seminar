@@ -10,6 +10,7 @@ export const emailColumn: ColumnDef<Employee> = {
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="p-0"
       >
         Email
         <CaretSortIcon className="ml-2 h-4 w-4" />

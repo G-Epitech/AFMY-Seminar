@@ -36,6 +36,7 @@ export type Customer = {
   address: string | null;
   coachId: IdOf<Employee>;
   createdAt: Date;
+  paymentMethods?: PaymentMethod[];
 }
 
 export enum PaymentMethod {

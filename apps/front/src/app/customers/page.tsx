@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { AstrologicalSign, Customer, Gender, Page } from '@seminar/common';
+import { AstrologicalSign, Customer, Gender, Page, PaymentMethod } from '@seminar/common';
 import CustomersTable from '@/components/customers/table';
 
 export default function Customers() {
@@ -37,7 +37,10 @@ const temporaryCustomers: Customer[] = [
     photo: null,
     address: "123 Main St, Cityville",
     coachId: 1,
-    createdAt: new Date("2021-01-01")
+    createdAt: new Date("2021-01-01"),
+    paymentMethods: [
+      PaymentMethod.CREDIT_CARD,
+    ]
   },
   {
     id: 2,
@@ -52,7 +55,11 @@ const temporaryCustomers: Customer[] = [
     photo: null,
     address: "456 Elm St, Townsville",
     coachId: 2,
-    createdAt: new Date("2021-02-01")
+    createdAt: new Date("2021-02-01"),
+    paymentMethods: [
+      PaymentMethod.PAYPAL,
+      PaymentMethod.CREDIT_CARD,
+    ]
   },
   {
     id: 3,
@@ -67,7 +74,10 @@ const temporaryCustomers: Customer[] = [
     photo: null,
     address: "789 Oak St, Villageville",
     coachId: 3,
-    createdAt: new Date("2021-03-01")
+    createdAt: new Date("2021-03-01"),
+    paymentMethods: [
+      PaymentMethod.BANK_TRANSFER,
+    ]
   },
   {
     id: 4,
@@ -82,7 +92,11 @@ const temporaryCustomers: Customer[] = [
     photo: null,
     address: "101 Pine St, Hamlet",
     coachId: 4,
-    createdAt: new Date("2021-04-01")
+    createdAt: new Date("2021-04-01"),
+    paymentMethods: [
+      PaymentMethod.CREDIT_CARD,
+      PaymentMethod.BANK_TRANSFER,
+    ]
   },
   {
     id: 5,
