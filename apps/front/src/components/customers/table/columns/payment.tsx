@@ -4,7 +4,7 @@ import { paymentIcons } from "@/components/icons/payments";
 
 export const paymentColumn: ColumnDef<Customer> = {
   accessorKey: "payment",
-  header: "Payment",
+  header: "Payment Methods",
   cell: ({ row }) => {
     const paymentMethods = row.original.paymentMethods;
     if (!paymentMethods) return <div>Unknown</div>;
