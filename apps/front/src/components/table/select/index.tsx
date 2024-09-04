@@ -5,6 +5,7 @@ import SelectTableFooter from "./footer";
 import SelectTableBody from "./body";
 import SelectTableHeader from "./header";
 import SelectTableFilters from "./filters";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 
 /**
  * Props for the SelectTable component.
@@ -53,23 +54,29 @@ export default function SelectTable<T>(
   })
 
   return (
-    <div className="w-full">
-      <div className="flex flex-wrap items-center justify-center py-4 gap-3">
-        {actionComponent && actionComponent({ table })}
-        <SelectTableFilters
-          table={table}
-          filterSearchColumn={filterSearchColumn}
-          filterSearchPlaceholder={filterSearchPlaceholder}
-          filterColumns={filterColumn}
-        />
-      </div>
-      <div className="rounded-md border">
-        <Table>
-          <SelectTableHeader table={table} />
-          <SelectTableBody table={table} />
-        </Table>
-      </div>
-      <SelectTableFooter table={table} />
-    </div>
+    <Card className="m-4 p-4">
+      <CardHeader className="pt-2 pb-4 pl-4 pr-4">
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          {actionComponent && actionComponent({ table })}
+          <SelectTableFilters
+            table={table}
+            filterSearchColumn={filterSearchColumn}
+            filterSearchPlaceholder={filterSearchPlaceholder}
+            filterColumns={filterColumn}
+          />
+        </div>
+      </CardHeader>
+      <CardContent className="p-0">
+        <div className="rounded-md border">
+          <Table>
+            <SelectTableHeader table={table} />
+            <SelectTableBody table={table} />
+          </Table>
+        </div>
+      </CardContent>
+      <CardFooter className="p-4 pb-2">
+        <SelectTableFooter table={table} />
+      </CardFooter>
+    </Card>
   )
 }
