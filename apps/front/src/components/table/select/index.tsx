@@ -54,8 +54,8 @@ export default function SelectTable<T>(
   })
 
   return (
-    <Card className="m-4 p-4">
-      <CardHeader className="pt-2 pb-4 pl-4 pr-4">
+    <Card className="p-4">
+      <CardHeader className="pt-1 pb-4 px-0">
         <div className="flex flex-wrap items-center justify-center gap-3">
           {actionComponent && actionComponent({ table })}
           <SelectTableFilters
@@ -73,10 +73,9 @@ export default function SelectTable<T>(
             <SelectTableBody table={table} />
           </Table>
         </div>
-      </CardContent>
-      <CardFooter className="p-4 pb-2">
+
         <SelectTableFooter table={table} />
-      </CardFooter>
+      </CardContent>
     </Card>
   )
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import { Payment, PaymentMethod } from "@seminar/common";
+import { paymentIcons } from "@/components/icons/payments";
+import { Payment } from "@seminar/common";
 import { ColumnDef } from "@tanstack/react-table";
 import dateFormat from "dateformat";
 
@@ -9,12 +10,6 @@ export type PaymentProps = {
     method: Payment["method"];
     amount: Payment["amount"];
     comment: Payment["comment"];
-};
-
-const paymentIcon: { [key: string]: any } = {
-    "Paypal": () => <i className="fa-brands fa-paypal fa-lg" />,
-    "Credit Card": () => <i className="fa-brands fa-cc-visa fa-lg" />,
-    "Bank Transfer": () => <i className="fa-solid fa-building-columns fa-lg" />,
 };
 
 export const columns: ColumnDef<PaymentProps>[] = [
@@ -32,9 +27,9 @@ export const columns: ColumnDef<PaymentProps>[] = [
     },
     {
         accessorKey: "method",
-        header: "Payment Mathod",
+        header: "Payment Method",
         cell: ({ row }) => {
-            return paymentIcon[row.original.method]();
+            return paymentIcons[row.original.method]();
         },
     },
     {

@@ -1,10 +1,12 @@
 "use client";
 
-import { EncountersList } from "@/components/customer/encounters/encounters";
-import { PaymentsList } from "@/components/customer/payments/payments";
-import { CustomerProfile } from "@/components/customer/profile";
+import { EncountersList } from "@/components/customers/encounters/encounters";
+import { PaymentsList } from "@/components/customers/payments/payments";
+import { CustomerProfile } from "@/components/customers/profile";
 import { Subtitle } from "@/components/text/subtitle";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
 import {
     AstrologicalSign,
     Customer,
@@ -17,6 +19,7 @@ import {
     PaymentMethod,
     Permission,
 } from "@seminar/common";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 
 export default function CustomerPage() {
@@ -110,7 +113,7 @@ export default function CustomerPage() {
             customerId: customer.id,
             date: new Date("2024-05-12"),
             status: EncounterStatus.DONE,
-            source: "Yann",
+            source: "Other",
             isPositive: true,
         },
     ];
@@ -176,7 +179,15 @@ export default function CustomerPage() {
 
     return (
         <main>
-            <Subtitle text="Customer Details" />
+            <div className="flex">
+                <Subtitle text="Customer Details" />
+                <Link href="/customers" className="ml-auto">
+                    <Button className="gap-2" variant="secondary">
+                        <ArrowLongLeftIcon className="size-5" />
+                        Back
+                    </Button>
+                </Link>
+            </div>
 
             <div className="py-6 flex lg:flex-row flex-col gap-5">
                 <CustomerProfile
