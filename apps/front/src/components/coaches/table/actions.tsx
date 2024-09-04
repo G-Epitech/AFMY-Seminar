@@ -33,7 +33,7 @@ export default function CoachesTableActions(
 
   return <>
     <div className="w-full sm:w-auto flex justify-center">
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="outline">
             <p className="capitalize">{action || "Bulk Action"}</p> <ChevronDownIcon className="ml-2 h-4 w-4" />
