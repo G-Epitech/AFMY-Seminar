@@ -1,6 +1,6 @@
+import { coachesColumns } from "@/components/coaches/table/columns";
 import { TableBody, TableCell, TableRow } from "@/components/ui/datat-table";
 import { flexRender, useReactTable } from "@tanstack/react-table";
-import { coachesColumns } from "../../coaches/table/columns";
 
 export interface SelectTableBodyProps<T> {
   table: ReturnType<typeof useReactTable<T>>;
