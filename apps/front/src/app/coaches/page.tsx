@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Employee, Gender, Page, Permission } from '@seminar/common';
 import CoachesTable from '@/components/coaches/table';
+import { Subtitle } from '@/components/text/subtitle';
 
 export default function Coaches() {
   const [employeePage, setEmployeePage] = useState<Page<Employee>>({
@@ -12,15 +13,16 @@ export default function Coaches() {
   });
   const [numberOfCoaches, setNumberOfCoaches] = useState<number>(temporaryCoaches.length);
 
-  return <div>
-    <h1 className="scroll-m-20 text-2xl font-extrabold tracking-tight lg:text-5xl mb-1">
-      Coaches List
-    </h1>
-    <h3 className="text-lg font-bold mb-4">
-      You have total {numberOfCoaches} coaches.
-    </h3>
-    <CoachesTable coaches={employeePage.items} />
-  </div>;
+  return (
+    <main>
+        <Subtitle text="Coaches List" />
+
+        <h3 className="mb-4 text-stone-500">
+            You have total {numberOfCoaches} coaches.
+        </h3>
+        <CoachesTable coaches={employeePage.items} />
+    </main>
+);
 }
 
 const temporaryCoaches: Employee[] = [

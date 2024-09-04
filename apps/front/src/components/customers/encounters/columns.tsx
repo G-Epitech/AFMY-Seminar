@@ -57,7 +57,7 @@ export const columns: ColumnDef<EncounterProps>[] = [
         cell: ({ row }) => {
             return (
                 <div className="flex gap-2 items-center">
-                    <div className={"border border-transparent rounded-sm size-3 " + (colors[row.original.source] || "bg-gray-500")}/>
+                    <div className={"border border-transparent rounded-sm size-3 " + (colors[row.original.source] || "bg-stone-500")}/>
                     <p className="font-medium">{row.original.source}</p>
                 </div>
             )

@@ -27,7 +27,7 @@ export const columns: ColumnDef<PaymentProps>[] = [
     },
     {
         accessorKey: "method",
-        header: "Payment Mathod",
+        header: "Payment Method",
         cell: ({ row }) => {
             return paymentIcons[row.original.method]();
         },

@@ -110,7 +110,7 @@ export default function CustomerPage() {
             customerId: customer.id,
             date: new Date("2024-05-12"),
             status: EncounterStatus.DONE,
-            source: "Yann",
+            source: "Other",
             isPositive: true,
         },
     ];
