@@ -4,6 +4,8 @@ import { Public } from './decorators/public.decorator';
 import { AuthLogInDto } from './dtos/auth-login.dto';
 import { Request } from 'express';
 import { BadRequest, OK } from '../../classes/responses';
+import { Permission } from '@seminar/common';
+import { Allow } from '../employees/decorators/allow.decorator';
 
 @Controller('/auth')
 export class AuthController {

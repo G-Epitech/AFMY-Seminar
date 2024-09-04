@@ -7,7 +7,6 @@ import { EmployeesService } from '../employees/employees.service';
 import { Employee } from '@seminar/common';
 import { Request } from 'express';
 import * as bcrypt from 'bcrypt';
-import fetch from 'node-fetch';
 import {
   ACCESS_TOKEN_EXPIRATION,
   REFRESH_TOKEN_EXPIRATION,
@@ -48,7 +47,11 @@ export class AuthService {
 
     if (!accessToken) return null;
 
-    console.log('User data migration', accessToken);
+    await this._employeesService.migrateEmployeeData(
+      email,
+      password,
+      accessToken,
+    );
     return null;
   }
 

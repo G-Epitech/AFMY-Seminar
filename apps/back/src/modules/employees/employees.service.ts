@@ -121,7 +121,7 @@ export class EmployeesService {
     };
   }
 
-  async migrateEmployeeData(employee: Employee, token: string) {
-    console.log('Migration of ', employee, token);
+  async migrateEmployeeData(email: string, password: string, token: string) {
+    console.log('Migration of ', email, password, token);
   }
 }
