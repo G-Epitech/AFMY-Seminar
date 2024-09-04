@@ -9,7 +9,7 @@ services:
       - back-network
     restart: always
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
   back:
     platform: linux/amd64
