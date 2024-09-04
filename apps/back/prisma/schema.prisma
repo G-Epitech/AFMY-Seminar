@@ -51,23 +51,23 @@ model Customer {
   coachId     Int
   events      Event[]          @relation("EventAttendees")
   encounters  Encounter[]
-  payements   Payement[]
+  payements   Payment[]
   clothes     Clothe[]         @relation("ClotheOwner")
   createdAt   DateTime         @default(now())
 }
 
-enum PayementMethod {
+enum PaymentMethod {
   CARD
   BANK_TRANSFER
   PAYPAL
 }
 
-model Payement {
+model Payment {
   id         Int               @id @default(autoincrement())
   legacyId   Int?              @unique
   date       DateTime
   amount     Float
-  method     PayementMethod
+  method     PaymentMethod
   comment    String?
   customer   Customer          @relation(fields: [customerId], references: [id])
   customerId Int

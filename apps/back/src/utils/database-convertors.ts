@@ -3,9 +3,9 @@ import {
   ClothesType as PrismaClotheType,
   EncounterStatus as PrismaEncounterStatus,
   Gender as PrismaGender,
-  PayementMethod as PrismaPaymentMethod,
+  PaymentMethod as PrismaPaymentMethod,
   Permission as PrismaPermission,
-  Employee as PrismaEmployee,
+  PhotoFormat as PrismaPhotoFormat,
 } from '@prisma/client';
 import {
   AstrologicalSign,
