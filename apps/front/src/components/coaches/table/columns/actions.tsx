@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
-import { Coach } from "@/types/coach";
+import { Employee } from "@seminar/common";
 import { useRouter } from "next/navigation";
 
-export const actionsColumn: ColumnDef<Coach> = {
+export const actionsColumn: ColumnDef<Employee> = {
   id: "actions",
   header: () => (<div className="text-right">Actions</div>),
   enableHiding: false,
@@ -27,7 +27,7 @@ export const actionsColumn: ColumnDef<Coach> = {
             <DropdownMenuItem
               onClick={() => router.push(`/coaches/${coach.id}`)}
             >
-              view profile
+              View profile
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(coach.email)}

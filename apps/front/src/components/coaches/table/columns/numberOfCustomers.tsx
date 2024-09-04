@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button"
-import { Coach } from "@/types/coach"
+import { Employee } from "@seminar/common"
 import { CaretSortIcon } from "@radix-ui/react-icons"
 import { ColumnDef } from "@tanstack/react-table"
 
-export const numberOfCustomersColumn: ColumnDef<Coach> = {
+export const numberOfCustomersColumn: ColumnDef<Employee> = {
   accessorKey: "numberOfCustomers",
   header: ({ column }) => {
     return (

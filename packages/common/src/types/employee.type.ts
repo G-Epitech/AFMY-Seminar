@@ -17,4 +17,5 @@ export type Employee = {
   address: string | null;
   permission: Permission;
   role: string;
+  numberOfCustomers?: number;
 }

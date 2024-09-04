@@ -27,7 +27,7 @@ export const actionsColumn: ColumnDef<Customer> = {
             <DropdownMenuItem
               onClick={() => router.push(`/customers/${customer.id}`)}
             >
-              view profile
+              View profile
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(customer.email)}
