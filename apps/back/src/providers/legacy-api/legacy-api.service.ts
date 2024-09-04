@@ -34,7 +34,7 @@ export class LegacyApiService {
   ): Promise<LegacyApiResponse<R>> {
     if (response.ok) {
       console.log(response.headers);
-      if (getHeader(response.headers, 'Content-Type')?.includes('image/png')) {
+      if (getHeader(response.headers, 'Content-Type')?.includes('image/')) {
         return {
           data: await response.buffer(),
           status: response.status,
