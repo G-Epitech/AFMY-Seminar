@@ -12,6 +12,8 @@ import {
   REFRESH_TOKEN_EXPIRATION,
 } from '../../constants/auth/token-expirations';
 import { LegacyApiService } from '../../providers/legacy-api/legacy-api.service';
+import { EmployeesMigrationService } from '../employees/employees-migration.service';
+import { EmployeeWithCredentials } from '../../types/employees';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +25,9 @@ export class AuthService {
 
   @Inject(EmployeesService)
   private readonly _employeesService: EmployeesService;
+
+  @Inject(EmployeesMigrationService)
+  private readonly _employeesMigrationService: EmployeesMigrationService;
 
   @Inject(LegacyApiService)
   private readonly _legacyApiService: LegacyApiService;
@@ -42,31 +47,36 @@ export class AuthService {
     }
   }
 
-  private async onFirstLogin(email: string, password: string) {
-    const accessToken = await this.legacyLogin(email, password);
+  private async onFirstLogin(
+    email: string,
+    password: string,
+  ): Promise<EmployeeWithCredentials | null> {
+    const token = await this.legacyLogin(email, password);
 
-    if (!accessToken) return null;
+    if (!token) return null;
 
-    await this._employeesService.migrateEmployeeData(
+    return await this._employeesMigrationService.importEmployee(
+      token,
       email,
       password,
-      accessToken,
     );
-    return null;
   }
 
   public async login(
     email: string,
     password: string,
   ): Promise<Employee | null> {
-    const found =
+    let found =
       await this._employeesService.getEmployeeByEmailWithCredentials(email);
 
     if (!found || !found.credentials)
-      return await this.onFirstLogin(email, password);
+      found = await this.onFirstLogin(email, password);
+
+    if (!found || !found.credentials) return null;
 
     const { credentials, ...employee } = found;
     if (await bcrypt.compare(password, credentials.password)) {
+      this._authEmployeeContext.employee = employee;
       return employee;
     }
     return null;

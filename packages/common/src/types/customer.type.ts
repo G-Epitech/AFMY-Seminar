@@ -2,9 +2,9 @@ import { IdOf } from "../utils";
 import { Employee } from "./employee.type";
 
 export enum Gender {
-  MA = "Male",
-  FE = "Female",
-  OT = "Other",
+  MA = "MA",
+  FE = "FE",
+  OT = "OT",
 }
 
 export enum AstrologicalSign {

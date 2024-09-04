@@ -4,7 +4,7 @@ import {
   CreateEmployeeCandidate,
   EmployeeWithCredentials,
 } from '../../types/employees';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { FieldsError } from '../../classes/errors/fields.error';
 import { ALREADY_USED, Employee } from '@seminar/common';
 import {
@@ -18,7 +18,7 @@ export class EmployeesService {
   @Inject(PrismaService)
   private readonly _prismaService: PrismaService;
 
-  private async hashPassword(password: string) {
+  async hashPassword(password: string) {
     const salt = await bcrypt.genSalt();
     return await bcrypt.hash(password, salt);
   }
@@ -119,9 +119,5 @@ export class EmployeesService {
       ...convertEmployee(employee),
       credentials: employee.credentials?.at(0),
     };
-  }
-
-  async migrateEmployeeData(email: string, password: string, token: string) {
-    console.log('Migration of ', email, password, token);
   }
 }

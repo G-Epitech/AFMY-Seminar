@@ -1,3 +1,5 @@
+import { LegacyApiGender } from '../gender.type';
+
 export interface ClotheLegacyDto {
   id: number;
   type: string;
@@ -14,7 +16,7 @@ export interface CustomerLegacyDto {
   name: string;
   surname: string;
   birth_date: string;
-  gender: string;
+  gender: LegacyApiGender;
   description: string;
   astrological_sign: string;
   phone_number: string;
@@ -27,7 +29,7 @@ export interface EmployeeLegacyDto {
   name: string;
   surname: string;
   birth_date: string;
-  gender: string;
+  gender: LegacyApiGender;
   work: string;
 }
 
