@@ -12,6 +12,7 @@ import {
   ACCESS_TOKEN_EXPIRATION,
   REFRESH_TOKEN_EXPIRATION,
 } from '../../constants/auth/token-expirations';
+import { LegacyApiService } from '../../providers/legacy-api/legacy-api.service';
 
 @Injectable()
 export class AuthService {
@@ -24,27 +25,30 @@ export class AuthService {
   @Inject(EmployeesService)
   private readonly _employeesService: EmployeesService;
 
-  private async legacyLogin(email: string, password: string) {
-    const response = await fetch(
-      'https://soul-connection.fr/api/employees/login',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Group-Authorization': 'e0aedfc113bc21eb073e7b08c39b8ddc',
-        },
-        body: JSON.stringify({ email, password }),
-      },
-    );
+  @Inject(LegacyApiService)
+  private readonly _legacyApiService: LegacyApiService;
 
-    const b: { access_token: string } = await response.json();
-    console.log('b', b.access_token);
-    return response.ok;
+  private async legacyLogin(email: string, password: string) {
+    try {
+      const response = await this._legacyApiService.request(
+        'POST /employees/login',
+        {
+          body: { password, email },
+        },
+      );
+
+      return response.data.access_token;
+    } catch (error) {
+      return null;
+    }
   }
 
   private async onFirstLogin(email: string, password: string) {
-    console.log('Legacy login');
-    console.log('User data migration');
+    const accessToken = await this.legacyLogin(email, password);
+
+    if (!accessToken) return null;
+
+    console.log('User data migration', accessToken);
     return null;
   }
 
