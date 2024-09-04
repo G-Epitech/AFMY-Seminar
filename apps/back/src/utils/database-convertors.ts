@@ -1,6 +1,7 @@
 import {
   AstrologicalSign as PrismaAstro,
   ClothesType as PrismaClotheType,
+  Employee as PrismaEmployee,
   EncounterStatus as PrismaEncounterStatus,
   Gender as PrismaGender,
   PaymentMethod as PrismaPaymentMethod,
@@ -15,6 +16,7 @@ import {
   Gender,
   PaymentMethod,
   Permission,
+  PhotoFormat,
 } from '@seminar/common';
 
 export function convertGender(gender: PrismaGender): Gender {
@@ -204,5 +206,34 @@ export function convertEmployee(employee: PrismaEmployee): Employee {
     ...employee,
     gender: convertGender(employee.gender),
     permission: convertPermission(employee.permission),
+    photoFormat: employee.photoFormat
+      ? convertPhotoFormat(employee.photoFormat)
+      : null,
   };
+}
+
+export function convertPhotoFormat(
+  photoFormat: PrismaPhotoFormat,
+): PhotoFormat {
+  switch (photoFormat) {
+    case PrismaPhotoFormat.GIF:
+      return PhotoFormat.GIF;
+    case PrismaPhotoFormat.JPEG:
+      return PhotoFormat.JPEG;
+    case PrismaPhotoFormat.PNG:
+      return PhotoFormat.PNG;
+  }
+}
+
+export function convertPhotoFormatToPrisma(
+  photoFormat: PhotoFormat,
+): PrismaPhotoFormat {
+  switch (photoFormat) {
+    case PhotoFormat.GIF:
+      return PrismaPhotoFormat.GIF;
+    case PhotoFormat.JPEG:
+      return PrismaPhotoFormat.JPEG;
+    case PhotoFormat.PNG:
+      return PrismaPhotoFormat.PNG;
+  }
 }
