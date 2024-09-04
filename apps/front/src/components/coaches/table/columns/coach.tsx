@@ -1,14 +1,14 @@
-import { Coach } from "@/types/coach";
+import { Employee } from "@seminar/common";
 import { ColumnDef } from "@tanstack/react-table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export const coachColumn: ColumnDef<Coach> = {
+export const coachColumn: ColumnDef<Employee> = {
   accessorKey: "coach",
   header: "Coach",
   cell: ({ row }) => {
-    const firstName = row.original.firstName || ""
-    const lastName = row.original.lastName || ""
-    const picture = row.original.picture
+    const firstName = row.original.surname
+    const lastName = row.original.name
+    const picture = row.original.photo || ""
 
     return <div className="flex items-center">
       <Avatar>

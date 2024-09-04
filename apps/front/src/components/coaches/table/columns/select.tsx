@@ -1,8 +1,8 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { Coach } from "@/types/coach";
+import { Employee } from "@seminar/common";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const selectColumn: ColumnDef<Coach> = {
+export const selectColumn: ColumnDef<Employee> = {
   id: "select",
   header: ({ table }) => (
     <Checkbox

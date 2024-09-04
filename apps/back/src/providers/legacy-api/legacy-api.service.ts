@@ -33,7 +33,6 @@ export class LegacyApiService {
     response: fetch.Response,
   ): Promise<LegacyApiResponse<R>> {
     if (response.ok) {
-      console.log(response.headers);
       if (getHeader(response.headers, 'Content-Type')?.includes('image/')) {
         return {
           data: await response.buffer(),
@@ -58,19 +57,25 @@ export class LegacyApiService {
   }
 
   async request<R extends keyof LegacyApiEndpoints>(
-    token: string,
     endpoint: R,
     data: LegacyApiEndpointData<R>,
+    ...rest: LegacyApiEndpoints[R]['auth'] extends true ? [string] : []
   ): Promise<LegacyApiResponse<R>> {
     const [method, path] = this.getPathAndMethod(endpoint, data);
+    const token = rest.length ? rest[0] : undefined;
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'X-Group-Authorization': process.env.LEGACY_API_KEY || '',
+    };
+
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
 
     const response = await fetch(`${process.env.LEGACY_API_URL}${path}`, {
       method,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Group-Authorization': process.env.LEGACY_API_KEY || '',
-        Authorization: `Bearer ${token}`,
-      },
+      headers,
       body: 'body' in data ? JSON.stringify(data.body) : undefined,
     });
 

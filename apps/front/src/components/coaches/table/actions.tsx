@@ -1,12 +1,12 @@
 import { useReactTable } from "@tanstack/react-table";
-import { Coach } from "@/types/coach";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ChevronDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { Employee } from "@seminar/common";
 
 export interface CoachesTableActionsProps {
-  table: ReturnType<typeof useReactTable<Coach>>;
+  table: ReturnType<typeof useReactTable<Employee>>;
 }
 
 export type Action = "delete" | "export" | "promote" | "demote";
@@ -32,7 +32,7 @@ export default function CoachesTableActions(
   }, [table.getState().rowSelection])
 
   return <>
-    <div>
+    <div className="w-full sm:w-auto flex justify-center">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline">
