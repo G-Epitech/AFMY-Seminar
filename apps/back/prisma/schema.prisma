@@ -47,8 +47,8 @@ model Customer {
   phone       String?
   photo       String?
   address     String?
-  coach       Employee         @relation(fields: [coachId], references: [id])
-  coachId     Int
+  coach       Employee?        @relation(fields: [coachId], references: [id])
+  coachId     Int?
   events      Event[]          @relation("EventAttendees")
   encounters  Encounter[]
   payements   Payment[]

@@ -35,7 +35,7 @@ export type Customer = {
   phone: string | null;
   photo: string | null;
   address: string | null;
-  coachId: IdOf<Employee>;
+  coachId: IdOf<Employee> | null;
   createdAt: Date;
   paymentMethods?: PaymentMethod[];
 };
