@@ -1,18 +1,18 @@
 import { useReactTable } from "@tanstack/react-table";
-import { Coach } from "@/types/coach";
+import { Customer } from "@seminar/common";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ChevronDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
-export interface CoachesTableActionsProps {
-  table: ReturnType<typeof useReactTable<Coach>>;
+export interface CustomersTableActionsProps {
+  table: ReturnType<typeof useReactTable<Customer>>;
 }
 
 export type Action = "delete" | "export" | "promote" | "demote";
 
-export default function CoachesTableActions(
-  { table }: CoachesTableActionsProps
+export default function CustomersTableActions(
+  { table }: CustomersTableActionsProps
 ) {
   const [action, setAction] = useState<Action | null>(null);
   const [selectedRowsIDs, setSelectedRowsIDs] = useState<number[]>([]);
