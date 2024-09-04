@@ -1,28 +1,22 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { UsersModule } from '../users/users.module';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { SequelizeModule } from '@nestjs/sequelize';
-import {
-  UserEntity,
-  UserMsEntraIdentifierEntity,
-} from 'src/providers/database/entities';
-import { AuthUserContext } from './auth.user.context';
 import { AuthGuard } from './guards/jwt-auth.guard';
+import { EmployeesModule } from '../employees/employees.module';
+import { AuthEmployeeContext } from './auth.employee.context';
 
 @Module({
   imports: [
-    forwardRef(() => UsersModule),
-    SequelizeModule.forFeature([UserEntity, UserMsEntraIdentifierEntity]),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '2h' },
     }),
+    EmployeesModule,
   ],
-  providers: [AuthService, AuthUserContext, AuthGuard],
+  providers: [AuthService, AuthGuard, AuthEmployeeContext],
   controllers: [AuthController],
-  exports: [AuthService, AuthUserContext, AuthGuard],
+  exports: [AuthService, AuthGuard, AuthEmployeeContext],
 })
 export class AuthModule {}

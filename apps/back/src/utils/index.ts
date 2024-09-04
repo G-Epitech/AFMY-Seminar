@@ -1,1 +1,1 @@
-export * from './databaseConvertors';
+export * from './database-convertors';

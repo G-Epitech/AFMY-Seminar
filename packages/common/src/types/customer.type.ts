@@ -24,6 +24,7 @@ export enum AstrologicalSign {
 
 export type Customer = {
   id: number;
+  legacyId: number | null;
   email: string;
   name: string;
   surname: string;

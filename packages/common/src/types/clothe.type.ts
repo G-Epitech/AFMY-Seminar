@@ -7,7 +7,7 @@ export enum ClothesType {
 
 export type Clothes = {
   id: number;
-  legacyId?: number;
+  legacyId: number | null;
   type: ClothesType;
   image: string;
 };

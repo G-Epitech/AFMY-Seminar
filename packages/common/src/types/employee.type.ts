@@ -7,7 +7,7 @@ export enum Permission {
 
 export type Employee = {
   id: number;
-  legacyId?: number;
+  legacyId: number | null;
   email: string;
   name: string;
   surname: string;

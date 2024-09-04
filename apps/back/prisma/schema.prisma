@@ -37,6 +37,7 @@ enum AstrologicalSign {
 model Customer {
   id          Int              @id @default(autoincrement())
   email       String           @unique
+  legacyId    Int?             @unique
   name        String
   surname     String
   description String
@@ -62,12 +63,13 @@ enum PayementMethod {
 }
 
 model Payement {
-  id         Int            @id @default(autoincrement())
+  id         Int               @id @default(autoincrement())
+  legacyId   Int?              @unique
   date       DateTime
   amount     Float
   method     PayementMethod
   comment    String?
-  customer   Customer       @relation(fields: [customerId], references: [id])
+  customer   Customer          @relation(fields: [customerId], references: [id])
   customerId Int
 }
 
@@ -78,6 +80,7 @@ enum Permission {
 
 model Employee {
   id          Int           @id @default(autoincrement())
+  legacyId    Int?          @unique
   email       String        @unique
   name        String
   surname     String
@@ -89,8 +92,8 @@ model Employee {
   permission  Permission
   role        String
   coachees    Customer[]
-  Event       Event[]
-  Credentials Credentials[]
+  events      Event[]
+  credentials Credentials[]
 }
 
 model Credentials {
@@ -110,7 +113,8 @@ model Location {
 }
 
 model Event {
-  id              String     @id @default(cuid())
+  id              Int        @id @default(autoincrement())
+  legacyId        Int?       @unique
   title           String
   date            DateTime
   maxParticipants Int
@@ -130,6 +134,7 @@ enum EncounterStatus {
 
 model Encounter {
   id         Int             @id @default(autoincrement())
+  legacyId   Int?            @unique
   customer   Customer        @relation(fields: [customerId], references: [id])
   customerId Int
   date       DateTime
@@ -141,9 +146,10 @@ model Encounter {
 }
 
 model Tip {
-  id      Int    @id @default(autoincrement())
-  title   String
-  content String
+  id        Int     @id @default(autoincrement())
+  legacyId  Int?    @unique
+  title     String
+  content   String
 }
 
 enum ClothesType {
@@ -155,6 +161,7 @@ enum ClothesType {
 
 model Clothe {
   id        Int         @id @default(autoincrement())
+  legacyId  Int?        @unique
   type      ClothesType
   image     String
   customers Customer[]  @relation("ClotheOwner")

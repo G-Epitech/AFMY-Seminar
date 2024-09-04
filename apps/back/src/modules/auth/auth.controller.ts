@@ -3,9 +3,7 @@ import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { AuthLogInDto } from './dtos/auth-login.dto';
 import { Request } from 'express';
-import { ResponseErrors } from '@seminar/common';
 import { BadRequest, OK } from '../../classes/responses';
-import { FieldsError } from '../../classes/errors/fields.error';
 
 @Controller('/auth')
 export class AuthController {
@@ -14,23 +12,16 @@ export class AuthController {
 
   @Public()
   @Post('login')
-  async authUser(@Body() dto: AuthLogInDto) {
-    const result = await this._authService.loginPasswordAsync(
-      dto.email,
-      dto.password,
-    );
+  async authEmployee(@Body() dto: AuthLogInDto) {
+    const result = await this._authService.login(dto.email, dto.password);
 
     if (!result) {
       throw new BadRequest({ message: 'Invalid email or password' });
-    } else if (result instanceof FieldsError) {
-      throw new BadRequest({
-        errors: FieldsError.aggregate<ResponseErrors>(result),
-      });
     }
     return new OK({
       tokens: {
-        access: await this._authService.genAccessTokenAsync(result),
-        refresh: await this._authService.genRefreshTokenAsync(result),
+        access: await this._authService.generateAccessToken(result),
+        refresh: await this._authService.generateRefreshToken(result),
       },
     });
   }

@@ -12,7 +12,7 @@ export type EventLocation = {
 
 export type MeetingEvent = {
   id: number;
-  legacyId?: number;
+  legacyId: number | null;
   title: string;
   date: Date;
   maxParticipants: number;
