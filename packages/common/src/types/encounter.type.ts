@@ -9,6 +9,7 @@ export enum EncounterStatus {
 
 export type Encounter = {
   id: number;
+  legacyId: number | null;
   customerId: IdOf<Customer>;
   date: Date;
   rating: number | null;

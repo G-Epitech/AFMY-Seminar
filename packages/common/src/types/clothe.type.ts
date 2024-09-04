@@ -1,12 +1,13 @@
 export enum ClothesType {
-  HAT_CAP = 'Hat/Cap',
-  BOTTOM = 'Bottom',
-  TOP = 'Top',
-  SHOES = 'Shoes'
+  HAT_CAP = "Hat/Cap",
+  BOTTOM = "Bottom",
+  TOP = "Top",
+  SHOES = "Shoes",
 }
 
 export type Clothes = {
   id: number;
+  legacyId: number | null;
   type: ClothesType;
   image: string;
-}
+};

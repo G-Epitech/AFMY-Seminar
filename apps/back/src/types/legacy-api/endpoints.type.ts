@@ -17,7 +17,9 @@ export interface LegacyApiEndpoint<
   ResponseType,
   ParametersType = never,
   BodyType = never,
+  NeedAuth extends boolean = true,
 > {
+  auth: NeedAuth;
   body: BodyType;
   response: ResponseType;
   parameters: ParametersType;
@@ -32,7 +34,8 @@ export interface LegacyApiEndpoints {
     {
       email: string;
       password: string;
-    }
+    },
+    false
   >;
 
   'GET /employees/me': LegacyApiEndpoint<EmployeeLegacyDto>;

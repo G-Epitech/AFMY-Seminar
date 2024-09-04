@@ -3,7 +3,7 @@ import { AppModule } from './app/app.module';
 import { DtoValidationPipe } from './pipes/dto-validation.pipe';
 
 async function main() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   app.useGlobalPipes(new DtoValidationPipe());
   await app.listen(4000);
 }
