@@ -36,7 +36,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function DashboardChartCustomers() {
+export default function DashboardChartCustomers() {
   return (
     <Card className="w-full">
       <CardHeader>

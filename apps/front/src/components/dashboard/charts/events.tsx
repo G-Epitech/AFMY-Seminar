@@ -34,7 +34,7 @@ type ChartData = {
   number: number;
 }
 
-export function DashboardChartEvents() {
+export default function DashboardChartEvents() {
   const [activeMonthData, setActiveMonthData] = useState<ChartData[]>([]);
   const [previousMonthData, setPreviousMonthData] = useState<ChartData[]>([]);
 
@@ -60,10 +60,10 @@ export function DashboardChartEvents() {
     const endDatePreviousMonth = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30);
     const startDatePreviousMonth = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30 - 29);
 
-    console.log("endDateActiveMonth", endDateActiveMonth);
-    console.log("startDateActiveMonth", startDateActiveMonth);
-    console.log("endDatePreviousMonth", endDatePreviousMonth);
-    console.log("startDatePreviousMonth", startDatePreviousMonth);
+    // console.log("endDateActiveMonth", endDateActiveMonth);
+    // console.log("startDateActiveMonth", startDateActiveMonth);
+    // console.log("endDatePreviousMonth", endDatePreviousMonth);
+    // console.log("startDatePreviousMonth", startDatePreviousMonth);
 
     setActiveMonthData(tempChartDataActiveMonth);
     setPreviousMonthData(tempchartDataPreviousMonth);

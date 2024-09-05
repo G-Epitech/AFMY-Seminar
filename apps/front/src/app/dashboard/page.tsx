@@ -1,11 +1,12 @@
-import { DashboardChartCustomers } from "@/components/dashboard/charts/customers";
-import { DashboardChartEvents } from "@/components/dashboard/charts/events";
+import DashboardChartCustomers from "@/components/dashboard/charts/customers";
+import DashboardChartEvents from "@/components/dashboard/charts/events";
+import DashboardChartMap from "@/components/dashboard/charts/map";
 import { Subtitle } from "@/components/text/subtitle";
 
 export default function DashboardPage() {
   const dashboardsLeft = [
     <DashboardChartCustomers />,
-    <DashboardChartEvents />,
+    <DashboardChartMap />,
   ];
   const dashboardsRight = [
     <DashboardChartEvents />,
