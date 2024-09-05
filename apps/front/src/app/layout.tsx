@@ -6,6 +6,8 @@ import { Toaster } from "@/components/ui/toaster";
 import Script from "next/script";
 import { MainMenu } from "@/components/menus/main";
 
+import 'reflect-metadata';
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
