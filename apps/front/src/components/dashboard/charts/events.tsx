@@ -96,87 +96,85 @@ export function DashboardChartEvents() {
   }, [activeMonthData, previousMonthData]);
 
   return (
-    <div className="w-1/2 p-2">
-      <Card>
-        <CardHeader className="flex border-b p-0">
-          <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-            <CardTitle>Events</CardTitle>
-            <CardDescription>
-              Showing total events for the last 30 days
-            </CardDescription>
-          </div>
-          <div>
-            <div className="flex justify-around">
-              {Object.entries(summary).map(([key, { total, performance }]) => (
-                <div key={key} className="flex flex-col items-center gap-1 px-4 pb-3 sm:pb-4">
-                  <div className="text-sm text-text-secondary">{key}</div>
-                  <div className="text-lg font-semibold">{total}</div>
-                  <div className={`text-sm ${performance >= 0 ? "text-green-500" : "text-red-500"}`}>
-                    {performance >= 0 ? arrowIcons["up"]() : arrowIcons["down"]()}
-                    <span className="ml-1">
-                      {performance.toFixed(2)}%
-                    </span>
-                  </div>
+    <Card className="w-full">
+      <CardHeader className="flex border-b p-0">
+        <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+          <CardTitle>Events</CardTitle>
+          <CardDescription>
+            Showing total events for the last 30 days
+          </CardDescription>
+        </div>
+        <div>
+          <div className="flex justify-around">
+            {Object.entries(summary).map(([key, { total, performance }]) => (
+              <div key={key} className="flex flex-col items-center gap-1 px-4 pb-3 sm:pb-4">
+                <div className="text-sm text-text-secondary">{key}</div>
+                <div className="text-lg font-semibold">{total}</div>
+                <div className={`text-sm ${performance >= 0 ? "text-green-500" : "text-red-500"}`}>
+                  {performance >= 0 ? arrowIcons["up"]() : arrowIcons["down"]()}
+                  <span className="ml-1">
+                    {performance.toFixed(2)}%
+                  </span>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        </CardHeader>
-        <CardContent className="px-2 sm:p-6">
-          <ChartContainer
-            config={chartConfig}
-            className="aspect-auto h-[250px] w-full"
+        </div>
+      </CardHeader>
+      <CardContent className="px-2 sm:p-6">
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-auto h-[250px] w-full"
+        >
+          <BarChart
+            accessibilityLayer
+            data={activeMonthData}
+            margin={{
+              left: 12,
+              right: 12,
+            }}
           >
-            <BarChart
-              accessibilityLayer
-              data={activeMonthData}
-              margin={{
-                left: 12,
-                right: 12,
-              }}
-            >
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="date"
-                tickLine={false}
-                axisLine={false}
-                padding={{ left: 15, right: 15 }}
-                tickMargin={10}
-                interval={0}
-                tickFormatter={(value, index) => {
-                  const date = new Date(value);
-                  const allowedDates = [0, 15, 29];
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              axisLine={false}
+              padding={{ left: 15, right: 15 }}
+              tickMargin={10}
+              interval={0}
+              tickFormatter={(value, index) => {
+                const date = new Date(value);
+                const allowedDates = [0, 15, 29];
 
-                  if (allowedDates.includes(index)) {
-                    return date.toLocaleDateString("en-US", {
+                if (allowedDates.includes(index)) {
+                  return date.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })
+                }
+                return ""
+              }}
+            />
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  className="w-[150px]"
+                  nameKey="events"
+                  labelFormatter={(value) => {
+                    return new Date(value).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
+                      year: "numeric",
                     })
-                  }
-                  return ""
-                }}
-              />
-              <ChartTooltip
-                content={
-                  <ChartTooltipContent
-                    className="w-[150px]"
-                    nameKey="events"
-                    labelFormatter={(value) => {
-                      return new Date(value).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })
-                    }}
-                  />
-                }
-              />
-              <Bar dataKey="number" fill={`var(--color-number)`} />
-            </BarChart>
-          </ChartContainer>
-        </CardContent>
-      </Card>
-    </div>
+                  }}
+                />
+              }
+            />
+            <Bar dataKey="number" fill={`var(--color-number)`} />
+          </BarChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   )
 }
 

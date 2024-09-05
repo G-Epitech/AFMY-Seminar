@@ -1,7 +1,14 @@
+import { DashboardChartCustomers } from "@/components/dashboard/charts/customers";
 import { DashboardChartEvents } from "@/components/dashboard/charts/events";
 import { Subtitle } from "@/components/text/subtitle";
 
 export default function DashboardPage() {
+  const dashboards = [
+    <DashboardChartCustomers />,
+    <DashboardChartEvents />,
+    <DashboardChartEvents />,
+  ];
+
   return (
     <main>
       <Subtitle text="Dashboard" />
@@ -9,9 +16,11 @@ export default function DashboardPage() {
         welcome!
       </h3>
       <div className="flex flex-wrap">
-        <DashboardChartEvents />
-        <DashboardChartEvents />
-        <DashboardChartEvents />
+        {dashboards.map((dashboard, index) => (
+          <div className="w-1/2 flex p-2">
+            {dashboard}
+          </div>
+        ))}
       </div>
     </main>
   )
