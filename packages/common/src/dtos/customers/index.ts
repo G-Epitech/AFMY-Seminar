@@ -15,3 +15,4 @@ export * from "./post-create-customer-clothe.dto";
 export * from "./patch-update-customer-encounter.dto";
 export * from "./delete-customer-clothe.dto";
 export * from "./patch-update-customer-clothe.dto";
+export * from "./get-customer-compatibility.dto";
