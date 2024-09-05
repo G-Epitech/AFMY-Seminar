@@ -61,6 +61,7 @@ model Customer {
   payements   Payment[]
   clothes     Clothe[]         @relation("ClotheOwner")
   createdAt   DateTime         @default(now())
+  country     String?
 }
 
 enum PaymentMethod {
@@ -70,13 +71,13 @@ enum PaymentMethod {
 }
 
 model Payment {
-  id         Int               @id @default(autoincrement())
-  legacyId   Int?              @unique
+  id         Int           @id @default(autoincrement())
+  legacyId   Int?          @unique
   date       DateTime
   amount     Float
   method     PaymentMethod
   comment    String?
-  customer   Customer          @relation(fields: [customerId], references: [id])
+  customer   Customer      @relation(fields: [customerId], references: [id])
   customerId Int
 }
 
@@ -154,10 +155,10 @@ model Encounter {
 }
 
 model Tip {
-  id        Int     @id @default(autoincrement())
-  legacyId  Int?    @unique
-  title     String
-  content   String
+  id       Int    @id @default(autoincrement())
+  legacyId Int?   @unique
+  title    String
+  content  String
 }
 
 enum ClothesType {

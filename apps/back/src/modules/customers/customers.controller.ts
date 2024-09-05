@@ -236,6 +236,7 @@ export class CustomersController {
       address: customer.address ? customer.address : null,
       coachId: customer.coachId ? customer.coachId : null,
       photoFormat: customer.photoFormat ? customer.photoFormat : null,
+      country: customer.country ? customer.country : null,
     };
 
     const created = await this.customersService.createCustomer(candidate);
