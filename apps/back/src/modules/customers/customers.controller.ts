@@ -66,6 +66,7 @@ import {
   ParamPostCreateCustomerClotheDTO,
   ParamPostCreateCustomerEncounterDTO,
   ParamPostCreateCustomerPaymentDTO,
+  PhotoFormat,
   QueryGetCustomerClothesDTO,
   QueryGetCustomerEncountersDTO,
   QueryGetCustomerPaymentsDTO,
@@ -124,6 +125,9 @@ export class CustomersController {
       return {
         ...customer,
         photo: '/customers/' + customer.id + '/photo',
+        photoFormat: customer.photoFormat
+          ? customer.photoFormat
+          : PhotoFormat.PNG,
       };
     });
 
@@ -152,6 +156,9 @@ export class CustomersController {
     return {
       ...customer,
       photo: '/customers/' + customer.id + '/photo',
+      photoFormat: customer.photoFormat
+        ? customer.photoFormat
+        : PhotoFormat.PNG,
     };
   }
 
@@ -204,9 +211,16 @@ export class CustomersController {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
+    const updated = await this.customersService.updateCustomer(id, candidate);
+
+    if (!updated) {
+      throw new NotFoundException(`Customer with id ${id} not found`);
+    }
+
     return {
-      ...(await this.customersService.updateCustomer(id, candidate))!,
+      ...updated,
       photo: '/customers/' + id + '/photo',
+      photoFormat: updated.photoFormat ? updated.photoFormat : PhotoFormat.PNG,
     };
   }
 
@@ -232,7 +246,11 @@ export class CustomersController {
       );
     }
 
-    return { ...created, photo: '/customers/' + created.id + '/photo' };
+    return {
+      ...created,
+      photo: '/customers/' + created.id + '/photo',
+      photoFormat: created.photoFormat ? created.photoFormat : PhotoFormat.PNG,
+    };
   }
 
   @Get(':id/payments')
@@ -445,9 +463,16 @@ export class CustomersController {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
+    const deleted = await this.customersService.deleteCustomer(id);
+
+    if (!deleted) {
+      throw new NotFoundException(`Customer with id ${id} not found`);
+    }
+
     return {
-      ...(await this.customersService.deleteCustomer(id))!,
+      ...deleted,
       photo: '/customers/' + id + '/photo',
+      photoFormat: deleted.photoFormat ? deleted.photoFormat : PhotoFormat.PNG,
     };
   }
 
