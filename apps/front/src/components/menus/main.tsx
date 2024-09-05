@@ -7,7 +7,8 @@ import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import { useAppSelector } from "@/store";
 import { Employee } from "@seminar/common";
 import { authError, authLoading } from "@/store/utils";
-import { config } from "@/lib/config";
+import { useRouter } from "next/navigation";
+import { UserMenuDisplay } from "./user";
 
 export function MainMenu() {
     const user = useAppSelector<Employee | null | undefined>(
@@ -16,6 +17,8 @@ export function MainMenu() {
 
     const [width, setWidth] = useState(0);
     const [menuDeployed, setMenuDeployed] = useState(false);
+
+    const router = useRouter();
 
     const breakpoint = 700;
     const handleResizeWindow = () => setWidth(window.innerWidth);
@@ -31,16 +34,13 @@ export function MainMenu() {
         };
     }, []);
 
-    const AvatarDisplay = () => (
-        <>
-            <AvatarImage src={user?.photo || ""} alt="avatar" />
-            <AvatarFallback className="text-xs">
-                {authLoading(user)
-                    ? "..."
-                    : `${user?.name[0]}${user?.surname[0]}`}
-            </AvatarFallback>
-        </>
-    );
+    useEffect(() => {
+        if (authError(user)) {
+            return router.push("/login");
+        }
+
+        return;
+    }, [router, user]);
 
     return (
         <div className="border-b py-3">
@@ -61,11 +61,9 @@ export function MainMenu() {
                         <Link href="/tips">Tips</Link>
                         <Link href="/events">Events</Link>
 
-                        {!authError(user) && (
-                            <Avatar className="h-7 w-7 ml-auto">
-                                <AvatarDisplay />
-                            </Avatar>
-                        )}
+                        <div className="ml-auto">
+                            <UserMenuDisplay user={user} />
+                        </div>
                     </>
                 ) : (
                     <div className="ml-auto flex gap-2 items-center">
@@ -73,11 +71,7 @@ export function MainMenu() {
                             className="size-5"
                             onClick={() => setMenuDeployed(!menuDeployed)}
                         />
-                        {!authError(user) && (
-                            <Avatar className="h-7 w-7">
-                                <AvatarDisplay />
-                            </Avatar>
-                        )}
+                        <UserMenuDisplay user={user} />
                     </div>
                 )}
             </div>
