@@ -1,4 +1,5 @@
 import { LegacyApiGender } from '../gender.type';
+import { LegacyApiAstrologicalSign } from '../astrological-sign.type';
 
 export interface ClotheLegacyDto {
   id: number;
@@ -18,7 +19,7 @@ export interface CustomerLegacyDto {
   birth_date: string;
   gender: LegacyApiGender;
   description: string;
-  astrological_sign: string;
+  astrological_sign: LegacyApiAstrologicalSign;
   phone_number: string;
   address: string;
 }

@@ -23,4 +23,8 @@ export class AuthEmployeeContext {
   get authenticated(): boolean {
     return !!this._employee;
   }
+
+  get isLegacyAuthenticated(): boolean {
+    return !!(this._employee && this._employee.legacyToken);
+  }
 }
