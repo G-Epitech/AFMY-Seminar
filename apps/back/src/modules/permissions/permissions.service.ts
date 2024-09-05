@@ -14,7 +14,7 @@ export class PermissionsService {
   public async canCoachAccessCustomer(
     customerId: IdOf<Customer>,
   ): Promise<boolean> {
-    if (!this.authEmployeeContext.employee) {
+    if (!this.authEmployeeContext.authenticated) {
       return false;
     }
 
