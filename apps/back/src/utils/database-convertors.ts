@@ -10,7 +10,7 @@ import {
 } from '@prisma/client';
 import {
   AstrologicalSign,
-  ClothesType,
+  ClotheType,
   Employee,
   EncounterStatus,
   Gender,
@@ -85,16 +85,16 @@ export function convertEncounterStatus(
   }
 }
 
-export function convertClothesType(type: PrismaClotheType): ClothesType {
+export function convertClotheType(type: PrismaClotheType): ClotheType {
   switch (type) {
     case PrismaClotheType.TOP:
-      return ClothesType.TOP;
+      return ClotheType.TOP;
     case PrismaClotheType.BOTTOM:
-      return ClothesType.BOTTOM;
+      return ClotheType.BOTTOM;
     case PrismaClotheType.HAT_CAP:
-      return ClothesType.HAT_CAP;
+      return ClotheType.HAT_CAP;
     case PrismaClotheType.SHOES:
-      return ClothesType.SHOES;
+      return ClotheType.SHOES;
   }
 }
 
@@ -166,17 +166,15 @@ export function convertEncounterStatusToPrisma(
   }
 }
 
-export function convertClothesTypeToPrisma(
-  type: ClothesType,
-): PrismaClotheType {
+export function convertClotheTypeToPrisma(type: ClotheType): PrismaClotheType {
   switch (type) {
-    case ClothesType.TOP:
+    case ClotheType.TOP:
       return PrismaClotheType.TOP;
-    case ClothesType.BOTTOM:
+    case ClotheType.BOTTOM:
       return PrismaClotheType.BOTTOM;
-    case ClothesType.HAT_CAP:
+    case ClotheType.HAT_CAP:
       return PrismaClotheType.HAT_CAP;
-    case ClothesType.SHOES:
+    case ClotheType.SHOES:
       return PrismaClotheType.SHOES;
   }
 }

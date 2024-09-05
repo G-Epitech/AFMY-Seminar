@@ -1,13 +1,13 @@
-export enum ClothesType {
+export enum ClotheType {
   HAT_CAP = "Hat/Cap",
   BOTTOM = "Bottom",
   TOP = "Top",
   SHOES = "Shoes",
 }
 
-export type Clothes = {
+export type Clothe = {
   id: number;
   legacyId: number | null;
-  type: ClothesType;
+  type: ClotheType;
   image: string;
 };
