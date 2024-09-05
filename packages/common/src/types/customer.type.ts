@@ -71,4 +71,5 @@ export type CustomersFilters = {
   gender?: Gender;
   createdBefore?: Date;
   createdAfter?: Date;
+  coachId?: IdOf<Employee>;
 };

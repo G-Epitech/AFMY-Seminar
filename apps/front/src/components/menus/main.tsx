@@ -60,6 +60,7 @@ export function MainMenu() {
                         <Link href="/customers">Customers</Link>
                         <Link href="/tips">Tips</Link>
                         <Link href="/events">Events</Link>
+                        <Link href="/compatibility">Compatibility</Link>
 
                         <div className="ml-auto">
                             <UserMenuDisplay user={user} />
@@ -82,6 +83,7 @@ export function MainMenu() {
                     <Link href="/customers">Customers</Link>
                     <Link href="/tips">Tips</Link>
                     <Link href="/events">Events</Link>
+                    <Link href="/compatibility">Compatibility</Link>
                 </div>
             )}
         </div>
