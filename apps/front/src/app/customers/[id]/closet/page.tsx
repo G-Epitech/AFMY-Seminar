@@ -1,16 +1,14 @@
 "use client";
 
-import { CustomerItems } from "@/components/customers/closet/items";
+import { CustomerClosetCombination } from "@/components/customers/closet/combination";
+import { CustomerClosetItems } from "@/components/customers/closet/items";
 import { Subtitle } from "@/components/text/subtitle";
 import { Clothe, ClotheType, Customer } from "@seminar/common";
 import { useEffect, useState } from "react";
 
 export default function ClosetPage() {
   const [customer, setCustomer] = useState<Customer | null>(null);
-  const [bottoms, setBottoms] = useState<Clothe[]>([]);
-  const [tops, setTops] = useState<Clothe[]>([]);
-  const [hatCaps, setHatCaps] = useState<Clothe[]>([]);
-  const [shoes, setShoes] = useState<Clothe[]>([]);
+  const [clothes, setClothes] = useState<Clothe[]>([]);
   const [selectedItemIds, setSelectedItemIds] = useState(
     temporaryClothes.reduce((acc, c) => {
       acc[c.type] = null;
@@ -27,38 +25,42 @@ export default function ClosetPage() {
       c.image = `https://picsum.photos/400/534?random=${c.id}`;
       return c;
     });
-    setBottoms(updatedUrlsClothes.filter(c => c.type === ClotheType.BOTTOM));
-    setTops(updatedUrlsClothes.filter(c => c.type === ClotheType.TOP));
-    setHatCaps(updatedUrlsClothes.filter(c => c.type === ClotheType.HAT_CAP));
-    setShoes(updatedUrlsClothes.filter(c => c.type === ClotheType.SHOES)); 
+    setClothes(updatedUrlsClothes);
   }, []);
+
   return (
-    <main className="">
+    <main>
       <Subtitle text={`${customer ? customer.surname : "Customer"} Closet`} />
       <div>
-        <CustomerItems
+        <CustomerClosetItems
           type={ClotheType.HAT_CAP}
-          items={hatCaps}
+          clothes={clothes.filter(c => c.type === ClotheType.HAT_CAP)}
           selectedItemId={selectedItemIds}
           setSelectedItemId={setSelectedItemIds}
         />
-        <CustomerItems
+        <CustomerClosetItems
           type={ClotheType.TOP}
-          items={tops}
+          clothes={clothes.filter(c => c.type === ClotheType.TOP)}
           selectedItemId={selectedItemIds}
           setSelectedItemId={setSelectedItemIds}
         />
-        <CustomerItems
+        <CustomerClosetItems
           type={ClotheType.BOTTOM}
-          items={bottoms}
+          clothes={clothes.filter(c => c.type === ClotheType.BOTTOM)}
           selectedItemId={selectedItemIds}
           setSelectedItemId={setSelectedItemIds}
         />
-        <CustomerItems
+        <CustomerClosetItems
           type={ClotheType.SHOES}
-          items={shoes}
+          clothes={clothes.filter(c => c.type === ClotheType.SHOES)}
           selectedItemId={selectedItemIds}
           setSelectedItemId={setSelectedItemIds}
+        />
+      </div>
+      <div className="flex w-full justify-center">
+        <CustomerClosetCombination
+          clothes={clothes}
+          selectedItemId={selectedItemIds}
         />
       </div>
     </main>
