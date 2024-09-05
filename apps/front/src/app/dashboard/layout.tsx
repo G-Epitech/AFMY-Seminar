@@ -1,6 +1,6 @@
 import { MainMenu } from "@/components/menus/main";
 
-const containerClassName = "container m-auto py-6";
+const containerClassName = "container m-auto py-6 px-2";
 
 export default function CustomersLayout({
   children,
