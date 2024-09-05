@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { Employee } from '@seminar/common';
 
 export interface IAuthState {
-    user?: string | null;
+    user?: Employee | null;
 }
 
 const initialState: IAuthState = {
