@@ -66,7 +66,7 @@ import {
   QueryGetCustomerEncountersDTO,
   QueryGetCustomerPaymentsDTO,
   QueryGetCustomersDTO,
-} from '@seminar/common/dist/dtos/customers';
+} from '@seminar/common';
 import {
   CreateCustomerCandidate,
   UpdateCustomerCandidate,
