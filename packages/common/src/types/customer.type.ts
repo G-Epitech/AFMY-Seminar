@@ -69,4 +69,6 @@ export type CustomersFilters = {
   age?: number;
   astrologicalSign?: AstrologicalSign;
   gender?: Gender;
+  createdBefore?: Date;
+  createdAfter?: Date;
 };
