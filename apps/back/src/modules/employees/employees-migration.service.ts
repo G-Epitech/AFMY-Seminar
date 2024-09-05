@@ -1,7 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PrismaService } from '../../providers/prisma/prisma.service';
+import { PrismaService } from '../../providers';
 import { LegacyApiService } from '../../providers/legacy-api/legacy-api.service';
-import { Gender, Permission, Employee as PrismaEmployee } from '@prisma/client';
+import {
+  Gender,
+  Permission,
+  Employee as PrismaEmployee,
+  PhotoFormat,
+} from '@prisma/client';
 import { legacyApiConvertGender } from '../../providers/legacy-api/legacy-api-convertors';
 import { EmployeesService } from './employees.service';
 import { convertEmployee } from '../../utils';
@@ -24,7 +29,10 @@ export class EmployeesMigrationService {
   @Inject(AuthEmployeeContext)
   private readonly _authEmployeeContext: AuthEmployeeContext;
 
-  private async getEmployeePhoto(token: string, employeeId: number) {
+  private async getEmployeePhoto(
+    token: string,
+    employeeId: number,
+  ): Promise<Buffer> {
     const photo = await this._legacyApiService.request(
       'GET /employees/{employee_id}/image',
       {
@@ -37,7 +45,7 @@ export class EmployeesMigrationService {
     return photo.data;
   }
 
-  private async getTokenOwner(token: string) {
+  private async getTokenOwner(token: string): Promise<EmployeeLegacyDto> {
     const response = await this._legacyApiService.request(
       'GET /employees/me',
       {},
@@ -81,6 +89,7 @@ export class EmployeesMigrationService {
         legacyEmployee.work === 'Coach' ? Permission.COACH : Permission.MANAGER,
       role: legacyEmployee.work,
       photo: photo?.toString('base64') || null,
+      photoFormat: PhotoFormat.PNG,
       phone: null,
       address: null,
     };

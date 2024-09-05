@@ -50,7 +50,10 @@ export class AuthService {
     return decrypted;
   }
 
-  private async legacyLogin(email: string, password: string) {
+  private async legacyLogin(
+    email: string,
+    password: string,
+  ): Promise<string | null> {
     try {
       const response = await this._legacyApiService.request(
         'POST /employees/login',
@@ -85,12 +88,8 @@ export class AuthService {
     let found =
       await this._employeesService.getEmployeeByEmailWithCredentials(email);
 
-    console.log('From local db', found);
-    console.log('Legacy token', legacyToken);
     if ((!found || !found.credentials) && legacyToken)
       found = await this.onFirstLogin(legacyToken, email, password);
-
-    console.log('From local db after first login', found);
 
     if (!found || !found.credentials) return null;
 
@@ -107,7 +106,9 @@ export class AuthService {
     return null;
   }
 
-  public async generateAccessToken(employee: EmployeeWithLegacyData) {
+  public async generateAccessToken(
+    employee: EmployeeWithLegacyData,
+  ): Promise<string> {
     const payload: TokenPayload = {
       sub: employee.id,
       tokenType: TokenType.ACCESS,

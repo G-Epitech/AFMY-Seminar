@@ -1,4 +1,4 @@
-import { Gender } from './customer.type';
+import { Gender, PhotoFormat } from "./customer.type";
 
 export enum Permission {
   MANAGER,
@@ -15,6 +15,7 @@ export type Employee = {
   gender: Gender;
   phone: string | null;
   photo: string | null;
+  photoFormat: PhotoFormat | null;
   address: string | null;
   permission: Permission;
   role: string;

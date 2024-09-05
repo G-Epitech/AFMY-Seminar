@@ -18,7 +18,7 @@ export class EmployeesService {
   @Inject(PrismaService)
   private readonly _prismaService: PrismaService;
 
-  async hashPassword(password: string) {
+  async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt();
     return await bcrypt.hash(password, salt);
   }
@@ -26,7 +26,7 @@ export class EmployeesService {
   private async preventDuplicatedFields(fields: {
     email: string;
     legacyId: number | null;
-  }) {
+  }): Promise<void> {
     const result = await this._prismaService.employee.findFirst({
       where: {
         OR: [{ email: fields.email }, { legacyId: fields.legacyId }],
@@ -60,6 +60,7 @@ export class EmployeesService {
         ...candidate,
         gender: convertGenderToPrisma(candidate.gender),
         permission: convertPermissionToPrisma(candidate.permission),
+        photoFormat: null,
         credentials: {
           create: {
             email: candidate.email,
@@ -71,7 +72,7 @@ export class EmployeesService {
     return convertEmployee(employee);
   }
 
-  async getEmployeeByEmail(email: string) {
+  async getEmployeeByEmail(email: string): Promise<Employee | null> {
     const employee = await this._prismaService.employee.findFirst({
       where: {
         email,

@@ -1,7 +1,7 @@
 import { LegacyApiGender } from '../../types/legacy-api/gender.type';
 import { Gender } from '@seminar/common';
 
-export function legacyApiConvertGender(gender: LegacyApiGender) {
+export function legacyApiConvertGender(gender: LegacyApiGender): Gender {
   switch (gender) {
     case 'Female':
       return Gender.FE;
