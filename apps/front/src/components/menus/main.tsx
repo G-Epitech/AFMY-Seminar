@@ -10,7 +10,7 @@ export function MainMenu() {
                     <i className="fa-solid fa-message-heart" style={{color: "#f97316"}} />
                 </div>
 
-                <Link href="/">Dashboard</Link>
+                <Link href="/dashboard">Dashboard</Link>
                 <Link href="/coaches">Coaches</Link>
                 <Link href="/customers">Customers</Link>
                 <Link href="/tips">Tips</Link>
