@@ -1,6 +1,6 @@
 import { AstrologicalSign, Customer, Gender, Page } from "../../types";
 import {
-  IsDateString,
+  IsDate,
   IsEmail,
   IsEnum,
   IsNotEmpty,
@@ -52,12 +52,12 @@ export class QueryGetCustomersDTO {
   @Type(() => Number)
   public age?: number;
 
-  @IsDateString()
+  @IsDate()
   @IsOptional()
   @Type(() => Date)
   public createdBefore?: Date;
 
-  @IsDateString()
+  @IsDate()
   @IsOptional()
   @Type(() => Date)
   public createdAfter?: Date;

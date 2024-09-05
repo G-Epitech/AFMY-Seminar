@@ -1,0 +1,19 @@
+[
+    {
+        "id": 1,
+        "email": "john.doe@example.com",
+        "name": "John",
+        "surname": "Doe",
+        "description": "Avid runner and fitness enthusiast.",
+        "birthDate": "1990-03-25T00:00:00.000Z",
+        "gender": "MA",
+        "sign": "ARIES",
+        "phone": "123-456-7890",
+        "photo": null,
+        "address": "123 Main St, Cityville",
+        "coachId": 1,
+        "createdAt": "2021-01-01T00:00:00.000Z",
+        "paymentMethods": ["CREDIT_CARD"],
+        "legacyId": null
+    }
+]
