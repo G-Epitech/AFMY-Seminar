@@ -133,7 +133,7 @@ export class CustomersController {
 
     return {
       index: page,
-      size,
+      size: items.length,
       isLast,
       items,
     };
@@ -279,7 +279,7 @@ export class CustomersController {
 
     return {
       index: page,
-      size,
+      size: items.length,
       isLast,
       items,
     };
@@ -374,7 +374,7 @@ export class CustomersController {
 
     return {
       index: page,
-      size,
+      size: items.length,
       isLast,
       items,
     };
@@ -563,7 +563,7 @@ export class CustomersController {
 
     return {
       index: page,
-      size,
+      size: items.length,
       isLast,
       items,
     };
