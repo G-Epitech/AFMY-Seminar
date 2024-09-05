@@ -78,6 +78,7 @@ import {
 import fetch from 'node-fetch';
 import { CustomersCompatibilityService } from './compatiblity.service';
 import { PermissionsService } from '../permissions/permissions.service';
+import { AuthEmployeeContext } from '../auth/auth.employee.context';
 
 @Controller('customers')
 export class CustomersController {
@@ -89,6 +90,9 @@ export class CustomersController {
 
   @Inject(PermissionsService)
   private readonly permissionsService: PermissionsService;
+
+  @Inject(AuthEmployeeContext)
+  private readonly authEmployeeContext: AuthEmployeeContext;
 
   constructor() {}
 
@@ -106,6 +110,9 @@ export class CustomersController {
     @Body() _: InGetCustomersDTO,
     @Query() { page, size, ...filters }: QueryGetCustomersDTO,
   ): Promise<OutGetCustomersDTO> {
+    if (!this.permissionsService.isManager())
+      filters.coachId = this.authEmployeeContext.employee.id;
+
     const customerCount =
       await this.customersService.getCustomersCount(filters);
 
@@ -135,7 +142,10 @@ export class CustomersController {
   ): Promise<OutGetCustomerDTO> {
     const customer = await this.customersService.getCustomerById(id);
 
-    if (customer === null) {
+    if (
+      customer === null ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -152,7 +162,10 @@ export class CustomersController {
   ): Promise<Response | string> {
     const customer = await this.customersService.getCustomerById(id);
 
-    if (customer === null) {
+    if (
+      customer === null ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -184,7 +197,10 @@ export class CustomersController {
       birthDate: birthDate ? new Date(birthDate) : undefined,
     };
 
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -225,7 +241,10 @@ export class CustomersController {
     @Param() { id }: ParamGetCustomerPaymentsDTO,
     @Query() { page, size }: QueryGetCustomerPaymentsDTO,
   ): Promise<OutGetCustomerPaymentsDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -253,7 +272,10 @@ export class CustomersController {
     @Param() { id }: ParamPostCreateCustomerPaymentDTO,
     @Body() body: InPostCreateCustomerPaymentDTO,
   ): Promise<OutPostCreateCustomerPaymentDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -276,7 +298,10 @@ export class CustomersController {
     @Param() { id, paymentId }: ParamPatchCustomerPaymentDTO,
     @Body() body: InPatchCustomerPaymentDTO,
   ): Promise<OutPatchCustomerPaymentDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -309,7 +334,10 @@ export class CustomersController {
     @Param() { id }: ParamGetCustomerEncountersDTO,
     @Query() { page, size }: QueryGetCustomerEncountersDTO,
   ): Promise<OutGetCustomerEncountersDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -339,7 +367,10 @@ export class CustomersController {
     @Param() { id, encounterId }: ParamPatchCustomerEncounterDTO,
     @Body() body: InPatchCustomerEncounterDTO,
   ): Promise<OutPatchCustomerEncounterDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -377,7 +408,10 @@ export class CustomersController {
     @Param() { id }: ParamPostCreateCustomerEncounterDTO,
     @Body() body: InPostCreateCustomerEncounterDTO,
   ): Promise<OutPostCreateCustomerEncounterDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -404,7 +438,10 @@ export class CustomersController {
     @Body() _: InDeleteCustomerDTO,
     @Param() { id }: ParamDeleteCustomerDTO,
   ): Promise<OutDeleteCustomerDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -419,7 +456,10 @@ export class CustomersController {
     @Body() _: InDeleteCustomerPaymentDTO,
     @Param() { id, paymentId }: ParamDeleteCustomerPaymentDTO,
   ): Promise<OutDeleteCustomerPaymentDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -444,7 +484,10 @@ export class CustomersController {
     @Body() _: InDeleteCustomerEncounterDTO,
     @Param() { id, encounterId }: ParamDeleteCustomerEncounterDTO,
   ): Promise<OutDeleteCustomerEncounterDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -471,7 +514,10 @@ export class CustomersController {
     @Param() { id }: ParamGetCustomerDTO,
     @Query() { page, size }: QueryGetCustomerClothesDTO,
   ): Promise<OutGetCustomerClothesDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -503,7 +549,10 @@ export class CustomersController {
     @Param() { id }: ParamPostCreateCustomerClotheDTO,
     @Body() body: InPostCreateCustomerClotheDTO,
   ): Promise<OutPostCreateCustomerClotheDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -521,7 +570,10 @@ export class CustomersController {
     @Body() _: InDeleteCustomerClotheDTO,
     @Param() { id, clotheId }: ParamDeleteCustomerClotheDTO,
   ): Promise<OutDeleteCustomerClotheDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -543,7 +595,10 @@ export class CustomersController {
     @Param() { id, clotheId }: ParamPatchCustomerClotheDTO,
     @Body() body: InPatchCustomerClotheDTO,
   ): Promise<OutPatchCustomerClotheDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
