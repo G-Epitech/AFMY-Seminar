@@ -2,11 +2,20 @@ import { Customer } from "@seminar/common";
 import { AutoComplete } from "../ui/autocomplete";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-export function CompatibilitySelectUser({customer, setCustomer, customers, isCustomerLoading}: {
+export function CompatibilitySelectUser({
+    customer,
+    setCustomer,
+    customers,
+    isCustomerLoading,
+    input,
+    setInput,
+}: {
     customer: Customer | null;
     setCustomer: (c: Customer | null) => void;
     customers: Customer[];
     isCustomerLoading: boolean;
+    input: string;
+    setInput: (value: string) => void;
 }) {
     return (
         <div className="w-72 flex flex-col gap-2">
@@ -47,6 +56,8 @@ export function CompatibilitySelectUser({customer, setCustomer, customers, isCus
                           }
                         : undefined
                 }
+                inputValue={input}
+                setInputValue={setInput}
             />
         </div>
     );

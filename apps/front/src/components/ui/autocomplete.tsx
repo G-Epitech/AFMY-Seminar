@@ -20,6 +20,8 @@ type AutoCompleteProps = {
     isLoading?: boolean;
     disabled?: boolean;
     placeholder?: string;
+    inputValue: string;
+    setInputValue: (value: string) => void;
 };
 
 export const AutoComplete = ({
@@ -30,12 +32,13 @@ export const AutoComplete = ({
     onValueChange,
     disabled,
     isLoading = false,
+    inputValue = "",
+    setInputValue,
 }: AutoCompleteProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const [isOpen, setOpen] = useState(false);
     const [selected, setSelected] = useState<Option>(value as Option);
-    const [inputValue, setInputValue] = useState<string>(value?.label || "");
 
     const handleKeyDown = useCallback(
         (event: KeyboardEvent<HTMLDivElement>) => {
