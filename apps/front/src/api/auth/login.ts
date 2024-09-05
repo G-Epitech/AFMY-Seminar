@@ -1,5 +1,11 @@
+import { InPostAuthLogInDto, OutPostAuthLogInDto } from "@seminar/common";
 import { call } from "../call";
 
-export function login(body: { username: string; password: string }) {
-    return call("POST", "/auth/login", body, false);
+export function login(body: InPostAuthLogInDto) {
+    return call<InPostAuthLogInDto, OutPostAuthLogInDto>(
+        "POST",
+        "/auth/login",
+        body,
+        false
+    );
 }

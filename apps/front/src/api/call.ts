@@ -1,4 +1,5 @@
 import { credentials } from "@/auth/credentials";
+import { config } from "@/lib/config";
 
 interface Response<R> {
     ok: boolean;
@@ -14,14 +15,14 @@ export const call = async function <T, R>(
     body?: T,
     auth = true
 ): Promise<Response<R> | null> {
-    if (!process.env.API_URL)
-        throw new Error("API_URL is not defined in env file");
+    if (!config.api.url)
+        throw new Error("API_URL is not defined in config file");
 
     const tokens = credentials.get();
     if (auth && !tokens.access) return null;
 
     try {
-        const response = await fetch(`${process.env.API_URL}${endpoint}`, {
+        const response = await fetch(`${config.api.url}${endpoint}`, {
             method,
             cache: "no-cache",
             headers: {
