@@ -4,7 +4,7 @@ import { AstrologicalSign, Customer, Gender, Page, PaymentMethod } from '@semina
 import CustomersTable from '@/components/customers/table';
 import { Subtitle } from '@/components/text/subtitle';
 
-export default function Customers() {
+export default function CustomersPage() {
   const [customersPage, setCustomersPage] = useState<Page<Customer>>({
     index: 0,
     size: 15,
