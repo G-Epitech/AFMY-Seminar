@@ -1,11 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../providers/prisma/prisma.service';
 import { LegacyApiService } from '../../providers/legacy-api/legacy-api.service';
-import { Gender, Permission } from '@prisma/client';
+import { Gender, Permission, Employee as PrismaEmployee } from '@prisma/client';
 import { legacyApiConvertGender } from '../../providers/legacy-api/legacy-api-convertors';
 import { EmployeesService } from './employees.service';
 import { convertEmployee } from '../../utils';
 import { EmployeeWithCredentials } from '../../types/employees';
+import { EmployeeLegacyDto } from '../../types/legacy-api/dtos';
+import { Employee } from '@seminar/common';
+import { AuthEmployeeContext } from '../auth/auth.employee.context';
 
 @Injectable()
 export class EmployeesMigrationService {
@@ -17,6 +20,9 @@ export class EmployeesMigrationService {
 
   @Inject(EmployeesService)
   private readonly _employeesService: EmployeesService;
+
+  @Inject(AuthEmployeeContext)
+  private readonly _authEmployeeContext: AuthEmployeeContext;
 
   private async getEmployeePhoto(token: string, employeeId: number) {
     const photo = await this._legacyApiService.request(
@@ -31,50 +37,132 @@ export class EmployeesMigrationService {
     return photo.data;
   }
 
-  private async getMe(token: string) {
-    const requests = await this._legacyApiService.request(
+  private async getTokenOwner(token: string) {
+    const response = await this._legacyApiService.request(
       'GET /employees/me',
       {},
       token,
     );
-    return requests.data;
+    return response.data;
   }
 
-  async importEmployee(
+  private async getLegacyEmployeeById(
+    token: string,
+    id: number,
+  ): Promise<EmployeeLegacyDto | null> {
+    try {
+      const requests = await this._legacyApiService.request(
+        'GET /employees/{employee_id}',
+        {
+          parameters: {
+            employee_id: id,
+          },
+        },
+        token,
+      );
+      return requests.data;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  private formatEmployeeData(
+    legacyEmployee: EmployeeLegacyDto,
+    photo?: Buffer,
+  ): Omit<PrismaEmployee, 'id'> {
+    return {
+      email: legacyEmployee.email,
+      legacyId: legacyEmployee.id,
+      name: legacyEmployee.name,
+      surname: legacyEmployee.surname,
+      birthDate: new Date(legacyEmployee.birth_date),
+      gender: legacyApiConvertGender(legacyEmployee.gender) as Gender,
+      permission:
+        legacyEmployee.work === 'Coach' ? Permission.COACH : Permission.MANAGER,
+      role: legacyEmployee.work,
+      photo: photo?.toString('base64') || null,
+      phone: null,
+      address: null,
+    };
+  }
+
+  async importEmployeeWithCredentials(
     token: string,
     email: string,
     password: string,
   ): Promise<EmployeeWithCredentials | null> {
     try {
-      const me = await this.getMe(token);
-      const photo = await this.getEmployeePhoto(token, me.id);
-
-      const employee = await this._prismaService.employee.create({
-        data: {
-          email,
-          legacyId: me.id,
-          name: me.name,
-          surname: me.surname,
-          birthDate: new Date(me.birth_date),
-          gender: legacyApiConvertGender(me.gender) as Gender,
-          permission:
-            me.work === 'Coach' ? Permission.COACH : Permission.MANAGER,
-          role: me.work,
-          credentials: {
-            create: {
-              email,
-              password: await this._employeesService.hashPassword(password),
-            },
+      const legacyEmployee = await this.getTokenOwner(token);
+      const photo = await this.getEmployeePhoto(token, legacyEmployee.id);
+      const employeeData = {
+        ...this.formatEmployeeData(legacyEmployee, photo),
+        credentials: {
+          create: {
+            email,
+            password: await this._employeesService.hashPassword(password),
           },
-          photo: photo.toString('base64'),
+        },
+      };
+      const res = await this._prismaService.employee.upsert({
+        where: {
+          legacyId: legacyEmployee.id,
+        },
+        update: {
+          email,
+          credentials: employeeData.credentials,
+        },
+        create: employeeData,
+        include: {
+          credentials: true,
         },
       });
-
-      // TODO: Call customers migration service
-
-      return convertEmployee(employee);
+      const { credentials, ...employee } = res;
+      return {
+        ...convertEmployee(employee),
+        credentials: credentials?.at(0),
+      };
     } catch (error) {
       return null;
     }
+  }
+
+  async importEmployeeIfNotExists(
+    token: string,
+    legacyId: number,
+  ): Promise<PrismaEmployee | null> {
+    let employee = await this._prismaService.employee.findUnique({
+      where: {
+        legacyId,
+      },
+    });
+    const legacyEmployee = !employee
+      ? await this.getLegacyEmployeeById(token, legacyId)
+      : null;
+
+    if (legacyEmployee) {
+      const photo = await this.getEmployeePhoto(token, legacyEmployee.id);
+      const employeeData = this.formatEmployeeData(legacyEmployee, photo);
+      employee = await this._prismaService.employee.create({
+        data: employeeData,
+      });
+    }
+    return employee;
+  }
+
+  async getEmployeeById(id: number): Promise<Employee | null> {
+    let employee: PrismaEmployee | null =
+      await this._prismaService.employee.findUnique({
+        where: {
+          id,
+        },
+      });
+
+    if (!employee && this._authEmployeeContext.employee.legacyToken) {
+      employee = await this.importEmployeeIfNotExists(
+        this._authEmployeeContext.employee.legacyToken,
+        id,
+      );
+    }
+    return employee ? convertEmployee(employee) : null;
   }
 }
