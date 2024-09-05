@@ -12,23 +12,34 @@ export default function LoginPage() {
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const handleLogin = async () => {
-        const response = await api.auth.login({email, password});
+        setError("");
+        const response = await api.auth.login({ email, password });
 
-        if (!response || !response.ok) return;
+        if (!response || !response.ok) {
+            setError("Invalid email or password");
+            return;
+        }
 
         await credentials.save(response.data.tokens);
         router.push("/dashboard");
-    }
+    };
 
     return (
         <main className="relative h-screen flex items-center justify-center">
             <div className="md:w-[500px] w-[300px]">
                 <Title text="Agence Dashboard" />
-                <h3 className="text-lg font-semibold text-slate-500">
-                    Connection to your account
-                </h3>
+                {!error ? (
+                    <h3 className="text-lg font-semibold text-slate-500">
+                        Connection to your account
+                    </h3>
+                ) : (
+                    <h3 className="text-lg font-semibold text-red-600">
+                        {error}
+                    </h3>
+                )}
 
                 <div className="mt-3 flex flex-col gap-2">
                     <Input
