@@ -462,7 +462,8 @@ export class CustomersController {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
-    const clothesCount = await this.customersService.getCustomerClotheCount(id);
+    const clothesCount =
+      await this.customersService.getCustomerClothesCount(id);
 
     const isLast = clothesCount < page * size + size;
     const startIndex = isLast ? Math.max(0, clothesCount - size) : page * size;
