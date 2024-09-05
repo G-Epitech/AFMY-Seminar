@@ -10,28 +10,28 @@ import {
 
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 
-const chartConfig = {
-    visitors: {
-        label: "Overall",
-    },
-    safari: {
-        label: "Safari",
-        color: "hsl(var(--primary))",
-    },
-} satisfies ChartConfig;
-
-export function OverallChart({ score }: { score: number }) {
+export function RoundChart({ score, title }: { score: number, title: string }) {
     const chartData = [{ score, fill: "var(--color-safari)" }];
+
+    const chartConfig = {
+        score: {
+            label: title,
+        },
+        safari: {
+            label: "Safari",
+            color: "hsl(var(--primary))",
+        },
+    } satisfies ChartConfig;
 
     return (
         <ChartContainer
             config={chartConfig}
-            className="mx-auto aspect-square max-h-[250px]"
+            className="mx-auto aspect-square min-h-[250px] min-w-[250px]"
         >
             <RadialBarChart
                 data={chartData}
                 startAngle={0}
-                endAngle={250}
+                endAngle={score * 360 / 100}
                 innerRadius={80}
                 outerRadius={110}
             >
@@ -42,7 +42,7 @@ export function OverallChart({ score }: { score: number }) {
                     className="first:fill-muted last:fill-background"
                     polarRadius={[86, 74]}
                 />
-                <RadialBar dataKey="visitors" background cornerRadius={10} />
+                <RadialBar dataKey="score" background cornerRadius={10} />
                 <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
                     <Label
                         content={({ viewBox }) => {
@@ -59,14 +59,14 @@ export function OverallChart({ score }: { score: number }) {
                                             y={viewBox.cy}
                                             className="fill-foreground text-4xl font-bold"
                                         >
-                                            {chartData[0].score.toString()}
+                                            {chartData[0].score.toLocaleString()}
                                         </tspan>
                                         <tspan
                                             x={viewBox.cx}
                                             y={(viewBox.cy || 0) + 24}
                                             className="fill-muted-foreground"
                                         >
-                                            Visitors
+                                            {title}
                                         </tspan>
                                     </text>
                                 );

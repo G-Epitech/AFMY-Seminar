@@ -6,7 +6,8 @@ import { Subtitle } from "@/components/text/subtitle";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Compatibility, Customer } from "@seminar/common";
 import { useEffect, useState } from "react";
-import { OverallChart } from "./overall";
+import { RoundChart } from "./round";
+import { Radar } from "./radar";
 
 export default function CompatibilityPage() {
     const [customerA, setCustomerA] = useState<Customer | null>(null);
@@ -61,6 +62,9 @@ export default function CompatibilityPage() {
             return;
         }
 
+        setIsCustomerLoading(true);
+        fetchCustomers();
+
         fetchCompatibility();
     }, [customerA, customerB]);
 
@@ -94,11 +98,33 @@ export default function CompatibilityPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    {compatibility && (
-                        <>
-                            <OverallChart score={compatibility.Overall} />
-                        </>
-                    )}
+                    <div className="flex">
+                        <RoundChart
+                            score={compatibility?.score || 0}
+                            title="Global score"
+                        />
+                        <Radar
+                            data={[
+                                {
+                                    label: "Communication",
+                                    score: compatibility?.Communication || 0,
+                                },
+                                {
+                                    label: "Sex",
+                                    score: compatibility?.Sex || 0,
+                                },
+                                {
+                                    label: "Overall",
+                                    score: compatibility?.Overall || 0,
+                                },
+                                {
+                                    label: "Mariage",
+                                    score:
+                                        compatibility?.["Love & Mariage"] || 0,
+                                },
+                            ]}
+                        />
+                    </div>
                 </CardContent>
             </Card>
         </main>
