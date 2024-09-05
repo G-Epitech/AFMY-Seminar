@@ -62,6 +62,10 @@ export class InPostCreateCustomerDTO {
   @IsInt()
   @IsOptional()
   public coachId?: IdOf<Employee>;
+
+  @IsString()
+  @IsOptional()
+  public country?: string;
 }
 
 export type OutPostCreateCustomerDTO = Customer;

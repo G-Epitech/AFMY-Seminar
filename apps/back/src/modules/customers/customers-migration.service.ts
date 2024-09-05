@@ -129,6 +129,7 @@ export class CustomersMigrationService extends CustomersService {
             photoFormat: convertPhotoFormatToPrisma(customer.photoFormat),
             address: customer.address,
             phone: customer.phone_number,
+            country: 'France',
           })),
       });
     } catch (error) {

@@ -149,6 +149,7 @@ export class CustomersService {
           photoFormat: customer.photoFormat
             ? convertPhotoFormat(customer.photoFormat)
             : null,
+          country: customer.country,
         };
       });
   }
@@ -185,7 +186,7 @@ export class CustomersService {
           return undefined;
         }
       })
-      .then((customer?: PrismaCustomer) => {
+      .then((customer?: PrismaCustomer): Customer | undefined => {
         if (!customer) return undefined;
 
         return {
