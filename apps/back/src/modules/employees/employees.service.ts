@@ -13,6 +13,7 @@ import {
   convertPermissionToPrisma,
 } from '../../utils';
 import { AuthEmployeeContext } from '../auth/auth.employee.context';
+import { InternalServerError } from '../../classes/responses';
 
 @Injectable()
 export class EmployeesService {
@@ -25,6 +26,20 @@ export class EmployeesService {
   async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt();
     return await bcrypt.hash(password, salt);
+  }
+
+  public async getMe(): Promise<Employee> {
+    const employee = await this._prismaService.employee.findUnique({
+      where: {
+        id: this._authEmployeeContext.employee.id,
+      },
+    });
+    if (!employee) {
+      throw new InternalServerError({
+        message: 'Employee not found',
+      });
+    }
+    return convertEmployee(employee);
   }
 
   private async preventDuplicatedFields(fields: {

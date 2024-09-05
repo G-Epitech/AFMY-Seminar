@@ -131,7 +131,6 @@ export class AuthService {
       return false;
     }
 
-    console.log('employee', employee);
     this._authEmployeeContext.employee = {
       ...employee,
       legacyToken: payload.legacyToken
