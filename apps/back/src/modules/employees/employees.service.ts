@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PrismaService } from '../../providers/prisma/prisma.service';
+import { PrismaService } from '../../providers';
 import {
   CreateEmployeeCandidate,
   EmployeeWithCredentials,
@@ -12,11 +12,15 @@ import {
   convertGenderToPrisma,
   convertPermissionToPrisma,
 } from '../../utils';
+import { AuthEmployeeContext } from '../auth/auth.employee.context';
 
 @Injectable()
 export class EmployeesService {
   @Inject(PrismaService)
-  private readonly _prismaService: PrismaService;
+  protected readonly _prismaService: PrismaService;
+
+  @Inject(AuthEmployeeContext)
+  protected readonly _authEmployeeContext: AuthEmployeeContext;
 
   async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt();
@@ -76,9 +80,6 @@ export class EmployeesService {
     const employee = await this._prismaService.employee.findFirst({
       where: {
         email,
-      },
-      include: {
-        credentials: true,
       },
     });
 

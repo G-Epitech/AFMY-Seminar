@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PrismaService } from '../../providers';
 import { LegacyApiService } from '../../providers/legacy-api/legacy-api.service';
 import {
   Gender,
@@ -13,21 +12,15 @@ import { convertEmployee } from '../../utils';
 import { EmployeeWithCredentials } from '../../types/employees';
 import { EmployeeLegacyDto } from '../../types/legacy-api/dtos';
 import { Employee } from '@seminar/common';
-import { AuthEmployeeContext } from '../auth/auth.employee.context';
 
 @Injectable()
-export class EmployeesMigrationService {
-  @Inject(PrismaService)
-  private readonly _prismaService: PrismaService;
-
+export class EmployeesMigrationService extends EmployeesService {
   @Inject(LegacyApiService)
   private readonly _legacyApiService: LegacyApiService;
 
-  @Inject(EmployeesService)
-  private readonly _employeesService: EmployeesService;
-
-  @Inject(AuthEmployeeContext)
-  private readonly _authEmployeeContext: AuthEmployeeContext;
+  constructor() {
+    super();
+  }
 
   private async getEmployeePhoto(
     token: string,
@@ -108,7 +101,7 @@ export class EmployeesMigrationService {
         credentials: {
           create: {
             email,
-            password: await this._employeesService.hashPassword(password),
+            password: await this.hashPassword(password),
           },
         },
       };
@@ -138,7 +131,7 @@ export class EmployeesMigrationService {
   async importEmployeeIfNotExists(
     token: string,
     legacyId: number,
-  ): Promise<PrismaEmployee | null> {
+  ): Promise<Employee | null> {
     let employee = await this._prismaService.employee.findUnique({
       where: {
         legacyId,
@@ -155,16 +148,11 @@ export class EmployeesMigrationService {
         data: employeeData,
       });
     }
-    return employee;
+    return employee ? convertEmployee(employee) : null;
   }
 
   async getEmployeeById(id: number): Promise<Employee | null> {
-    let employee: PrismaEmployee | null =
-      await this._prismaService.employee.findUnique({
-        where: {
-          id,
-        },
-      });
+    let employee: Employee | null = await super.getEmployeeById(id);
 
     if (!employee && this._authEmployeeContext.employee.legacyToken) {
       employee = await this.importEmployeeIfNotExists(
@@ -172,6 +160,6 @@ export class EmployeesMigrationService {
         id,
       );
     }
-    return employee ? convertEmployee(employee) : null;
+    return employee;
   }
 }
