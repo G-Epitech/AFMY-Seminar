@@ -1,4 +1,6 @@
-type UnknownUser = string | null | undefined;
+import { Employee } from "@seminar/common";
+
+type UnknownUser = Employee | null | undefined;
 
 export function authLoading(user: UnknownUser)
 {

@@ -1,17 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { Avatar, AvatarFallback } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useEffect, useState } from "react";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
+import { useAppSelector } from "@/store";
+import { Employee } from "@seminar/common";
+import { authError, authLoading } from "@/store/utils";
+import { config } from "@/lib/config";
 
 export function MainMenu() {
-    const [width, setWidth] = useState(window.innerWidth);
+    const user = useAppSelector<Employee | null | undefined>(
+        (state) => state.auth.user
+    );
+
+    const [width, setWidth] = useState(0);
     const [menuDeployed, setMenuDeployed] = useState(false);
+
     const breakpoint = 700;
+    const handleResizeWindow = () => setWidth(window.innerWidth);
 
     useEffect(() => {
-        const handleResizeWindow = () => setWidth(window.innerWidth);
+        handleResizeWindow();
+    }, []);
+
+    useEffect(() => {
         window.addEventListener("resize", handleResizeWindow);
         return () => {
             window.removeEventListener("resize", handleResizeWindow);
@@ -37,11 +50,19 @@ export function MainMenu() {
                         <Link href="/tips">Tips</Link>
                         <Link href="/events">Events</Link>
 
-                        <Avatar className="ml-auto h-7 w-7">
-                            <AvatarFallback className="text-xs">
-                                JD
-                            </AvatarFallback>
-                        </Avatar>
+                        {!authError(user) && (
+                            <Avatar className="h-7 w-7 ml-auto">
+                                <AvatarImage
+                                    src={user?.photo || ""}
+                                    alt="avatar"
+                                />
+                                <AvatarFallback className="text-xs">
+                                    {authLoading(user)
+                                        ? "..."
+                                        : `${user?.name[0]}${user?.surname[0]}`}
+                                </AvatarFallback>
+                            </Avatar>
+                        )}
                     </>
                 ) : (
                     <div className="ml-auto flex gap-2 items-center">
@@ -49,11 +70,19 @@ export function MainMenu() {
                             className="size-5"
                             onClick={() => setMenuDeployed(!menuDeployed)}
                         />
-                        <Avatar className="h-7 w-7">
-                            <AvatarFallback className="text-xs">
-                                JD
-                            </AvatarFallback>
-                        </Avatar>
+                        {!authError(user) && (
+                            <Avatar className="h-7 w-7">
+                                <AvatarImage
+                                    src={user?.photo || ""}
+                                    alt="avatar"
+                                />
+                                <AvatarFallback className="text-xs">
+                                    {authLoading(user)
+                                        ? "..."
+                                        : `${user?.name[0]}${user?.surname[0]}`}
+                                </AvatarFallback>
+                            </Avatar>
+                        )}
                     </div>
                 )}
             </div>

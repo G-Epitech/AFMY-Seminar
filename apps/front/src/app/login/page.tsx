@@ -30,6 +30,7 @@ export default function LoginPage() {
             return;
         }
 
+        await credentials.save(response.data.tokens);
         const userResponse = await api.employees.me();
 
         if (!userResponse) {
@@ -39,7 +40,6 @@ export default function LoginPage() {
         }
 
         dispatch(setUser(userResponse.data));
-        await credentials.save(response.data.tokens);
 
         toast({
             variant: "default",
