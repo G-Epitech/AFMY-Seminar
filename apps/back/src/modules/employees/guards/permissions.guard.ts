@@ -17,7 +17,7 @@ export class PermissionsGuard implements CanActivate {
   @Inject(AuthEmployeeContext)
   private readonly _authEmployeeContext: AuthEmployeeContext;
 
-  canActivate(ctx: ExecutionContext) {
+  canActivate(ctx: ExecutionContext): boolean {
     const employee = this._authEmployeeContext.employee;
 
     const permissions =

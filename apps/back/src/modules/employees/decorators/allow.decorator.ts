@@ -3,7 +3,9 @@ import { PermissionsGuard } from '../guards/permissions.guard';
 import { Permission } from '@seminar/common';
 
 export const ALLOW_DECORATOR_KEY = 'allow-decorator';
-export const Allow = (...permissions: Permission[]) => {
+export const Allow = (
+  ...permissions: Permission[]
+): ReturnType<typeof applyDecorators> => {
   return applyDecorators(
     SetMetadata(ALLOW_DECORATOR_KEY, permissions),
     UseGuards(PermissionsGuard),

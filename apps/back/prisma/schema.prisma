@@ -34,6 +34,12 @@ enum AstrologicalSign {
   PISCES
 }
 
+enum PhotoFormat {
+  JPEG
+  PNG
+  GIF
+}
+
 model Customer {
   id          Int              @id @default(autoincrement())
   email       String           @unique
@@ -46,28 +52,29 @@ model Customer {
   sign        AstrologicalSign
   phone       String?
   photo       String?
+  photoFormat PhotoFormat?
   address     String?
-  coach       Employee         @relation(fields: [coachId], references: [id])
-  coachId     Int
+  coach       Employee?        @relation(fields: [coachId], references: [id])
+  coachId     Int?
   events      Event[]          @relation("EventAttendees")
   encounters  Encounter[]
-  payements   Payement[]
+  payements   Payment[]
   clothes     Clothe[]         @relation("ClotheOwner")
   createdAt   DateTime         @default(now())
 }
 
-enum PayementMethod {
+enum PaymentMethod {
   CARD
   BANK_TRANSFER
   PAYPAL
 }
 
-model Payement {
+model Payment {
   id         Int               @id @default(autoincrement())
   legacyId   Int?              @unique
   date       DateTime
   amount     Float
-  method     PayementMethod
+  method     PaymentMethod
   comment    String?
   customer   Customer          @relation(fields: [customerId], references: [id])
   customerId Int
@@ -88,6 +95,7 @@ model Employee {
   gender      Gender
   phone       String?
   photo       String?
+  photoFormat PhotoFormat?
   address     String?
   permission  Permission
   role        String

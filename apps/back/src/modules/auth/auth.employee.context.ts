@@ -3,17 +3,17 @@ import {
   InternalServerErrorException,
   Scope,
 } from '@nestjs/common';
-import { Employee } from '@seminar/common';
+import { EmployeeWithLegacyData } from '../../types/employees';
 
 @Injectable({ scope: Scope.REQUEST })
 export class AuthEmployeeContext {
-  private _employee: Employee | undefined = undefined;
+  private _employee: EmployeeWithLegacyData | undefined = undefined;
 
-  public set employee(employee: Employee | undefined) {
+  public set employee(employee: EmployeeWithLegacyData | undefined) {
     this._employee = employee;
   }
 
-  public get employee(): Employee {
+  public get employee(): EmployeeWithLegacyData {
     if (!this._employee) {
       throw new InternalServerErrorException('Employee not authenticated');
     }

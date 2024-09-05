@@ -2,9 +2,9 @@ import { IdOf } from "../utils";
 import { Employee } from "./employee.type";
 
 export enum Gender {
-  MA = "Male",
-  FE = "Female",
-  OT = "Other",
+  MA = "MA",
+  FE = "FE",
+  OT = "OT",
 }
 
 export enum AstrologicalSign {
@@ -22,6 +22,12 @@ export enum AstrologicalSign {
   PISCES = "Pisces",
 }
 
+export enum PhotoFormat {
+  JPEG = "jpeg",
+  PNG = "png",
+  GIF = "gif",
+}
+
 export type Customer = {
   id: number;
   legacyId: number | null;
@@ -34,8 +40,9 @@ export type Customer = {
   sign: AstrologicalSign;
   phone: string | null;
   photo: string | null;
+  photoFormat: PhotoFormat | null;
   address: string | null;
-  coachId: IdOf<Employee>;
+  coachId: IdOf<Employee> | null;
   createdAt: Date;
   paymentMethods?: PaymentMethod[];
 };
