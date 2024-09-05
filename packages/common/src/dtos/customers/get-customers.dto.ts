@@ -23,13 +23,13 @@ export class QueryGetCustomersDTO {
   public size: number = 10;
 
   @IsString()
-  @IsOptional()
   @IsNotEmpty()
-  public name: string = "";
+  @IsOptional()
+  public name?: string;
 
   @IsEmail()
   @IsOptional()
-  public email: string = "";
+  public email?: string;
 
   @IsEnum(Gender)
   @IsOptional()
