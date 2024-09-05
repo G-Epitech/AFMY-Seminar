@@ -31,6 +31,17 @@ export function MainMenu() {
         };
     }, []);
 
+    const AvatarDisplay = () => (
+        <>
+            <AvatarImage src={user?.photo || ""} alt="avatar" />
+            <AvatarFallback className="text-xs">
+                {authLoading(user)
+                    ? "..."
+                    : `${user?.name[0]}${user?.surname[0]}`}
+            </AvatarFallback>
+        </>
+    );
+
     return (
         <div className="border-b py-3">
             <div className="container m-auto flex gap-5 text-sm items-center px-2">
@@ -52,15 +63,7 @@ export function MainMenu() {
 
                         {!authError(user) && (
                             <Avatar className="h-7 w-7 ml-auto">
-                                <AvatarImage
-                                    src={user?.photo || ""}
-                                    alt="avatar"
-                                />
-                                <AvatarFallback className="text-xs">
-                                    {authLoading(user)
-                                        ? "..."
-                                        : `${user?.name[0]}${user?.surname[0]}`}
-                                </AvatarFallback>
+                                <AvatarDisplay />
                             </Avatar>
                         )}
                     </>
@@ -72,15 +75,7 @@ export function MainMenu() {
                         />
                         {!authError(user) && (
                             <Avatar className="h-7 w-7">
-                                <AvatarImage
-                                    src={user?.photo || ""}
-                                    alt="avatar"
-                                />
-                                <AvatarFallback className="text-xs">
-                                    {authLoading(user)
-                                        ? "..."
-                                        : `${user?.name[0]}${user?.surname[0]}`}
-                                </AvatarFallback>
+                                <AvatarDisplay />
                             </Avatar>
                         )}
                     </div>
