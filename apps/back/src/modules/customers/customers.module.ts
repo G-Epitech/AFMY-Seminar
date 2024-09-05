@@ -8,7 +8,7 @@ import { PermissionsModule } from '../permissions/permissions.module';
 
 @Module({
   imports: [PrismaModule, AuthModule, PermissionsModule],
-  controllers: [CustomersController, CustomersCompatibilityService],
-  providers: [CustomersService],
+  controllers: [CustomersController],
+  providers: [CustomersService, CustomersCompatibilityService],
 })
 export class CustomersModule {}
