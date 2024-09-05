@@ -17,10 +17,6 @@ export default function ClosetPage() {
   );
 
   useEffect(() => {
-    console.log(selectedItemIds);
-  }, [selectedItemIds]);
-
-  useEffect(() => {
     const updatedUrlsClothes = temporaryClothes.map(c => {
       c.image = `https://picsum.photos/400/534?random=${c.id}`;
       return c;
