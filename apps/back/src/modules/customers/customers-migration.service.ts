@@ -1,7 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CustomersService } from './customers.service';
 import { LegacyApiService } from '../../providers/legacy-api/legacy-api.service';
-import { AstrologicalSign, Customer, IdOf, PhotoFormat } from '@seminar/common';
+import {
+  AstrologicalSign,
+  Customer,
+  CustomersFilters,
+  IdOf,
+  PhotoFormat,
+} from '@seminar/common';
 import { CustomerLegacyDto } from '../../types/legacy-api/dtos';
 import {
   convertAstrologicalSignToPrisma,
@@ -121,8 +127,8 @@ export class CustomersMigrationService extends CustomersService {
     }
   }
 
-  public async getCustomersCount(): Promise<number> {
+  public async getCustomersCount(filters?: CustomersFilters): Promise<number> {
     await this.syncCustomers();
-    return super.getCustomersCount();
+    return super.getCustomersCount(filters);
   }
 }

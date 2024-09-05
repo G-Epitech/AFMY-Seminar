@@ -62,3 +62,11 @@ export type Payment = {
   comment: string | null;
   customerId: IdOf<Customer>;
 };
+
+export type CustomersFilters = {
+  name?: string;
+  email?: string;
+  age?: number;
+  astrologicalSign?: AstrologicalSign;
+  gender?: Gender;
+};

@@ -97,18 +97,24 @@ export class CustomersController {
    * @param _ The body is ignored since GET requests don't have a body
    * @param page The page number
    * @param size The number of items per page (default 10)
+   * @param filters Filters to apply to the query
    * @returns A page of customers
    */
   @Get()
   async getCustomers(
     @Body() _: InGetCustomersDTO,
-    @Query() { page, size }: QueryGetCustomersDTO,
+    @Query() { page, size, ...filters }: QueryGetCustomersDTO,
   ): Promise<OutGetCustomersDTO> {
-    const customerCount = await this.customersService.getCustomersCount();
+    const customerCount =
+      await this.customersService.getCustomersCount(filters);
 
     const isLast = customerCount < page * size + size;
     const startIndex = isLast ? Math.max(0, customerCount - size) : page * size;
-    const items = await this.customersService.getCustomers(size, startIndex);
+    const items = await this.customersService.getCustomers(
+      filters,
+      size,
+      startIndex,
+    );
 
     return {
       index: page,

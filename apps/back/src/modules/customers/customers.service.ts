@@ -3,6 +3,7 @@ import { PrismaService } from '../../providers';
 import {
   Clothe,
   Customer,
+  CustomersFilters,
   Employee,
   Encounter,
   IdOf,
@@ -50,13 +51,62 @@ export class CustomersService {
   @Inject(AuthEmployeeContext)
   protected readonly _authEmployeeContext: AuthEmployeeContext;
 
-  async getCustomersCount(): Promise<number> {
-    return this._prismaService.customer.count();
+  async getCustomersCount(filters?: CustomersFilters): Promise<number> {
+    return this._prismaService.customer.count({
+      where: {
+        birthDate: {
+          gte: filters?.age
+            ? new Date(new Date().getFullYear() - filters.age, 0)
+            : undefined,
+        },
+        email: {
+          contains: filters?.email,
+        },
+        name: {
+          contains: filters?.name,
+        },
+        surname: {
+          contains: filters?.name,
+        },
+        sign: filters?.astrologicalSign
+          ? convertAstrologicalSignToPrisma(filters.astrologicalSign)
+          : undefined,
+        gender: filters?.gender
+          ? convertGenderToPrisma(filters.gender)
+          : undefined,
+      },
+    });
   }
 
-  async getCustomers(limit?: number, skip?: number): Promise<Customer[]> {
+  async getCustomers(
+    filters?: CustomersFilters,
+    limit?: number,
+    skip?: number,
+  ): Promise<Customer[]> {
     return this._prismaService.customer
       .findMany({
+        where: {
+          birthDate: {
+            gte: filters?.age
+              ? new Date(new Date().getFullYear() - filters.age, 0)
+              : undefined,
+          },
+          email: {
+            contains: filters?.email,
+          },
+          name: {
+            contains: filters?.name,
+          },
+          surname: {
+            contains: filters?.name,
+          },
+          sign: filters?.astrologicalSign
+            ? convertAstrologicalSignToPrisma(filters.astrologicalSign)
+            : undefined,
+          gender: filters?.gender
+            ? convertGenderToPrisma(filters.gender)
+            : undefined,
+        },
         take: limit,
         skip,
       })
