@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PrismaService } from '../../providers/prisma/prisma.service';
+import { PrismaService } from '../../providers';
 import {
   CreateEmployeeCandidate,
   EmployeeWithCredentials,
@@ -12,15 +12,34 @@ import {
   convertGenderToPrisma,
   convertPermissionToPrisma,
 } from '../../utils';
+import { AuthEmployeeContext } from '../auth/auth.employee.context';
+import { InternalServerError } from '../../classes/responses';
 
 @Injectable()
 export class EmployeesService {
   @Inject(PrismaService)
-  private readonly _prismaService: PrismaService;
+  protected readonly _prismaService: PrismaService;
+
+  @Inject(AuthEmployeeContext)
+  protected readonly _authEmployeeContext: AuthEmployeeContext;
 
   async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt();
     return await bcrypt.hash(password, salt);
+  }
+
+  public async getMe(): Promise<Employee> {
+    const employee = await this._prismaService.employee.findUnique({
+      where: {
+        id: this._authEmployeeContext.employee.id,
+      },
+    });
+    if (!employee) {
+      throw new InternalServerError({
+        message: 'Employee not found',
+      });
+    }
+    return convertEmployee(employee);
   }
 
   private async preventDuplicatedFields(fields: {
@@ -76,9 +95,6 @@ export class EmployeesService {
     const employee = await this._prismaService.employee.findFirst({
       where: {
         email,
-      },
-      include: {
-        credentials: true,
       },
     });
 
