@@ -5,6 +5,9 @@ import { credentials } from "@/auth/credentials";
 import { Title } from "@/components/text/title";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { useAppDispatch } from "@/store";
+import { setUser } from "@/store/authSlice";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -14,16 +17,36 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
+    const dispatch = useAppDispatch();
+    const { toast } = useToast();
+
     const handleLogin = async () => {
         setError("");
         const response = await api.auth.login({ email, password });
 
         if (!response || !response.ok) {
+            dispatch(setUser(null));
             setError("Invalid email or password");
             return;
         }
 
+        const userResponse = await api.employees.me();
+
+        if (!userResponse) {
+            dispatch(setUser(null));
+            setError("Your user is corrupted");
+            return;
+        }
+
+        dispatch(setUser(userResponse.data));
         await credentials.save(response.data.tokens);
+
+        toast({
+            variant: "default",
+            title: "Successfully connected",
+            description: `Welcome ${userResponse.data.name} ${userResponse.data.surname} !`,
+        });
+
         router.push("/dashboard");
     };
 
