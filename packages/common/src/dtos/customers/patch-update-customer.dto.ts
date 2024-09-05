@@ -52,6 +52,10 @@ export class InPatchCustomerDTO {
   @IsString()
   @IsOptional()
   public address?: string;
+
+  @IsString()
+  @IsOptional()
+  public country?: string;
 }
 
 export class ParamPatchCustomerDTO {

@@ -146,6 +146,7 @@ export class CustomersMigrationService extends CustomersService {
               : null,
             address: customer.address,
             phone: customer.phone_number,
+            country: 'France',
           })),
       });
     } catch (error) {

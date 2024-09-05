@@ -15,6 +15,7 @@ import {
 import { Response } from 'express';
 import { CustomersService } from './customers.service';
 import {
+  Customer,
   InDeleteCustomerClotheDTO,
   InDeleteCustomerDTO,
   InDeleteCustomerEncounterDTO,
@@ -65,6 +66,7 @@ import {
   ParamPostCreateCustomerClotheDTO,
   ParamPostCreateCustomerEncounterDTO,
   ParamPostCreateCustomerPaymentDTO,
+  PhotoFormat,
   QueryGetCustomerClothesDTO,
   QueryGetCustomerEncountersDTO,
   QueryGetCustomerPaymentsDTO,
@@ -77,6 +79,7 @@ import {
 import fetch from 'node-fetch';
 import { CustomersCompatibilityService } from './compatiblity.service';
 import { PermissionsService } from '../permissions/permissions.service';
+import { AuthEmployeeContext } from '../auth/auth.employee.context';
 
 @Controller('customers')
 export class CustomersController {
@@ -88,6 +91,9 @@ export class CustomersController {
 
   @Inject(PermissionsService)
   private readonly permissionsService: PermissionsService;
+
+  @Inject(AuthEmployeeContext)
+  private readonly authEmployeeContext: AuthEmployeeContext;
 
   constructor() {}
 
@@ -105,20 +111,29 @@ export class CustomersController {
     @Body() _: InGetCustomersDTO,
     @Query() { page, size, ...filters }: QueryGetCustomersDTO,
   ): Promise<OutGetCustomersDTO> {
+    if (!this.permissionsService.isManager())
+      filters.coachId = this.authEmployeeContext.employee.id;
+
     const customerCount =
       await this.customersService.getCustomersCount(filters);
 
     const isLast = customerCount < page * size + size;
     const startIndex = isLast ? Math.max(0, customerCount - size) : page * size;
-    const items = await this.customersService.getCustomers(
-      filters,
-      size,
-      startIndex,
-    );
+    const items = (
+      await this.customersService.getCustomers(filters, size, startIndex)
+    ).map((customer: Customer): Customer => {
+      return {
+        ...customer,
+        photo: '/customers/' + customer.id + '/photo',
+        photoFormat: customer.photoFormat
+          ? customer.photoFormat
+          : PhotoFormat.PNG,
+      };
+    });
 
     return {
       index: page,
-      size,
+      size: items.length,
       isLast,
       items,
     };
@@ -131,11 +146,20 @@ export class CustomersController {
   ): Promise<OutGetCustomerDTO> {
     const customer = await this.customersService.getCustomerById(id);
 
-    if (customer === null) {
+    if (
+      customer === null ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
-    return customer;
+    return {
+      ...customer,
+      photo: '/customers/' + customer.id + '/photo',
+      photoFormat: customer.photoFormat
+        ? customer.photoFormat
+        : PhotoFormat.PNG,
+    };
   }
 
   @Get(':id/photo')
@@ -145,7 +169,10 @@ export class CustomersController {
   ): Promise<Response | string> {
     const customer = await this.customersService.getCustomerById(id);
 
-    if (customer === null) {
+    if (
+      customer === null ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -177,11 +204,24 @@ export class CustomersController {
       birthDate: birthDate ? new Date(birthDate) : undefined,
     };
 
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
-    return (await this.customersService.updateCustomer(id, candidate))!;
+    const updated = await this.customersService.updateCustomer(id, candidate);
+
+    if (!updated) {
+      throw new NotFoundException(`Customer with id ${id} not found`);
+    }
+
+    return {
+      ...updated,
+      photo: '/customers/' + id + '/photo',
+      photoFormat: updated.photoFormat ? updated.photoFormat : PhotoFormat.PNG,
+    };
   }
 
   @Post('create')
@@ -196,6 +236,7 @@ export class CustomersController {
       address: customer.address ? customer.address : null,
       coachId: customer.coachId ? customer.coachId : null,
       photoFormat: customer.photoFormat ? customer.photoFormat : null,
+      country: customer.country ? customer.country : null,
     };
 
     const created = await this.customersService.createCustomer(candidate);
@@ -206,7 +247,11 @@ export class CustomersController {
       );
     }
 
-    return created;
+    return {
+      ...created,
+      photo: '/customers/' + created.id + '/photo',
+      photoFormat: created.photoFormat ? created.photoFormat : PhotoFormat.PNG,
+    };
   }
 
   @Get(':id/payments')
@@ -215,7 +260,10 @@ export class CustomersController {
     @Param() { id }: ParamGetCustomerPaymentsDTO,
     @Query() { page, size }: QueryGetCustomerPaymentsDTO,
   ): Promise<OutGetCustomerPaymentsDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -232,7 +280,7 @@ export class CustomersController {
 
     return {
       index: page,
-      size,
+      size: items.length,
       isLast,
       items,
     };
@@ -243,7 +291,10 @@ export class CustomersController {
     @Param() { id }: ParamPostCreateCustomerPaymentDTO,
     @Body() body: InPostCreateCustomerPaymentDTO,
   ): Promise<OutPostCreateCustomerPaymentDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -266,7 +317,10 @@ export class CustomersController {
     @Param() { id, paymentId }: ParamPatchCustomerPaymentDTO,
     @Body() body: InPatchCustomerPaymentDTO,
   ): Promise<OutPatchCustomerPaymentDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -299,7 +353,10 @@ export class CustomersController {
     @Param() { id }: ParamGetCustomerEncountersDTO,
     @Query() { page, size }: QueryGetCustomerEncountersDTO,
   ): Promise<OutGetCustomerEncountersDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -318,7 +375,7 @@ export class CustomersController {
 
     return {
       index: page,
-      size,
+      size: items.length,
       isLast,
       items,
     };
@@ -329,7 +386,10 @@ export class CustomersController {
     @Param() { id, encounterId }: ParamPatchCustomerEncounterDTO,
     @Body() body: InPatchCustomerEncounterDTO,
   ): Promise<OutPatchCustomerEncounterDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -367,7 +427,10 @@ export class CustomersController {
     @Param() { id }: ParamPostCreateCustomerEncounterDTO,
     @Body() body: InPostCreateCustomerEncounterDTO,
   ): Promise<OutPostCreateCustomerEncounterDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -394,11 +457,24 @@ export class CustomersController {
     @Body() _: InDeleteCustomerDTO,
     @Param() { id }: ParamDeleteCustomerDTO,
   ): Promise<OutDeleteCustomerDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
-    return (await this.customersService.deleteCustomer(id))!;
+    const deleted = await this.customersService.deleteCustomer(id);
+
+    if (!deleted) {
+      throw new NotFoundException(`Customer with id ${id} not found`);
+    }
+
+    return {
+      ...deleted,
+      photo: '/customers/' + id + '/photo',
+      photoFormat: deleted.photoFormat ? deleted.photoFormat : PhotoFormat.PNG,
+    };
   }
 
   @Delete(':id/payments/:paymentId')
@@ -406,7 +482,10 @@ export class CustomersController {
     @Body() _: InDeleteCustomerPaymentDTO,
     @Param() { id, paymentId }: ParamDeleteCustomerPaymentDTO,
   ): Promise<OutDeleteCustomerPaymentDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -431,7 +510,10 @@ export class CustomersController {
     @Body() _: InDeleteCustomerEncounterDTO,
     @Param() { id, encounterId }: ParamDeleteCustomerEncounterDTO,
   ): Promise<OutDeleteCustomerEncounterDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -458,7 +540,10 @@ export class CustomersController {
     @Param() { id }: ParamGetCustomerDTO,
     @Query() { page, size }: QueryGetCustomerClothesDTO,
   ): Promise<OutGetCustomerClothesDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -479,7 +564,7 @@ export class CustomersController {
 
     return {
       index: page,
-      size,
+      size: items.length,
       isLast,
       items,
     };
@@ -490,7 +575,10 @@ export class CustomersController {
     @Param() { id }: ParamPostCreateCustomerClotheDTO,
     @Body() body: InPostCreateCustomerClotheDTO,
   ): Promise<OutPostCreateCustomerClotheDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -508,7 +596,10 @@ export class CustomersController {
     @Body() _: InDeleteCustomerClotheDTO,
     @Param() { id, clotheId }: ParamDeleteCustomerClotheDTO,
   ): Promise<OutDeleteCustomerClotheDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -530,7 +621,10 @@ export class CustomersController {
     @Param() { id, clotheId }: ParamPatchCustomerClotheDTO,
     @Body() body: InPatchCustomerClotheDTO,
   ): Promise<OutPatchCustomerClotheDTO> {
-    if (!(await this.customersService.doesCustomerExist(id))) {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
@@ -576,6 +670,14 @@ export class CustomersController {
       throw new ConflictException('Cannot compare the same customer');
     }
 
-    return this.customersCompatibilityService.getFullCompatibility(id, otherId);
+    const res = await this.customersCompatibilityService.getFullCompatibility(
+      id,
+      otherId,
+    );
+
+    res.customerA.photo = '/customers/' + id + '/photo';
+    res.customerB.photo = '/customers/' + otherId + '/photo';
+
+    return res;
   }
 }
