@@ -15,6 +15,7 @@ import {
 import { Response } from 'express';
 import { CustomersService } from './customers.service';
 import {
+  Customer,
   InDeleteCustomerClotheDTO,
   InDeleteCustomerDTO,
   InDeleteCustomerEncounterDTO,
@@ -110,11 +111,14 @@ export class CustomersController {
 
     const isLast = customerCount < page * size + size;
     const startIndex = isLast ? Math.max(0, customerCount - size) : page * size;
-    const items = await this.customersService.getCustomers(
-      filters,
-      size,
-      startIndex,
-    );
+    const items = (
+      await this.customersService.getCustomers(filters, size, startIndex)
+    ).map((customer: Customer): Customer => {
+      return {
+        ...customer,
+        photo: '/customers/' + customer.id + '/photo',
+      };
+    });
 
     return {
       index: page,
@@ -135,7 +139,10 @@ export class CustomersController {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
-    return customer;
+    return {
+      ...customer,
+      photo: '/customers/' + customer.id + '/photo',
+    };
   }
 
   @Get(':id/photo')
@@ -181,7 +188,10 @@ export class CustomersController {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
-    return (await this.customersService.updateCustomer(id, candidate))!;
+    return {
+      ...(await this.customersService.updateCustomer(id, candidate))!,
+      photo: '/customers/' + id + '/photo',
+    };
   }
 
   @Post('create')
@@ -206,7 +216,7 @@ export class CustomersController {
       );
     }
 
-    return created;
+    return { ...created, photo: '/customers/' + created.id + '/photo' };
   }
 
   @Get(':id/payments')
@@ -398,7 +408,10 @@ export class CustomersController {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
-    return (await this.customersService.deleteCustomer(id))!;
+    return {
+      ...(await this.customersService.deleteCustomer(id))!,
+      photo: '/customers/' + id + '/photo',
+    };
   }
 
   @Delete(':id/payments/:paymentId')
@@ -575,6 +588,14 @@ export class CustomersController {
       throw new ConflictException('Cannot compare the same customer');
     }
 
-    return this.customersCompatibilityService.getFullCompatibility(id, otherId);
+    const res = await this.customersCompatibilityService.getFullCompatibility(
+      id,
+      otherId,
+    );
+
+    res.customerA.photo = '/customers/' + id + '/photo';
+    res.customerB.photo = '/customers/' + otherId + '/photo';
+
+    return res;
   }
 }

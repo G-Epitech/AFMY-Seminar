@@ -1,3 +1,3 @@
-import { Employee } from '../../types';
+import { Employee } from "../../types";
 
-export type OutGetMeDto = Omit<Employee, 'photo' | 'photoFormat'>;
+export type OutGetMeDto = Employee;
