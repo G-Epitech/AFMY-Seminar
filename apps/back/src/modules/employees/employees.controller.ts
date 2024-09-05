@@ -32,11 +32,13 @@ export class EmployeesController {
       permission: me.permission,
       role: me.role,
       numberOfCustomers: me.numberOfCustomers,
+      photo: '/employees/' + me.id + '/photo',
+      photoFormat: me.photoFormat,
     };
   }
 
   @Get(':id/photo')
-  async getCustomerPhoto(
+  async getEmployeePhoto(
     @Res() res: Response,
     @Param() { id }: ParamGetEmployeePhotoDTO,
   ): Promise<Response | string> {
