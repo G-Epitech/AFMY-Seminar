@@ -19,6 +19,7 @@ import {
   InDeleteCustomerDTO,
   InDeleteCustomerEncounterDTO,
   InDeleteCustomerPaymentDTO,
+  InGetCustomerCompatibilityDTO,
   InGetCustomerDTO,
   InGetCustomerEncountersDTO,
   InGetCustomerPaymentsDTO,
@@ -36,6 +37,7 @@ import {
   OutDeleteCustomerEncounterDTO,
   OutDeleteCustomerPaymentDTO,
   OutGetCustomerClothesDTO,
+  OutGetCustomerCompatibilityDTO,
   OutGetCustomerDTO,
   OutGetCustomerEncountersDTO,
   OutGetCustomerPaymentsDTO,
@@ -52,6 +54,7 @@ import {
   ParamDeleteCustomerDTO,
   ParamDeleteCustomerEncounterDTO,
   ParamDeleteCustomerPaymentDTO,
+  ParamGetCustomerCompatibilityDTO,
   ParamGetCustomerDTO,
   ParamGetCustomerEncountersDTO,
   ParamGetCustomerPaymentsDTO,
@@ -72,15 +75,19 @@ import {
   UpdateCustomerCandidate,
 } from '../../types/customers';
 import fetch from 'node-fetch';
-import { AuthEmployeeContext } from '../auth/auth.employee.context';
+import { CustomersCompatibilityService } from './compatiblity.service';
+import { PermissionsService } from '../permissions/permissions.service';
 
 @Controller('customers')
 export class CustomersController {
   @Inject(CustomersService)
   private readonly customersService: CustomersService;
 
-  @Inject(AuthEmployeeContext)
-  private readonly authEmployeeContext: AuthEmployeeContext;
+  @Inject(CustomersCompatibilityService)
+  private readonly customersCompatibilityService: CustomersCompatibilityService;
+
+  @Inject(PermissionsService)
+  private readonly permissionsService: PermissionsService;
 
   constructor() {}
 
@@ -537,5 +544,31 @@ export class CustomersController {
     });
 
     return clothe!;
+  }
+
+  @Get(':id/compatibility/:otherId')
+  async getCompatibility(
+    @Body() _: InGetCustomerCompatibilityDTO,
+    @Param() { id, otherId }: ParamGetCustomerCompatibilityDTO,
+  ): Promise<OutGetCustomerCompatibilityDTO> {
+    if (
+      !(await this.customersService.doesCustomerExist(id)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(id))
+    ) {
+      throw new NotFoundException(`Customer with id ${id} not found`);
+    }
+
+    if (
+      !(await this.customersService.doesCustomerExist(otherId)) ||
+      !(await this.permissionsService.canCoachAccessCustomer(otherId))
+    ) {
+      throw new NotFoundException(`Customer with id ${otherId} not found`);
+    }
+
+    if (id === otherId) {
+      throw new ConflictException('Cannot compare the same customer');
+    }
+
+    return this.customersCompatibilityService.getFullCompatibility(id, otherId);
   }
 }
