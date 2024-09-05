@@ -13,8 +13,6 @@ export const metadata: Metadata = {
     description: "What a good application for seminars!",
 };
 
-const containerClassName = "container m-auto py-6";
-
 export default function RootLayout({
     children,
 }: Readonly<{
@@ -28,8 +26,7 @@ export default function RootLayout({
             />
             <body className={inter.className}>
                 <ReduxProvider>
-                    <MainMenu />
-                    <div className={containerClassName}>{children}</div>
+                    {children}
                     <Toaster />
                 </ReduxProvider>
             </body>
