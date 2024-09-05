@@ -784,7 +784,7 @@ export class CustomersService {
       });
   }
 
-  async getCustomerClotheCount(id: IdOf<Customer>): Promise<number> {
+  async getCustomerClothesCount(id: IdOf<Customer>): Promise<number> {
     return this._prismaService.clothe.count({
       where: {
         customers: {

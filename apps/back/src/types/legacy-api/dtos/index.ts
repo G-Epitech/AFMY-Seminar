@@ -1,9 +1,10 @@
 import { LegacyApiGender } from '../gender.type';
 import { LegacyApiAstrologicalSign } from '../astrological-sign.type';
+import { LegacyApiClotheType } from '../clothe-type.type';
 
 export interface ClotheLegacyDto {
   id: number;
-  type: string;
+  type: LegacyApiClotheType;
 }
 
 export interface CredentialsLegacyDto {

@@ -1,5 +1,6 @@
 import { LegacyApiGender } from '../../types/legacy-api/gender.type';
-import { Gender } from '@seminar/common';
+import { ClotheType, Gender } from '@seminar/common';
+import { LegacyApiClotheType } from '../../types/legacy-api/clothe-type.type';
 
 export function legacyApiConvertGender(gender: LegacyApiGender): Gender {
   switch (gender) {
@@ -9,5 +10,20 @@ export function legacyApiConvertGender(gender: LegacyApiGender): Gender {
       return Gender.MA;
     default:
       return Gender.OT;
+  }
+}
+
+export function legacyApiConvertClotheType(
+  clotheType: LegacyApiClotheType,
+): ClotheType {
+  switch (clotheType) {
+    case 'hat/cap':
+      return ClotheType.HAT_CAP;
+    case 'bottom':
+      return ClotheType.BOTTOM;
+    case 'top':
+      return ClotheType.TOP;
+    case 'shoes':
+      return ClotheType.SHOES;
   }
 }

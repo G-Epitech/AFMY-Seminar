@@ -8,13 +8,20 @@ import {
   IdOf,
   PhotoFormat,
 } from '@seminar/common';
-import { CustomerLegacyDto } from '../../types/legacy-api/dtos';
+import {
+  ClotheLegacyDto,
+  CustomerLegacyDto,
+} from '../../types/legacy-api/dtos';
 import {
   convertAstrologicalSignToPrisma,
+  convertClotheTypeToPrisma,
   convertGenderToPrisma,
   convertPhotoFormatToPrisma,
 } from '../../utils';
-import { legacyApiConvertGender } from '../../providers/legacy-api/legacy-api-convertors';
+import {
+  legacyApiConvertClotheType,
+  legacyApiConvertGender,
+} from '../../providers/legacy-api/legacy-api-convertors';
 
 @Injectable()
 export class CustomersMigrationService extends CustomersService {
@@ -120,7 +127,124 @@ export class CustomersMigrationService extends CustomersService {
             ),
             photo: customer.photo.toString('base64'),
             photoFormat: convertPhotoFormatToPrisma(customer.photoFormat),
+            address: customer.address,
+            phone: customer.phone_number,
           })),
+      });
+    } catch (error) {
+      return;
+    }
+  }
+
+  private async getLegacyCustomerClothes(
+    id: IdOf<Customer>,
+  ): Promise<ClotheLegacyDto[]> {
+    if (!this._authEmployeeContext.isLegacyAuthenticated) return [];
+    try {
+      const res = await this._legacyApiService.request(
+        'GET /customers/{customer_id}/clothes',
+        {
+          parameters: {
+            customer_id: id,
+          },
+        },
+        this._authEmployeeContext.employee.legacyToken!,
+      );
+      return res.data;
+    } catch (error) {
+      return [];
+    }
+  }
+
+  private async getClothePhoto(
+    id: IdOf<ClotheLegacyDto>,
+  ): Promise<Buffer | null> {
+    if (!this._authEmployeeContext.isLegacyAuthenticated) return null;
+    try {
+      const res = await this._legacyApiService.request(
+        'GET /clothes/{clothe_id}/image',
+        {
+          parameters: {
+            clothe_id: id,
+          },
+        },
+        this._authEmployeeContext.employee.legacyToken!,
+      );
+      return res.data;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  private async getNewCustomerClothes(
+    id: IdOf<Customer>,
+  ): Promise<(ClotheLegacyDto & { image: Buffer })[]> {
+    if (!this._authEmployeeContext.isLegacyAuthenticated) return [];
+    try {
+      const customer = await this._prismaService.customer.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!customer || !customer.legacyId) return [];
+
+      const currentClothesIds = await this._prismaService.clothe.findMany({
+        where: {
+          customers: {
+            some: {
+              id,
+            },
+          },
+        },
+        select: { legacyId: true },
+      });
+
+      const currentClothesIdsSet = new Set(
+        currentClothesIds.map(({ legacyId }) => legacyId).filter((id) => !!id),
+      );
+      const legacyClothes = (
+        await this.getLegacyCustomerClothes(customer.legacyId)
+      ).filter((c) => !currentClothesIdsSet.has(c.id));
+
+      const legacyClothesWithPhotos = await Promise.all(
+        legacyClothes.map(async (c) => {
+          const image = await this.getClothePhoto(c.id);
+          return image ? { ...c, image } : null;
+        }),
+      );
+      return legacyClothesWithPhotos.filter((c) => !!c);
+    } catch (error) {}
+    return [];
+  }
+
+  private async syncCustomerClothes(id: IdOf<Customer>): Promise<void> {
+    if (!this._authEmployeeContext.isLegacyAuthenticated) return;
+
+    try {
+      const newClothes = await this.getNewCustomerClothes(id);
+      const createdClothes =
+        await this._prismaService.clothe.createManyAndReturn({
+          data: newClothes.map((clothe) => ({
+            legacyId: clothe.id,
+            type: convertClotheTypeToPrisma(
+              legacyApiConvertClotheType(clothe.type),
+            ),
+            image: clothe.image.toString('base64'),
+          })),
+          select: {
+            id: true,
+          },
+        });
+      await this._prismaService.customer.update({
+        where: {
+          id,
+        },
+        data: {
+          clothes: {
+            connect: createdClothes.map(({ id }) => ({ id })),
+          },
+        },
       });
     } catch (error) {
       return;
@@ -130,5 +254,10 @@ export class CustomersMigrationService extends CustomersService {
   public async getCustomersCount(filters?: CustomersFilters): Promise<number> {
     await this.syncCustomers();
     return super.getCustomersCount(filters);
+  }
+
+  public async getCustomerClothesCount(id: IdOf<Customer>): Promise<number> {
+    await this.syncCustomerClothes(id);
+    return super.getCustomerClothesCount(id);
   }
 }
