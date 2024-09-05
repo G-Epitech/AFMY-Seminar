@@ -3,6 +3,7 @@ import { PrismaService } from '../../providers';
 import {
   Clothe,
   Customer,
+  CustomerFilter,
   Employee,
   Encounter,
   IdOf,
@@ -46,13 +47,62 @@ export class CustomersService {
   @Inject(PrismaService)
   private readonly prismaService: PrismaService;
 
-  async getCustomersCount(): Promise<number> {
-    return this.prismaService.customer.count();
+  async getCustomersCount(filter?: CustomerFilter): Promise<number> {
+    return this.prismaService.customer.count({
+      where: {
+        birthDate: {
+          gte: filter?.age
+            ? new Date(new Date().getFullYear() - filter.age, 0)
+            : undefined,
+        },
+        email: {
+          contains: filter?.email,
+        },
+        name: {
+          contains: filter?.name,
+        },
+        surname: {
+          contains: filter?.name,
+        },
+        sign: filter?.astrologicalSign
+          ? convertAstrologicalSignToPrisma(filter.astrologicalSign)
+          : undefined,
+        gender: filter?.gender
+          ? convertGenderToPrisma(filter.gender)
+          : undefined,
+      },
+    });
   }
 
-  async getCustomers(limit?: number, skip?: number): Promise<Customer[]> {
+  async getCustomers(
+    filter?: CustomerFilter,
+    limit?: number,
+    skip?: number,
+  ): Promise<Customer[]> {
     return this.prismaService.customer
       .findMany({
+        where: {
+          birthDate: {
+            gte: filter?.age
+              ? new Date(new Date().getFullYear() - filter.age, 0)
+              : undefined,
+          },
+          email: {
+            contains: filter?.email,
+          },
+          name: {
+            contains: filter?.name,
+          },
+          surname: {
+            contains: filter?.name,
+          },
+          sign: filter?.astrologicalSign
+            ? convertAstrologicalSignToPrisma(filter.astrologicalSign)
+            : undefined,
+          gender: filter?.gender
+            ? convertGenderToPrisma(filter.gender)
+            : undefined,
+        },
         take: limit,
         skip,
       })
