@@ -7,6 +7,7 @@ import {
   PaymentMethod as PrismaPaymentMethod,
   Permission as PrismaPermission,
   PhotoFormat as PrismaPhotoFormat,
+  Customer as PrismaCustomer,
 } from '@prisma/client';
 import {
   AstrologicalSign,
@@ -17,6 +18,7 @@ import {
   PaymentMethod,
   Permission,
   PhotoFormat,
+  Customer,
 } from '@seminar/common';
 
 export function convertGender(gender: PrismaGender): Gender {
@@ -234,4 +236,15 @@ export function convertPhotoFormatToPrisma(
     case PhotoFormat.PNG:
       return PrismaPhotoFormat.PNG;
   }
+}
+
+export function convertCustomer(customer: PrismaCustomer): Customer {
+  return {
+    ...customer,
+    gender: convertGender(customer.gender),
+    sign: convertAstrologicalSign(customer.sign),
+    photoFormat: customer.photoFormat
+      ? convertPhotoFormat(customer.photoFormat)
+      : null,
+  };
 }

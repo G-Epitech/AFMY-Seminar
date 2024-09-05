@@ -3,7 +3,7 @@ import { PrismaService } from '../../providers';
 import {
   Clothe,
   Customer,
-  CustomerFilter,
+  CustomersFilters,
   Employee,
   Encounter,
   IdOf,
@@ -41,67 +41,79 @@ import {
   UpdateCustomerEncounterCandidate,
   UpdateCustomerPaymentCandidate,
 } from '../../types/customers';
+import { AuthEmployeeContext } from '../auth/auth.employee.context';
 
 @Injectable()
 export class CustomersService {
   @Inject(PrismaService)
-  private readonly prismaService: PrismaService;
+  protected readonly _prismaService: PrismaService;
 
-  async getCustomersCount(filter?: CustomerFilter): Promise<number> {
-    return this.prismaService.customer.count({
+  @Inject(AuthEmployeeContext)
+  protected readonly _authEmployeeContext: AuthEmployeeContext;
+
+  async getCustomersCount(filters?: CustomersFilters): Promise<number> {
+    return this._prismaService.customer.count({
       where: {
         birthDate: {
-          gte: filter?.age
-            ? new Date(new Date().getFullYear() - filter.age, 0)
+          gte: filters?.age
+            ? new Date(new Date().getFullYear() - filters.age, 0)
             : undefined,
         },
         email: {
-          contains: filter?.email,
+          contains: filters?.email,
         },
         name: {
-          contains: filter?.name,
+          contains: filters?.name,
         },
         surname: {
-          contains: filter?.name,
+          contains: filters?.name,
         },
-        sign: filter?.astrologicalSign
-          ? convertAstrologicalSignToPrisma(filter.astrologicalSign)
+        sign: filters?.astrologicalSign
+          ? convertAstrologicalSignToPrisma(filters.astrologicalSign)
           : undefined,
-        gender: filter?.gender
-          ? convertGenderToPrisma(filter.gender)
+        gender: filters?.gender
+          ? convertGenderToPrisma(filters.gender)
           : undefined,
+        createdAt: {
+          gte: filters?.createdAfter,
+          lte: filters?.createdBefore,
+        },
       },
     });
   }
 
   async getCustomers(
-    filter?: CustomerFilter,
+    filters?: CustomersFilters,
     limit?: number,
     skip?: number,
   ): Promise<Customer[]> {
-    return this.prismaService.customer
+    return this._prismaService.customer
       .findMany({
         where: {
           birthDate: {
-            gte: filter?.age
-              ? new Date(new Date().getFullYear() - filter.age, 0)
+            gte: filters?.age
+              ? new Date(new Date().getFullYear() - filters.age, 0)
               : undefined,
           },
           email: {
-            contains: filter?.email,
+            contains: filters?.email,
           },
           name: {
-            contains: filter?.name,
+            contains: filters?.name,
           },
           surname: {
-            contains: filter?.name,
+            contains: filters?.name,
           },
-          sign: filter?.astrologicalSign
-            ? convertAstrologicalSignToPrisma(filter.astrologicalSign)
+          sign: filters?.astrologicalSign
+            ? convertAstrologicalSignToPrisma(filters.astrologicalSign)
             : undefined,
-          gender: filter?.gender
-            ? convertGenderToPrisma(filter.gender)
+          gender: filters?.gender
+            ? convertGenderToPrisma(filters.gender)
             : undefined,
+          createdAt: {
+            gte: filters?.createdAfter,
+            lte: filters?.createdBefore,
+          },
         },
         take: limit,
         skip,
@@ -121,7 +133,7 @@ export class CustomersService {
   }
 
   async getCustomerById(id: IdOf<Customer>): Promise<Customer | null> {
-    return this.prismaService.customer
+    return this._prismaService.customer
       .findUnique({
         where: {
           id,
@@ -142,7 +154,7 @@ export class CustomersService {
   }
 
   async doesCustomerExist(id: IdOf<Customer>): Promise<boolean> {
-    return this.prismaService.customer
+    return this._prismaService.customer
       .findUnique({
         where: {
           id,
@@ -156,7 +168,7 @@ export class CustomersService {
   async createCustomer(
     customer: CreateCustomerCandidate,
   ): Promise<Customer | undefined> {
-    return this.prismaService.customer
+    return this._prismaService.customer
       .create({
         data: {
           ...customer,
@@ -213,7 +225,7 @@ export class CustomersService {
       ...rest,
     };
 
-    return this.prismaService.customer
+    return this._prismaService.customer
       .update({
         where: {
           id,
@@ -235,7 +247,7 @@ export class CustomersService {
   }
 
   async deleteCustomer(id: IdOf<Customer>): Promise<Customer | null> {
-    return this.prismaService.customer
+    return this._prismaService.customer
       .delete({
         where: {
           id,
@@ -256,7 +268,7 @@ export class CustomersService {
   }
 
   async getCustomerCoach(id: IdOf<Customer>): Promise<Employee | null> {
-    return this.prismaService.customer
+    return this._prismaService.customer
       .findUnique({
         where: {
           id,
@@ -277,7 +289,7 @@ export class CustomersService {
     limit?: number,
     skip?: number,
   ): Promise<Encounter[]> {
-    return this.prismaService.encounter
+    return this._prismaService.encounter
       .findMany({
         where: {
           customerId: id,
@@ -300,7 +312,7 @@ export class CustomersService {
     limit?: number,
     skip?: number,
   ): Promise<Payment[]> {
-    return this.prismaService.payment
+    return this._prismaService.payment
       .findMany({
         where: {
           customerId: id,
@@ -320,7 +332,7 @@ export class CustomersService {
   }
 
   async getCustomerPaymentsCount(id: IdOf<Customer>): Promise<number> {
-    return this.prismaService.payment.count({
+    return this._prismaService.payment.count({
       where: {
         customerId: id,
       },
@@ -328,7 +340,7 @@ export class CustomersService {
   }
 
   async getCustomerPayment(paymentId: number): Promise<Payment | null> {
-    return this.prismaService.payment
+    return this._prismaService.payment
       .findUnique({
         where: {
           id: paymentId,
@@ -346,7 +358,7 @@ export class CustomersService {
   }
 
   async getCustomerEncounter(encounterId: number): Promise<Encounter | null> {
-    return this.prismaService.encounter
+    return this._prismaService.encounter
       .findUnique({
         where: {
           id: encounterId,
@@ -379,7 +391,7 @@ export class CustomersService {
       ...rest,
     };
 
-    return this.prismaService.encounter
+    return this._prismaService.encounter
       .update({
         where: {
           id,
@@ -399,7 +411,7 @@ export class CustomersService {
   async deleteCustomerEncounter(
     id: IdOf<Encounter>,
   ): Promise<Encounter | null> {
-    return this.prismaService.encounter
+    return this._prismaService.encounter
       .delete({
         where: {
           id,
@@ -419,7 +431,7 @@ export class CustomersService {
     id: IdOf<Customer>,
     coachId: IdOf<Employee>,
   ): Promise<Employee | null> {
-    return this.prismaService.customer
+    return this._prismaService.customer
       .update({
         where: {
           id,
@@ -455,7 +467,7 @@ export class CustomersService {
       ...rest,
     };
 
-    return this.prismaService.payment
+    return this._prismaService.payment
       .update({
         where: {
           id,
@@ -474,7 +486,7 @@ export class CustomersService {
   }
 
   async deleteCustomerPayment(id: IdOf<Payment>): Promise<Payment | null> {
-    return this.prismaService.payment
+    return this._prismaService.payment
       .delete({
         where: {
           id,
@@ -495,7 +507,7 @@ export class CustomersService {
     id: IdOf<Customer>,
     payment: CreateCustomerPaymentCandidate,
   ): Promise<Payment | undefined> {
-    return this.prismaService.payment
+    return this._prismaService.payment
       .create({
         data: {
           ...payment,
@@ -518,7 +530,7 @@ export class CustomersService {
   }
 
   async doesPaymentExist(id: IdOf<Payment>): Promise<boolean> {
-    return this.prismaService.payment
+    return this._prismaService.payment
       .findUnique({
         where: {
           id,
@@ -530,7 +542,7 @@ export class CustomersService {
   }
 
   async getCustomerEncountersCount(id: IdOf<Customer>): Promise<number> {
-    return this.prismaService.encounter.count({
+    return this._prismaService.encounter.count({
       where: {
         customerId: id,
       },
@@ -538,7 +550,7 @@ export class CustomersService {
   }
 
   async doesEncounterExist(id: IdOf<Encounter>): Promise<boolean> {
-    return this.prismaService.encounter
+    return this._prismaService.encounter
       .findUnique({
         where: {
           id,
@@ -553,7 +565,7 @@ export class CustomersService {
     id: IdOf<Customer>,
     encounterId: IdOf<Encounter>,
   ): Promise<boolean> {
-    return this.prismaService.encounter
+    return this._prismaService.encounter
       .findUnique({
         where: {
           id: encounterId,
@@ -568,7 +580,7 @@ export class CustomersService {
     id: IdOf<Customer>,
     paymentId: IdOf<Payment>,
   ): Promise<boolean> {
-    return this.prismaService.payment
+    return this._prismaService.payment
       .findUnique({
         where: {
           id: paymentId,
@@ -583,7 +595,7 @@ export class CustomersService {
     id: IdOf<Customer>,
     encounter: CreateCustomerEncounterCandidate,
   ): Promise<Encounter | undefined> {
-    return this.prismaService.encounter
+    return this._prismaService.encounter
       .create({
         data: {
           ...encounter,
@@ -609,7 +621,7 @@ export class CustomersService {
     limit?: number,
     skip?: number,
   ): Promise<Clothe[] | null> {
-    return this.prismaService.customer
+    return this._prismaService.customer
       .findUnique({
         where: {
           id,
@@ -637,7 +649,7 @@ export class CustomersService {
     id: IdOf<Customer>,
     clotheId: IdOf<Clothe>,
   ): Promise<Clothe | null> {
-    return this.prismaService.customer
+    return this._prismaService.customer
       .update({
         where: {
           id,
@@ -661,7 +673,7 @@ export class CustomersService {
         if (customer.clothes.length === 0) return null;
 
         // If the clothes is connected to no other customer, delete it
-        const clothe = this.prismaService.clothe.findUnique({
+        const clothe = this._prismaService.clothe.findUnique({
           where: {
             id: clotheId,
           },
@@ -677,7 +689,7 @@ export class CustomersService {
         if (!clothe) return null;
 
         if (clothe.customers.length === 0) {
-          this.prismaService.clothe.delete({
+          this._prismaService.clothe.delete({
             where: {
               id: clotheId,
             },
@@ -695,7 +707,7 @@ export class CustomersService {
     id: IdOf<Customer>,
     clothe: CreateCustomerClotheCandidate,
   ): Promise<Clothe | undefined> {
-    return this.prismaService.clothe
+    return this._prismaService.clothe
       .create({
         data: {
           ...clothe,
@@ -708,7 +720,7 @@ export class CustomersService {
       .then((clothe?: PrismaClothe) => {
         if (!clothe) return undefined;
 
-        const customer = this.prismaService.customer.update({
+        const customer = this._prismaService.customer.update({
           where: {
             id,
           },
@@ -722,7 +734,7 @@ export class CustomersService {
         });
 
         if (!customer) {
-          this.prismaService.clothe.delete({
+          this._prismaService.clothe.delete({
             where: {
               id: clothe.id,
             },
@@ -739,7 +751,7 @@ export class CustomersService {
   }
 
   async doesClotheExist(id: IdOf<Clothe>): Promise<boolean> {
-    return this.prismaService.clothe
+    return this._prismaService.clothe
       .findUnique({
         where: {
           id,
@@ -754,7 +766,7 @@ export class CustomersService {
     id: IdOf<Customer>,
     clotheId: IdOf<Clothe>,
   ): Promise<boolean> {
-    return this.prismaService.customer
+    return this._prismaService.customer
       .findUnique({
         where: {
           id,
@@ -773,7 +785,7 @@ export class CustomersService {
   }
 
   async getCustomerClotheCount(id: IdOf<Customer>): Promise<number> {
-    return this.prismaService.clothe.count({
+    return this._prismaService.clothe.count({
       where: {
         customers: {
           some: {
@@ -801,7 +813,7 @@ export class CustomersService {
       ...rest,
     };
 
-    return this.prismaService.clothe
+    return this._prismaService.clothe
       .update({
         where: {
           id,

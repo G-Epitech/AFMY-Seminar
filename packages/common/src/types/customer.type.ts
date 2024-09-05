@@ -63,10 +63,12 @@ export type Payment = {
   customerId: IdOf<Customer>;
 };
 
-export type CustomerFilter = {
+export type CustomersFilters = {
   name?: string;
   email?: string;
   age?: number;
   astrologicalSign?: AstrologicalSign;
   gender?: Gender;
+  createdBefore?: Date;
+  createdAfter?: Date;
 };

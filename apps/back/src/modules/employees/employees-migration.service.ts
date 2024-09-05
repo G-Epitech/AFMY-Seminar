@@ -130,15 +130,15 @@ export class EmployeesMigrationService extends EmployeesService {
 
   async importEmployeeIfNotExists(
     token: string,
-    legacyId: number,
+    id: number,
   ): Promise<Employee | null> {
     let employee = await this._prismaService.employee.findUnique({
       where: {
-        legacyId,
+        legacyId: id,
       },
     });
     const legacyEmployee = !employee
-      ? await this.getLegacyEmployeeById(token, legacyId)
+      ? await this.getLegacyEmployeeById(token, id)
       : null;
 
     if (legacyEmployee) {
@@ -149,17 +149,5 @@ export class EmployeesMigrationService extends EmployeesService {
       });
     }
     return employee ? convertEmployee(employee) : null;
-  }
-
-  async getEmployeeById(id: number): Promise<Employee | null> {
-    let employee: Employee | null = await super.getEmployeeById(id);
-
-    if (!employee && this._authEmployeeContext.employee.legacyToken) {
-      employee = await this.importEmployeeIfNotExists(
-        this._authEmployeeContext.employee.legacyToken,
-        id,
-      );
-    }
-    return employee;
   }
 }

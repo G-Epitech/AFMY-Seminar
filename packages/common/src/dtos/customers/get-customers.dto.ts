@@ -1,5 +1,6 @@
 import { AstrologicalSign, Customer, Gender, Page } from "../../types";
 import {
+  IsDateString,
   IsEmail,
   IsEnum,
   IsNotEmpty,
@@ -23,13 +24,13 @@ export class QueryGetCustomersDTO {
   public size: number = 10;
 
   @IsString()
-  @IsOptional()
   @IsNotEmpty()
-  public name: string = "";
+  @IsOptional()
+  public name?: string;
 
   @IsEmail()
   @IsOptional()
-  public email: string = "";
+  public email?: string;
 
   @IsEnum(Gender)
   @IsOptional()
@@ -50,6 +51,16 @@ export class QueryGetCustomersDTO {
   @IsOptional()
   @Type(() => Number)
   public age?: number;
+
+  @IsDateString()
+  @IsOptional()
+  @Type(() => Date)
+  public createdBefore?: Date;
+
+  @IsDateString()
+  @IsOptional()
+  @Type(() => Date)
+  public createdAfter?: Date;
 }
 
 export type OutGetCustomersDTO = Page<Customer>;
