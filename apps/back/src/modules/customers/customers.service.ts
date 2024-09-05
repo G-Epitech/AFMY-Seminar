@@ -74,6 +74,10 @@ export class CustomersService {
         gender: filters?.gender
           ? convertGenderToPrisma(filters.gender)
           : undefined,
+        createdAt: {
+          gte: filters?.createdAfter,
+          lte: filters?.createdBefore,
+        },
       },
     });
   }
@@ -106,6 +110,10 @@ export class CustomersService {
           gender: filters?.gender
             ? convertGenderToPrisma(filters.gender)
             : undefined,
+          createdAt: {
+            gte: filters?.createdAfter,
+            lte: filters?.createdBefore,
+          },
         },
         take: limit,
         skip,
