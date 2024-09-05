@@ -1,20 +1,22 @@
 import {
   AstrologicalSign as PrismaAstro,
   ClothesType as PrismaClotheType,
+  Employee as PrismaEmployee,
   EncounterStatus as PrismaEncounterStatus,
   Gender as PrismaGender,
-  PayementMethod as PrismaPaymentMethod,
+  PaymentMethod as PrismaPaymentMethod,
   Permission as PrismaPermission,
-  Employee as PrismaEmployee,
+  PhotoFormat as PrismaPhotoFormat,
 } from '@prisma/client';
 import {
   AstrologicalSign,
-  ClothesType,
+  ClotheType,
   Employee,
   EncounterStatus,
   Gender,
   PaymentMethod,
   Permission,
+  PhotoFormat,
 } from '@seminar/common';
 
 export function convertGender(gender: PrismaGender): Gender {
@@ -83,16 +85,16 @@ export function convertEncounterStatus(
   }
 }
 
-export function convertClothesType(type: PrismaClotheType): ClothesType {
+export function convertClotheType(type: PrismaClotheType): ClotheType {
   switch (type) {
     case PrismaClotheType.TOP:
-      return ClothesType.TOP;
+      return ClotheType.TOP;
     case PrismaClotheType.BOTTOM:
-      return ClothesType.BOTTOM;
+      return ClotheType.BOTTOM;
     case PrismaClotheType.HAT_CAP:
-      return ClothesType.HAT_CAP;
+      return ClotheType.HAT_CAP;
     case PrismaClotheType.SHOES:
-      return ClothesType.SHOES;
+      return ClotheType.SHOES;
   }
 }
 
@@ -164,17 +166,15 @@ export function convertEncounterStatusToPrisma(
   }
 }
 
-export function convertClothesTypeToPrisma(
-  type: ClothesType,
-): PrismaClotheType {
+export function convertClotheTypeToPrisma(type: ClotheType): PrismaClotheType {
   switch (type) {
-    case ClothesType.TOP:
+    case ClotheType.TOP:
       return PrismaClotheType.TOP;
-    case ClothesType.BOTTOM:
+    case ClotheType.BOTTOM:
       return PrismaClotheType.BOTTOM;
-    case ClothesType.HAT_CAP:
+    case ClotheType.HAT_CAP:
       return PrismaClotheType.HAT_CAP;
-    case ClothesType.SHOES:
+    case ClotheType.SHOES:
       return PrismaClotheType.SHOES;
   }
 }
@@ -204,5 +204,34 @@ export function convertEmployee(employee: PrismaEmployee): Employee {
     ...employee,
     gender: convertGender(employee.gender),
     permission: convertPermission(employee.permission),
+    photoFormat: employee.photoFormat
+      ? convertPhotoFormat(employee.photoFormat)
+      : null,
   };
+}
+
+export function convertPhotoFormat(
+  photoFormat: PrismaPhotoFormat,
+): PhotoFormat {
+  switch (photoFormat) {
+    case PrismaPhotoFormat.GIF:
+      return PhotoFormat.GIF;
+    case PrismaPhotoFormat.JPEG:
+      return PhotoFormat.JPEG;
+    case PrismaPhotoFormat.PNG:
+      return PhotoFormat.PNG;
+  }
+}
+
+export function convertPhotoFormatToPrisma(
+  photoFormat: PhotoFormat,
+): PrismaPhotoFormat {
+  switch (photoFormat) {
+    case PhotoFormat.GIF:
+      return PrismaPhotoFormat.GIF;
+    case PhotoFormat.JPEG:
+      return PrismaPhotoFormat.JPEG;
+    case PhotoFormat.PNG:
+      return PrismaPhotoFormat.PNG;
+  }
 }
