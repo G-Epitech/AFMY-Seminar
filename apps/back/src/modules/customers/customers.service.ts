@@ -558,6 +558,10 @@ export class CustomersService {
       });
   }
 
+  async getEncountersSources(): Promise<string[]> {
+    return [];
+  }
+
   async getCustomerEncountersCount(id: IdOf<Customer>): Promise<number> {
     return this._prismaService.encounter.count({
       where: {
