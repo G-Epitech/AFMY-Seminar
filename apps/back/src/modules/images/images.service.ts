@@ -133,7 +133,6 @@ export class ImagesService {
   public async getImageOf(token: string): Promise<ImageTyped | undefined> {
     const payload = await this.verifyToken(token);
 
-    console.log(payload);
     if (!payload) {
       return undefined;
     }

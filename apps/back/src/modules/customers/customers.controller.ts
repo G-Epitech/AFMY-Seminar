@@ -10,9 +10,7 @@ import {
   Patch,
   Post,
   Query,
-  Res,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { CustomersService } from './customers.service';
 import {
   Customer,
