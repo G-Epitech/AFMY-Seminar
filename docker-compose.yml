@@ -16,6 +16,8 @@ services:
     build:
       context: ./
       dockerfile: ./apps/back/Dockerfile
+    command: >
+      bash -c "npm install; npm run back:dev"
     image: seminar-back-image
     container_name: back
     env_file:
@@ -34,7 +36,8 @@ services:
     build:
       context: ./
       dockerfile: ./apps/front/Dockerfile
-    image: seminar-front-image
+    command: >
+      bash -c "npm install; npm run front:dev"
     container_name: front
     env_file:
       - apps/front/.env

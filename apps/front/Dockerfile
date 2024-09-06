@@ -9,7 +9,7 @@ WORKDIR /seminar/packages
 COPY packages ./
 
 WORKDIR /seminar
-COPY package.json ./
+COPY package.json package-lock.json ./
 
 RUN npm install
 
