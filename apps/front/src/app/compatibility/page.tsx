@@ -23,7 +23,11 @@ export default function CompatibilityPage() {
     );
 
     const fetchCustomers = async (name?: string) => {
-        const customers = await api.customers.get(name);
+        const customers = await api.customers.list({
+            page: 1,
+            size: 10,
+            name: name || undefined,
+        })
 
         if (!customers || !customers.ok) return;
 
