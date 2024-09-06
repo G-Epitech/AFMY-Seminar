@@ -38,6 +38,7 @@ services:
       dockerfile: ./apps/front/Dockerfile
     command: >
       bash -c "npm install; npm run front:dev"
+    image: seminar-front-image
     container_name: front
     env_file:
       - apps/front/.env
