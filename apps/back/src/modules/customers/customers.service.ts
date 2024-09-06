@@ -165,6 +165,7 @@ export class CustomersService {
           photoFormat: customer.photoFormat
             ? convertPhotoFormat(customer.photoFormat)
             : null,
+          country: customer.country,
         };
       });
   }
@@ -201,7 +202,7 @@ export class CustomersService {
           return undefined;
         }
       })
-      .then((customer?: PrismaCustomer) => {
+      .then((customer?: PrismaCustomer): Customer | undefined => {
         if (!customer) return undefined;
 
         return {
@@ -555,6 +556,10 @@ export class CustomersService {
       .then((payment: PrismaPayment | null) => {
         return !!payment;
       });
+  }
+
+  async getEncountersSources(): Promise<string[]> {
+    return [];
   }
 
   async getCustomerEncountersCount(id: IdOf<Customer>): Promise<number> {

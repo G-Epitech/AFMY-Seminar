@@ -89,8 +89,8 @@ export interface LegacyApiEndpoints {
     }
   >;
 
-  'GET /encounters/customer{customer_id}': LegacyApiEndpoint<
-    EncounterLegacyDto[],
+  'GET /encounters/customer/{customer_id}': LegacyApiEndpoint<
+    ShortEncounterLegacyDto[],
     {
       customer_id: number;
     }
