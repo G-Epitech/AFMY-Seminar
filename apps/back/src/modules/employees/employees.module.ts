@@ -5,6 +5,7 @@ import { EmployeesMigrationService } from './employees-migration.service';
 import { LegacyApiModule } from '../../providers/legacy-api/legacy-api.module';
 import { AuthModule } from '../auth/auth.module';
 import { EmployeesController } from './employees.controller';
+import { ImagesModule } from '../images/images.module';
 
 const EmployeesService = {
   provide: OriginalEmployeesService,
@@ -12,7 +13,12 @@ const EmployeesService = {
 };
 
 @Module({
-  imports: [PrismaModule, LegacyApiModule, forwardRef(() => AuthModule)],
+  imports: [
+    PrismaModule,
+    ImagesModule,
+    LegacyApiModule,
+    forwardRef(() => AuthModule),
+  ],
   providers: [EmployeesService, EmployeesMigrationService],
   exports: [EmployeesService, EmployeesMigrationService],
   controllers: [EmployeesController],
