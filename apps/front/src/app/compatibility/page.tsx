@@ -49,21 +49,25 @@ export default function CompatibilityPage() {
     }, []);
 
     useEffect(() => {
+        if (isCustomerLoading) return;
+        setIsCustomerLoading(true);
         fetchCustomers(inputA);
     }, [inputA]);
 
     useEffect(() => {
+        if (isCustomerLoading) return;
+        setIsCustomerLoading(true);
         fetchCustomers(inputB);
     }, [inputB]);
 
     useEffect(() => {
+        setIsCustomerLoading(true);
+        fetchCustomers();
+
         if (!customerA || !customerB) {
             setCompatibility(null);
             return;
         }
-
-        setIsCustomerLoading(true);
-        fetchCustomers();
 
         fetchCompatibility();
     }, [customerA, customerB]);
