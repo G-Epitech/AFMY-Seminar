@@ -1,20 +1,16 @@
-import {
-  Controller,
-  Get,
-  Inject,
-  NotFoundException,
-  Param,
-  Res,
-} from '@nestjs/common';
+import { Controller, Get, Inject } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
-import { OutGetMeDto, ParamGetEmployeePhotoDTO } from '@seminar/common';
-import { Response } from 'express';
-import fetch from 'node-fetch';
+import { OutGetMeDto } from '@seminar/common';
+import { ImagesService } from '../images/images.service';
+import { ImageTokenType } from '../../types/images';
 
 @Controller('employees')
 export class EmployeesController {
   @Inject(EmployeesService)
   private readonly _employeesService: EmployeesService;
+
+  @Inject(ImagesService)
+  private readonly _imagesService: ImagesService;
 
   @Get('me')
   async getMe(): Promise<OutGetMeDto> {
@@ -32,35 +28,11 @@ export class EmployeesController {
       permission: me.permission,
       role: me.role,
       numberOfCustomers: me.numberOfCustomers,
-      photo: '/employees/' + me.id + '/photo',
+      photo: this._imagesService.getLinkOf({
+        type: ImageTokenType.EMPLOYEE,
+        id: me.id,
+      }),
       photoFormat: me.photoFormat,
     };
-  }
-
-  @Get(':id/photo')
-  async getEmployeePhoto(
-    @Res() res: Response,
-    @Param() { id }: ParamGetEmployeePhotoDTO,
-  ): Promise<Response | string> {
-    const employee = await this._employeesService.getEmployeeById(id);
-
-    if (employee === null) {
-      throw new NotFoundException(`Employee with id ${id} not found`);
-    }
-
-    if (!employee.photo || !employee.photoFormat) {
-      const avatar = await fetch(
-        'https://ui-avatars.com/api/?background=random&name=' +
-          employee.name +
-          '+' +
-          employee.surname,
-      );
-      const buffer = await avatar.buffer();
-      return res.set('Content-Type', 'image/png').send(buffer);
-    }
-
-    return res
-      .set('Content-Type', 'image/' + employee.photoFormat)
-      .send(Buffer.from(employee.photo, 'base64'));
   }
 }

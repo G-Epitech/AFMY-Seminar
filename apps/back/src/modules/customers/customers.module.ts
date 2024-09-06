@@ -7,6 +7,7 @@ import { CustomersCompatibilityService } from './compatiblity.service';
 import { PermissionsModule } from '../permissions/permissions.module';
 import { CustomersMigrationService } from './customers-migration.service';
 import { LegacyApiModule } from '../../providers/legacy-api/legacy-api.module';
+import { ImagesModule } from '../images/images.module';
 
 const CustomersService = {
   provide: OriginalCustomersService,
@@ -14,7 +15,13 @@ const CustomersService = {
 };
 
 @Module({
-  imports: [PrismaModule, AuthModule, PermissionsModule, LegacyApiModule],
+  imports: [
+    PrismaModule,
+    AuthModule,
+    PermissionsModule,
+    LegacyApiModule,
+    ImagesModule,
+  ],
   controllers: [CustomersController],
   providers: [CustomersService, CustomersCompatibilityService],
 })

@@ -148,6 +148,7 @@ export class CustomersMigrationService extends CustomersService {
             phone: customer.phone_number,
             country: 'France',
           })),
+        skipDuplicates: true,
       });
     } catch (error) {
       console.log(error);
@@ -256,6 +257,7 @@ export class CustomersMigrationService extends CustomersService {
           select: {
             id: true,
           },
+          skipDuplicates: true,
         });
       await this._prismaService.customer.update({
         where: {
@@ -263,7 +265,7 @@ export class CustomersMigrationService extends CustomersService {
         },
         data: {
           clothes: {
-            connect: createdClothes.map(({ id }) => ({ id })),
+            connect: createdClothes,
           },
         },
       });
@@ -429,6 +431,7 @@ export class CustomersMigrationService extends CustomersService {
         comment: encounter.comment,
         status: convertEncounterStatusToPrisma(EncounterStatus.DONE),
       })),
+      skipDuplicates: true,
     });
   }
 
