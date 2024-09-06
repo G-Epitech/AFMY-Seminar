@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/chart"
 import { useEffect, useState } from "react"
 import { arrowIcons } from "@/components/icons/events"
-
+import { DashboardChartProps } from "./utils"
 
 const chartConfig = {
   events: {
@@ -34,7 +34,9 @@ type ChartData = {
   number: number;
 }
 
-export default function DashboardChartEvents() {
+export default function DashboardChartEvents(
+  { statistics }: DashboardChartProps
+) {
   const [activeMonthData, setActiveMonthData] = useState<ChartData[]>([]);
   const [previousMonthData, setPreviousMonthData] = useState<ChartData[]>([]);
 

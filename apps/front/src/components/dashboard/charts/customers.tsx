@@ -1,13 +1,11 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
 
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -17,58 +15,21 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { arrowIcons } from "@/components/icons/events"
-import { title } from "process"
+import { DashbordMetrics } from "./metrics"
+import { DashboardChartProps } from "./utils"
 
 export const description = "A simple area chart"
 
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 173 },
-  { month: "May", desktop: 209 },
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "June", desktop: 214 },
-  { month: "March", desktop: 237 },
-  { month: "June", desktop: 214 },
-  { month: "May", desktop: 209 },
-  { month: "February", desktop: 305 },
-  { month: "April", desktop: 173 },
-  { month: "January", desktop: 186 },
-  { month: "March", desktop: 237 },
-  { month: "May", desktop: 209 },
-  { month: "April", desktop: 173 },
-  { month: "June", desktop: 214 },
-]
-
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  count: {
+    label: "Customers",
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig
 
-const summary = {
-  customers: {
-    total: 932,
-    performance: 12.37,
-    title: "Customers",
-  },
-  meeting: {
-    total: 28.49,
-    performance: -12.37,
-    title: "Doing Meeting",
-  },
-  coach: {
-    total: 34,
-    performance: 1.2,
-    title: "Customer by coach",
-  },
-};
-
-export default function DashboardChartCustomers() {
+export default function DashboardChartCustomers(
+  { statistics }: DashboardChartProps
+) {
   return (
     <Card className="w-full">
       <CardHeader>
@@ -80,44 +41,95 @@ export default function DashboardChartCustomers() {
         </div>
         <div>
           <div className="flex justify-around">
-            {Object.entries(summary).map(([key, { total, performance, title }]) => (
-              <div key={key} className="flex flex-col items-center gap-1 px-4 pb-3 sm:pb-4">
-                <div className="text-sm text-text-secondary">{title}</div>
-                <div className="text-lg font-semibold">{total}</div>
-                <div className={`text-sm ${performance >= 0 ? "text-green-500" : "text-red-500"}`}>
-                  {performance >= 0 ? arrowIcons["up"]() : arrowIcons["down"]()}
-                  <span className="ml-1">
-                    {performance.toFixed(2)}%
-                  </span>
-                </div>
-              </div>
-            ))}
+            <DashbordMetrics
+              title="Customers"
+              number={statistics.customers.count}
+              performance={statistics.customers.evolutionCount}
+            />
+            <DashbordMetrics
+              title="Doing Meetings"
+              number={statistics.customers.doingMeetings}
+              performance={statistics.customers.evolutionDoingMeetings}
+            />
+            <DashbordMetrics
+              title="Customers by Coach"
+              number={statistics.customers.customersByCoach}
+            />
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
-          <AreaChart
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-auto h-[250px] w-full"
+        >
+          <LineChart
             accessibilityLayer
-            data={chartData}
+            data={statistics.customers.history}
             margin={{
               left: 12,
               right: 12,
             }}
           >
-            <CartesianGrid vertical={false} />
+            <CartesianGrid
+              vertical={false}
+              horizontal={true}
+            />
             <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="line" />}
+              content={
+                <ChartTooltipContent
+                  className="w-[150px]"
+                  nameKey="views"
+                  labelFormatter={(value) => {
+                    return new Date(value).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })
+                  }}
+                />
+              }
             />
-            <Area
-              dataKey="desktop"
-              type="natural"
-              fill="var(--color-desktop)"
-              fillOpacity={0.4}
-              stroke="var(--color-desktop)"
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              axisLine={false}
+              padding={{ left: 15, right: 15 }}
+              tickMargin={10}
+              interval={0}
+              tickFormatter={(value, index) => {
+                const date = new Date(value);
+                const allowedDates = [
+                  0,
+                  statistics.customers.history.length / 2,
+                  statistics.customers.history.length - 1,
+                ];
+
+                if (allowedDates.includes(index)) {
+                  return date.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })
+                }
+                return ""
+              }}
             />
-          </AreaChart>
+            <YAxis
+              domain={['auto', 'dataMax + 10']}
+              tickLine={false}
+              axisLine={false}
+              width={0}
+            />
+            <Line
+              dataKey="count"
+              type={"monotone"}
+              fillOpacity={0.5}
+              strokeWidth={2}
+              fill="var(--color-count)"
+              stroke="var(--color-count)"
+              dot={false}
+            />
+          </LineChart>
         </ChartContainer>
       </CardContent>
     </Card>

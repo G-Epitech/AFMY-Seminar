@@ -5,6 +5,7 @@ import { interpolateRgb } from "d3-interpolate";
 import { scaleLinear } from "d3-scale";
 import React from "react"
 import { ComposableMap, Geographies, Geography } from "react-simple-maps"
+import { DashboardChartProps } from "./utils";
 
 const Countries = [
   {
@@ -83,7 +84,9 @@ function getColor(value: number) {
   return colorInterpolator(numericValue);
 }
 
-export default function DashboardChartMap() {
+export default function DashboardChartMap(
+  { statistics }: DashboardChartProps
+) {
   return (
     <Card className="w-full">
       <CardHeader className="pb-0">

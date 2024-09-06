@@ -17,6 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { DashboardChartProps } from "./utils"
 
 export const description = "A donut chart"
 
@@ -54,7 +55,9 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export default function DashboardChartMeetings() {
+export default function DashboardChartMeetings(
+  { statistics }: DashboardChartProps
+) {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
