@@ -20,23 +20,28 @@ export function CustomerClosetItems(
         {items.length === 0 &&
           <p className="ml-2">No items found</p>
         }
-        {items.map(item => (
-          <div
-            key={item.id}
-            className={`w-60 sm:w-48 relative p-1 rounded-md border-4 border-white ${selectedItemId[type] === item.id ? 'border-orange-500' : ''}`}
-            onClick={() => setSelectedItemId(prev => ({ ...prev, [type]: prev[type] === item.id ? null : item.id }))}
-          >
-            <Card>
-              <CardContent className="p-0">
-                <img src={item.image} alt={item.type} className="w-full rounded-md" />
-              </CardContent>
-              <Checkbox
-                checked={selectedItemId[type] === item.id}
-                className="absolute top-2 right-2"
-              />
-            </Card>
-          </div>
-        ))}
+        {items.map((item) => {
+          if (!selectedItemId) {
+            return null;
+          }
+          return (
+            <div
+              key={item.id}
+              className={`w-60 sm:w-48 relative p-1 rounded-md border-4 border-white ${selectedItemId[type] === item.id ? 'border-orange-500' : ''}`}
+              onClick={() => setSelectedItemId(prev => ({ ...prev, [type]: prev[type] === item.id ? null : item.id }))}
+            >
+              <Card>
+                <CardContent className="p-0">
+                  <img src={`data:image/png;base64,${item.image}`} alt={item.type} className="w-full rounded-md" />
+                </CardContent>
+                <Checkbox
+                  checked={selectedItemId[type] === item.id}
+                  className="absolute top-2 right-2"
+                />
+              </Card>
+            </div>
+          )
+        })}
       </div>
     </div>
   )

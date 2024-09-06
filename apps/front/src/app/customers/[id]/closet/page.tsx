@@ -1,28 +1,55 @@
 "use client";
 
+import api from "@/api";
 import { CustomerClosetCombination } from "@/components/customers/closet/combination";
 import { CustomerClosetItems } from "@/components/customers/closet/items";
 import { Subtitle } from "@/components/text/subtitle";
 import { Clothe, ClotheType, Customer } from "@seminar/common";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ClosetPage() {
+  const { id } = useParams<{ id: string }>();
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [clothes, setClothes] = useState<Clothe[]>([]);
-  const [selectedItemIds, setSelectedItemIds] = useState(
-    temporaryClothes.reduce((acc, c) => {
-      acc[c.type] = null;
-      return acc;
-    }, {} as Record<ClotheType, number | null>)
-  );
+  const [selectedItemIds, setSelectedItemIds] = useState<Record<ClotheType, number | null>>({
+    [ClotheType.HAT_CAP]: null,
+    [ClotheType.TOP]: null,
+    [ClotheType.BOTTOM]: null,
+    [ClotheType.SHOES]: null,
+  });
+
+  const fetchCustomers = async () => {
+    const response = await api.customers.list();
+    console.log(response);
+    fetchCustomerClothes();
+  }
+
+  const fetchCustomerClothes = async () => {
+    const response = await api.customers.clothes({ id: parseInt(id) });
+    console.log(response);
+    if (response) {
+      setClothes(response.data.items);
+      setSelectedItemIds(response.data.items.reduce((acc, c) => {
+              acc[c.type] = null;
+              return acc;
+            }, {} as Record<ClotheType, number | null>));
+    }
+  }
 
   useEffect(() => {
-    const updatedUrlsClothes = temporaryClothes.map(c => {
-      c.image = `https://picsum.photos/400/534?random=${c.id}`;
-      return c;
-    });
-    setClothes(updatedUrlsClothes);
+    // const updatedUrlsClothes = temporaryClothes.map(c => {
+    //   c.image = `https://picsum.photos/400/534?random=${c.id}`;
+    //   return c;
+    // });
+    // setClothes(updatedUrlsClothes);
+    fetchCustomers();
+    // fetchCustomerClothes();
   }, []);
+
+  useEffect(() => {
+    console.log(selectedItemIds);
+  }, [selectedItemIds]);
 
   return (
     <main>
