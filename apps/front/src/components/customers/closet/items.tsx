@@ -27,18 +27,20 @@ export function CustomerClosetItems(
           return (
             <div
               key={item.id}
-              className={`w-60 sm:w-48 relative p-1 rounded-md border-4 border-white ${selectedItemId[type] === item.id ? 'border-orange-500' : ''}`}
+              className={`w-60 sm:w-48 relative`}
               onClick={() => setSelectedItemId(prev => ({ ...prev, [type]: prev[type] === item.id ? null : item.id }))}
             >
+              <div className={`p-1 rounded-md border-4 ${selectedItemId[type] === item.id ? 'border-orange-500' : 'border-white'}`}>
               <Card>
                 <CardContent className="p-0">
                   <img src={`data:image/png;base64,${item.image}`} alt={item.type} className="w-full rounded-md" />
                 </CardContent>
                 <Checkbox
                   checked={selectedItemId[type] === item.id}
-                  className="absolute top-2 right-2"
-                />
+                  className="absolute top-4 right-4"
+                  />
               </Card>
+                  </div>
             </div>
           )
         })}
