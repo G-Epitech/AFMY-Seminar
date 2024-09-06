@@ -54,30 +54,38 @@ export class CustomersService {
   async getCustomersCount(filters?: CustomersFilters): Promise<number> {
     return this._prismaService.customer.count({
       where: {
+        OR: filters?.name
+          ? [
+              { name: { contains: filters.name, mode: 'insensitive' } },
+              { surname: { contains: filters.name, mode: 'insensitive' } },
+            ]
+          : undefined,
         birthDate: {
           gte: filters?.age
             ? new Date(new Date().getFullYear() - filters.age, 0)
             : undefined,
-        },
-        email: {
-          contains: filters?.email,
-        },
-        name: {
-          contains: filters?.name,
-        },
-        surname: {
-          contains: filters?.name,
+          lte: filters?.age
+            ? new Date(new Date().getFullYear() - filters.age + 1, 0)
+            : undefined,
         },
         sign: filters?.astrologicalSign
           ? convertAstrologicalSignToPrisma(filters.astrologicalSign)
           : undefined,
+        email: {
+          contains: filters?.email,
+          mode: 'insensitive',
+        },
         gender: filters?.gender
           ? convertGenderToPrisma(filters.gender)
           : undefined,
-        createdAt: {
-          gte: filters?.createdAfter,
-          lte: filters?.createdBefore,
-        },
+        createdAt:
+          filters?.createdAfter || filters?.createdBefore
+            ? {
+                gte: filters?.createdAfter,
+                lte: filters?.createdBefore,
+              }
+            : undefined,
+        coachId: filters?.coachId ? filters.coachId : undefined,
       },
     });
   }
@@ -90,30 +98,38 @@ export class CustomersService {
     return this._prismaService.customer
       .findMany({
         where: {
+          OR: filters?.name
+            ? [
+                { name: { contains: filters.name, mode: 'insensitive' } },
+                { surname: { contains: filters.name, mode: 'insensitive' } },
+              ]
+            : undefined,
           birthDate: {
             gte: filters?.age
               ? new Date(new Date().getFullYear() - filters.age, 0)
               : undefined,
-          },
-          email: {
-            contains: filters?.email,
-          },
-          name: {
-            contains: filters?.name,
-          },
-          surname: {
-            contains: filters?.name,
+            lte: filters?.age
+              ? new Date(new Date().getFullYear() - filters.age + 1, 0)
+              : undefined,
           },
           sign: filters?.astrologicalSign
             ? convertAstrologicalSignToPrisma(filters.astrologicalSign)
             : undefined,
+          email: {
+            contains: filters?.email,
+            mode: 'insensitive',
+          },
           gender: filters?.gender
             ? convertGenderToPrisma(filters.gender)
             : undefined,
-          createdAt: {
-            gte: filters?.createdAfter,
-            lte: filters?.createdBefore,
-          },
+          createdAt:
+            filters?.createdAfter || filters?.createdBefore
+              ? {
+                  gte: filters?.createdAfter,
+                  lte: filters?.createdBefore,
+                }
+              : undefined,
+          coachId: filters?.coachId ? filters.coachId : undefined,
         },
         take: limit,
         skip,
@@ -149,6 +165,7 @@ export class CustomersService {
           photoFormat: customer.photoFormat
             ? convertPhotoFormat(customer.photoFormat)
             : null,
+          country: customer.country,
         };
       });
   }
@@ -185,7 +202,7 @@ export class CustomersService {
           return undefined;
         }
       })
-      .then((customer?: PrismaCustomer) => {
+      .then((customer?: PrismaCustomer): Customer | undefined => {
         if (!customer) return undefined;
 
         return {
@@ -541,6 +558,10 @@ export class CustomersService {
       });
   }
 
+  async getEncountersSources(): Promise<string[]> {
+    return [];
+  }
+
   async getCustomerEncountersCount(id: IdOf<Customer>): Promise<number> {
     return this._prismaService.encounter.count({
       where: {
@@ -784,7 +805,7 @@ export class CustomersService {
       });
   }
 
-  async getCustomerClotheCount(id: IdOf<Customer>): Promise<number> {
+  async getCustomerClothesCount(id: IdOf<Customer>): Promise<number> {
     return this._prismaService.clothe.count({
       where: {
         customers: {

@@ -5,6 +5,7 @@ import { store } from './index';
 import { persistStore } from 'redux-persist';
 import { useEffect } from 'react';
 import { setUser } from './authSlice';
+import api from '@/api';
 
 persistStore(store);
 
@@ -15,10 +16,10 @@ export default function ReduxProvider({
 }) {
     useEffect(() => {
         const refreshUser = async () => {
-            const response = 'HAY';
+            const response = await api.employees.me();
 
             if (response) {
-                store.dispatch(setUser(`response.data`));
+                store.dispatch(setUser(response.data));
             } else {
                 store.dispatch(setUser(null));
             }

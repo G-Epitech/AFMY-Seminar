@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../providers';
 import { AuthEmployeeContext } from '../auth/auth.employee.context';
-import { Customer, IdOf } from '@seminar/common';
+import { Customer, IdOf, Permission } from '@seminar/common';
 
 @Injectable()
 export class PermissionsService {
@@ -18,6 +18,10 @@ export class PermissionsService {
       return false;
     }
 
+    if (this.isManager()) {
+      return true;
+    }
+
     const employeeId = this.authEmployeeContext.employee.id;
     const customer = await this.prismaService.customer.findUnique({
       where: { id: customerId },
@@ -28,5 +32,13 @@ export class PermissionsService {
     }
 
     return customer.coachId === employeeId;
+  }
+
+  public isManager(): boolean {
+    if (!this.authEmployeeContext.authenticated) {
+      return false;
+    }
+
+    return this.authEmployeeContext.employee.permission === Permission.MANAGER;
   }
 }

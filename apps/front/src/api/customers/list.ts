@@ -1,13 +1,13 @@
-import { OutGetCustomersDTO, QueryGetCustomersDTO } from "@seminar/common";
+import { OutGetCustomerClothesDTO, ParamGetCustomerClothesDTO, QueryGetCustomerClothesDTO } from "@seminar/common";
 import { call } from "../call";
 
-export function list(query: QueryGetCustomersDTO) {
+export function list(query?: QueryGetCustomerClothesDTO) {
   const filteredQuery = Object.fromEntries(
-    Object.entries(query).filter(([_, value]) => value !== undefined)
+    Object.entries(query || {}).filter(([, value]) => value !== undefined),
   );
 
-  return call<QueryGetCustomersDTO, OutGetCustomersDTO>(
+  return call<undefined, OutGetCustomerClothesDTO>(
     "GET",
-    `/customers?${new URLSearchParams(filteredQuery as Record<string, string>)}`,
+    `/customers?${new URLSearchParams(filteredQuery).toString()}`,
   );
 }

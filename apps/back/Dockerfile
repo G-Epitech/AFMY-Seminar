@@ -10,9 +10,9 @@ WORKDIR /seminar/packages
 COPY packages ./
 
 WORKDIR /seminar
-COPY package.json ./
+COPY package.json package-lock.json ./
 
-RUN npm install
+RUN npm ci --omit=optional
 
 WORKDIR /seminar/apps/back
 
