@@ -17,6 +17,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { arrowIcons } from "@/components/icons/events"
+import { title } from "process"
 
 export const description = "A simple area chart"
 
@@ -24,8 +26,20 @@ const chartData = [
   { month: "January", desktop: 186 },
   { month: "February", desktop: 305 },
   { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
+  { month: "April", desktop: 173 },
   { month: "May", desktop: 209 },
+  { month: "January", desktop: 186 },
+  { month: "February", desktop: 305 },
+  { month: "June", desktop: 214 },
+  { month: "March", desktop: 237 },
+  { month: "June", desktop: 214 },
+  { month: "May", desktop: 209 },
+  { month: "February", desktop: 305 },
+  { month: "April", desktop: 173 },
+  { month: "January", desktop: 186 },
+  { month: "March", desktop: 237 },
+  { month: "May", desktop: 209 },
+  { month: "April", desktop: 173 },
   { month: "June", desktop: 214 },
 ]
 
@@ -36,14 +50,50 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
+const summary = {
+  customers: {
+    total: 932,
+    performance: 12.37,
+    title: "Customers",
+  },
+  meeting: {
+    total: 28.49,
+    performance: -12.37,
+    title: "Doing Meeting",
+  },
+  coach: {
+    total: 34,
+    performance: 1.2,
+    title: "Customer by coach",
+  },
+};
+
 export default function DashboardChartCustomers() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Area Chart</CardTitle>
-        <CardDescription>
-          Showing total visitors for the last 6 months
-        </CardDescription>
+        <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+          <CardTitle>Customers Overview</CardTitle>
+          <CardDescription>
+            When the customers have joined in the time
+          </CardDescription>
+        </div>
+        <div>
+          <div className="flex justify-around">
+            {Object.entries(summary).map(([key, { total, performance, title }]) => (
+              <div key={key} className="flex flex-col items-center gap-1 px-4 pb-3 sm:pb-4">
+                <div className="text-sm text-text-secondary">{title}</div>
+                <div className="text-lg font-semibold">{total}</div>
+                <div className={`text-sm ${performance >= 0 ? "text-green-500" : "text-red-500"}`}>
+                  {performance >= 0 ? arrowIcons["up"]() : arrowIcons["down"]()}
+                  <span className="ml-1">
+                    {performance.toFixed(2)}%
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -56,13 +106,6 @@ export default function DashboardChartCustomers() {
             }}
           >
             <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent indicator="line" />}
