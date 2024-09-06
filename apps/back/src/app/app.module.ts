@@ -5,9 +5,16 @@ import { APP_GUARD } from '@nestjs/core';
 import { CustomersModule } from '../modules/customers/customers.module';
 import { LegacyApiModule } from '../providers/legacy-api/legacy-api.module';
 import { AuthGuard } from '../modules/auth/guards/jwt-auth.guard';
+import { StatisticsModule } from '../modules/statistics/statistics.module';
 
 @Module({
-  imports: [LegacyApiModule, AuthModule, EmployeesModule, CustomersModule],
+  imports: [
+    LegacyApiModule,
+    AuthModule,
+    EmployeesModule,
+    CustomersModule,
+    StatisticsModule,
+  ],
   controllers: [],
   providers: [
     {
