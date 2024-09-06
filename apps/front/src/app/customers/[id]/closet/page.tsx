@@ -9,6 +9,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ClosetPage() {
+  const [loading, setLoading] = useState(true);
   const { id } = useParams<{ id: string }>();
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [clothes, setClothes] = useState<Clothe[]>([]);
@@ -27,10 +28,11 @@ export default function ClosetPage() {
     if (response) {
       setClothes(response.data.items);
       setSelectedItemIds(response.data.items.reduce((acc, c) => {
-              acc[c.type] = null;
-              return acc;
-            }, {} as Record<ClotheType, number | null>));
+        acc[c.type] = null;
+        return acc;
+      }, {} as Record<ClotheType, number | null>));
     }
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -46,24 +48,28 @@ export default function ClosetPage() {
           clothes={clothes.filter(c => c.type === ClotheType.HAT_CAP)}
           selectedItemId={selectedItemIds}
           setSelectedItemId={setSelectedItemIds}
+          loading={loading}
         />
         <CustomerClosetItems
           type={ClotheType.TOP}
           clothes={clothes.filter(c => c.type === ClotheType.TOP)}
           selectedItemId={selectedItemIds}
           setSelectedItemId={setSelectedItemIds}
+          loading={loading}
         />
         <CustomerClosetItems
           type={ClotheType.BOTTOM}
           clothes={clothes.filter(c => c.type === ClotheType.BOTTOM)}
           selectedItemId={selectedItemIds}
           setSelectedItemId={setSelectedItemIds}
+          loading={loading}
         />
         <CustomerClosetItems
           type={ClotheType.SHOES}
           clothes={clothes.filter(c => c.type === ClotheType.SHOES)}
           selectedItemId={selectedItemIds}
           setSelectedItemId={setSelectedItemIds}
+          loading={loading}
         />
       </div>
       <div className="flex w-full justify-center">
