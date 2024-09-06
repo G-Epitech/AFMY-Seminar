@@ -40,7 +40,7 @@ export default function DashboardChartCustomers(
           </CardDescription>
         </div>
         <div>
-          <div className="flex justify-around">
+          <div className="flex justify-around items-center">
             <DashbordMetrics
               title="Customers"
               number={statistics.customers.count}
