@@ -101,24 +101,24 @@ export class StatisticsController {
     return {
       customers: {
         count: customers_count,
-        evolution_count: customers_evolution_count || 0,
-        doing_meetings,
-        evolution_doing_meetings: customers_evolution_doing_meetings || 0,
-        customers_by_coach:
+        evolutionCount: customers_evolution_count || 0,
+        doingMeetings: doing_meetings,
+        evolutionDoingMeetings: customers_evolution_doing_meetings || 0,
+        customersByCoach:
           await this._statisticsService.getCustomersByCoachAverage(timeFrame),
         history: await this._statisticsService.getCustomersHistory(timeFrame),
-        history_previous:
+        historyPrevious:
           await this._statisticsService.getCustomersHistory(previousTimeFrame),
         countries:
           await this._statisticsService.getCustomersByCountry(timeFrame),
       },
       events: {
-        count_month: events_month_count,
-        evolution_count_month: events_evolution_count_month,
-        count_week: events_week_count,
-        evolution_count_week: events_evolution_count_week,
-        daily_average: daily_average,
-        evolution_daily_average: evolution_daily_average,
+        countMonth: events_month_count,
+        evolutionCountMonth: events_evolution_count_month,
+        countWeek: events_week_count,
+        evolutionCountWeek: events_evolution_count_week,
+        dailyAverage: daily_average,
+        evolutionDailyAverage: evolution_daily_average,
         history: await this._statisticsService.getEventsHistory(timeFrame),
       },
       meetings: await this._statisticsService.getMeetingsBySource(timeFrame),
