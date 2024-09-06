@@ -1,6 +1,7 @@
 import DashboardChartCustomers from "@/components/dashboard/charts/customers";
 import DashboardChartEvents from "@/components/dashboard/charts/events";
 import DashboardChartMap from "@/components/dashboard/charts/map";
+import DashboardChartMeetings from "@/components/dashboard/charts/meetings";
 import { Subtitle } from "@/components/text/subtitle";
 
 export default function DashboardPage() {
@@ -10,6 +11,7 @@ export default function DashboardPage() {
   ];
   const dashboardsRight = [
     <DashboardChartEvents />,
+    <DashboardChartMeetings />,
   ];
 
   return (
