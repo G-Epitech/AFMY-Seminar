@@ -23,7 +23,11 @@ export default function CompatibilityPage() {
     );
 
     const fetchCustomers = async (name?: string) => {
-        const customers = await api.customers.get(name);
+        const customers = await api.customers.list({
+            page: 1,
+            size: 10,
+            name: name || undefined,
+        })
 
         if (!customers || !customers.ok) return;
 
@@ -49,21 +53,25 @@ export default function CompatibilityPage() {
     }, []);
 
     useEffect(() => {
+        if (isCustomerLoading) return;
+        setIsCustomerLoading(true);
         fetchCustomers(inputA);
     }, [inputA]);
 
     useEffect(() => {
+        if (isCustomerLoading) return;
+        setIsCustomerLoading(true);
         fetchCustomers(inputB);
     }, [inputB]);
 
     useEffect(() => {
+        setIsCustomerLoading(true);
+        fetchCustomers();
+
         if (!customerA || !customerB) {
             setCompatibility(null);
             return;
         }
-
-        setIsCustomerLoading(true);
-        fetchCustomers();
 
         fetchCompatibility();
     }, [customerA, customerB]);
