@@ -8,11 +8,12 @@ export interface CustomersTableProps {
   customers: Customer[];
   isLastPage: boolean;
   handleNextPage: (table: ReturnType<typeof useReactTable<Customer>>) => void;
-  pageIndex: number;
+  handlePreviousPage: (table: ReturnType<typeof useReactTable<Customer>>) => void;
+  maxRows: number;
 }
 
 export default function CustomersTable(
-  { customers, isLastPage, handleNextPage, pageIndex }: CustomersTableProps
+  { customers, isLastPage, handleNextPage, handlePreviousPage, maxRows }: CustomersTableProps
 ) {
   return (
     <SelectTable
@@ -23,7 +24,8 @@ export default function CustomersTable(
       actionComponent={({ table }) => <CustomersTableActions table={table} />}
       isLastPage={isLastPage}
       handleNextPage={handleNextPage}
-      pageIndex={pageIndex}
+      handlePreviousPage={handlePreviousPage}
+      maxRows={maxRows}
     />
   )
 }

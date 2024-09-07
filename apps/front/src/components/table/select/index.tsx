@@ -1,11 +1,11 @@
 import { Table } from "@/components/ui/datat-table";
 import { ColumnDef, ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import SelectTableFooter from "./footer";
 import SelectTableBody from "./body";
 import SelectTableHeader from "./header";
 import SelectTableFilters from "./filters";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 /**
  * Props for the SelectTable component.
@@ -26,11 +26,12 @@ export interface SelectTableProps<T> {
   actionComponent?: (props: { table: ReturnType<typeof useReactTable<T>> }) => React.ReactNode;
   isLastPage: boolean;
   handleNextPage: (table: ReturnType<typeof useReactTable<T>>) => void;
-  pageIndex: number;
+  handlePreviousPage: (table: ReturnType<typeof useReactTable<T>>) => void;
+  maxRows: number;
 }
 
 export default function SelectTable<T>(
-  { data, columns, filterSearchColumn, filterSearchPlaceholder, filterColumn, actionComponent, isLastPage, handleNextPage, pageIndex }: SelectTableProps<T>
+  { data, columns, filterSearchColumn, filterSearchPlaceholder, filterColumn, actionComponent, isLastPage, handleNextPage, handlePreviousPage, maxRows }: SelectTableProps<T>
 ) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -57,10 +58,6 @@ export default function SelectTable<T>(
     },
   })
 
-  useEffect(() => {
-
-  }, [data]);
-
   return (
     <Card className="p-4">
       <CardHeader className="pt-1 pb-4 px-0">
@@ -86,6 +83,8 @@ export default function SelectTable<T>(
           table={table}
           isLastPage={isLastPage}
           handleNextPage={handleNextPage}
+          handlePreviousPage={handlePreviousPage}
+          maxRows={maxRows}
         />
       </CardContent>
     </Card>

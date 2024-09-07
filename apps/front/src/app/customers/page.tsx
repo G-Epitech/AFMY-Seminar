@@ -9,13 +9,14 @@ import { useReactTable } from '@tanstack/react-table';
 export default function CustomersPage() {
   const [allCustomers, setAllCustomers] = useState<Customer[]>([]);
   const [fetchedPages, setFetchedPages] = useState<number[]>([]);
-  const [currentCustomersPage, setCurrentCustomersPage] = useState<Page<Customer>>({
+  const [lastCustomersPage, setLastCustomersPage] = useState<Page<Customer>>({
     index: 0,
     size: 10,
     isLast: false,
     items: [],
   });
   const [numberOfCustomers, setNumberOfCustomers] = useState<number>(0);
+  const [isLastPage, setIsLastPage] = useState<boolean>(true);
 
   const fetchCustomers = async (index: number, size: number) => {
     const nbOfCustomers = await api.customers.count();
@@ -29,32 +30,49 @@ export default function CustomersPage() {
     });
     console.log(response);
     if (response && response.ok) {
-      setCurrentCustomersPage(response.data);
+      setLastCustomersPage(response.data);
       setAllCustomers(response.data.items);
+      setIsLastPage(response.data.isLast);
     }
   };
 
   useEffect(() => {
-    fetchCustomers(currentCustomersPage.index, currentCustomersPage.size);
+    fetchCustomers(lastCustomersPage.index, lastCustomersPage.size);
   }, []);
 
   const handleNextPage = async (table: ReturnType<typeof useReactTable<Customer>>) => {
     const tableState = table.getState();
     if (fetchedPages.includes(tableState.pagination.pageIndex + 1)) {
+      if (tableState.pagination.pageIndex + 1 === lastCustomersPage.index && lastCustomersPage.isLast) {
+        setIsLastPage(true);
+      }
       table.setPageIndex(tableState.pagination.pageIndex + 1);
       return;
     }
     const response = await api.customers.list({
-      page: currentCustomersPage.index + 1,
-      size: currentCustomersPage.size,
+      page: lastCustomersPage.index + 1,
+      size: lastCustomersPage.size,
     });
     if (response && response.ok) {
-      setCurrentCustomersPage(response.data);
+      setLastCustomersPage(response.data);
       setAllCustomers(prev => [...prev, ...response.data.items]);
       table.setPageIndex(response.data.index);
       setFetchedPages(prev => [...prev, response.data.index]);
+      setIsLastPage(response.data.isLast);
     }
   };
+
+  const handlePreviousPage = async (table: ReturnType<typeof useReactTable<Customer>>) => {
+    const tableState = table.getState();
+    table.setPageIndex(tableState.pagination.pageIndex - 1);
+    setIsLastPage(false);
+  };
+
+  useEffect(() => {
+    if (allCustomers.length > numberOfCustomers) {
+      setNumberOfCustomers(allCustomers.length);
+    }
+  }, [allCustomers]);
 
   return (
     <main>
@@ -65,9 +83,10 @@ export default function CustomersPage() {
       </h3>
       <CustomersTable
         customers={allCustomers}
-        isLastPage={currentCustomersPage.isLast}
+        isLastPage={isLastPage}
         handleNextPage={handleNextPage}
-        pageIndex={currentCustomersPage.index}
+        maxRows={numberOfCustomers}
+        handlePreviousPage={handlePreviousPage}
       />
     </main>
   );
