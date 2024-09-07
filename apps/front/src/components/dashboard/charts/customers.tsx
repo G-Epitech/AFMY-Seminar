@@ -16,14 +16,14 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { DashbordMetrics } from "./metrics"
-import { DashboardChartProps } from "./utils"
+import { colors, DashboardChartProps } from "./utils"
 
 export const description = "A simple area chart"
 
 const chartConfig = {
   count: {
     label: "Customers",
-    color: "hsl(var(--chart-1))",
+    color: colors[0],
   },
 } satisfies ChartConfig
 

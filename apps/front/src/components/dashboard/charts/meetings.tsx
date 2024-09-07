@@ -1,6 +1,5 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
 import { Pie, PieChart } from "recharts"
 
 import {
@@ -17,47 +16,44 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { DashboardChartProps } from "./utils"
+import { colors, DashboardChartProps } from "./utils"
+import { Statistics } from "@seminar/common"
+import { useEffect, useState } from "react"
 
-export const description = "A donut chart"
+function generateChartConfig(statistics: Statistics): ChartConfig {
+  const meetings = statistics.meetings;
 
-const chartData = [
-  { places: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { places: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { places: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { places: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { places: "other", visitors: 90, fill: "var(--color-other)" },
-]
+  const chartConfig = meetings.reduce((config, meeting, index) => {
+    config[meeting.source] = {
+      label: meeting.source,
+      color: colors[index % colors.length],
+    };
+    return config;
+  }, {} as Record<string, { label: string; color: string }>);
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
-} satisfies ChartConfig
+  return chartConfig satisfies ChartConfig;
+}
 
 export default function DashboardChartMeetings(
   { statistics }: DashboardChartProps
 ) {
+  const [meetings, setMeetings] = useState<{
+    source: string;
+    count: number;
+    percentage: number;
+    fill: string;
+  }[]>([]);
+
+  useEffect(() => {
+    if (statistics.meetings.length > 0) {
+      const filledMeetings = statistics.meetings.map((meeting, index) => ({
+        ...meeting,
+        fill: colors[index % colors.length],
+      }));
+      setMeetings(filledMeetings);
+    }
+  }, [statistics]);
+
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
@@ -65,30 +61,45 @@ export default function DashboardChartMeetings(
         <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
-        >
-          <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Pie
-              data={chartData}
-              dataKey="visitors"
-              nameKey="places"
-              innerRadius={60}
-            />
-          </PieChart>
-        </ChartContainer>
+        {meetings.length > 0 ? (
+          <>
+            <ChartContainer
+              config={generateChartConfig(statistics)}
+              className="mx-auto aspect-square max-h-[250px]"
+            >
+              <PieChart>
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent hideLabel />}
+                />
+                <Pie
+                  data={meetings}
+                  dataKey="count"
+                  nameKey="source"
+                  innerRadius={60}
+                />
+              </PieChart>
+            </ChartContainer>
+          </>
+        ) : (
+          <div className="flex items-center justify-center h-[250px]">
+            <CardDescription>No data available</CardDescription>
+          </div>
+        )}
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+      <CardFooter>
+        <div className="flex flex-wrap gap-2">
+          {meetings.map((meeting) => (
+            <div key={meeting.source} className="flex items-center gap-2">
+              <div
+                className="w-4 h-4 rounded-full"
+                style={{ backgroundColor: meeting.fill }}
+              />
+              <div>
+                {meeting.source} - {meeting.count} ({meeting.percentage}%)
+              </div>
+            </div>
+          ))}
         </div>
       </CardFooter>
     </Card>

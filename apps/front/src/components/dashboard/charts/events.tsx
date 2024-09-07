@@ -14,13 +14,13 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { DashboardChartProps } from "./utils"
+import { colors, DashboardChartProps } from "./utils"
 import { DashbordMetrics } from "./metrics"
 
 const chartConfig = {
   count: {
     label: "Number of Events",
-    color: "hsl(var(--chart-1))",
+    color: colors[0],
   },
 } satisfies ChartConfig
 
