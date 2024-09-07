@@ -36,7 +36,7 @@ export default function DashboardChartCustomers(
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
           <CardTitle>Customers Overview</CardTitle>
           <CardDescription>
-            When the customers have joined in the time
+            When the customers have joined in the time.
           </CardDescription>
         </div>
         <div>

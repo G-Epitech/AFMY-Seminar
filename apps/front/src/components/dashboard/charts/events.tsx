@@ -27,14 +27,13 @@ const chartConfig = {
 export default function DashboardChartEvents(
   { statistics }: DashboardChartProps
 ) {
-  console.log(statistics.events.history)
   return (
     <Card className="w-full">
       <CardHeader className="flex border-b p-0">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
           <CardTitle>Events</CardTitle>
           <CardDescription>
-            Showing total events for the last 30 days
+            Showing total events for the last 30 days.
           </CardDescription>
         </div>
         <div>

@@ -22,7 +22,6 @@ export default function DashboardPage() {
 
   const fetchStatistics = async () => {
     const today = new Date();
-    console.log(today);
     const response = await api.statistics.get({
       from: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30),
       to: today,
@@ -34,7 +33,6 @@ export default function DashboardPage() {
   }
 
   useEffect(() => {
-    console.log("fetching statistics");
     fetchStatistics();
   }, []);
 
