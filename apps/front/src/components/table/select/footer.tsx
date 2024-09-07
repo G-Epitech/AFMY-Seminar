@@ -3,10 +3,12 @@ import { useReactTable } from "@tanstack/react-table";
 
 export interface SelectTableFooterProps<T> {
   table: ReturnType<typeof useReactTable<T>>;
+  isLastPage: boolean;
+  handleNextPage: (table: ReturnType<typeof useReactTable<T>>) => void;
 }
 
 export default function SelectTableFooter<T>(
-  { table }: SelectTableFooterProps<T>
+  { table, isLastPage, handleNextPage }: SelectTableFooterProps<T>
 ) {
   return <>
     <div className="flex items-center justify-end space-x-2 w-full mt-4">
@@ -26,8 +28,8 @@ export default function SelectTableFooter<T>(
         <Button
           variant="outline"
           size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
+          onClick={() => handleNextPage(table)}
+          disabled={isLastPage}
         >
           Next
         </Button>

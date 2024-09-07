@@ -1,6 +1,6 @@
 import { Table } from "@/components/ui/datat-table";
 import { ColumnDef, ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SelectTableFooter from "./footer";
 import SelectTableBody from "./body";
 import SelectTableHeader from "./header";
@@ -24,10 +24,13 @@ export interface SelectTableProps<T> {
   filterSearchColumn?: keyof T;
   filterColumn?: boolean;
   actionComponent?: (props: { table: ReturnType<typeof useReactTable<T>> }) => React.ReactNode;
+  isLastPage: boolean;
+  handleNextPage: (table: ReturnType<typeof useReactTable<T>>) => void;
+  pageIndex: number;
 }
 
 export default function SelectTable<T>(
-  { data, columns, filterSearchColumn, filterSearchPlaceholder, filterColumn, actionComponent }: SelectTableProps<T>
+  { data, columns, filterSearchColumn, filterSearchPlaceholder, filterColumn, actionComponent, isLastPage, handleNextPage, pageIndex }: SelectTableProps<T>
 ) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -45,6 +48,7 @@ export default function SelectTable<T>(
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    autoResetPageIndex: false,
     state: {
       sorting,
       columnFilters,
@@ -52,6 +56,10 @@ export default function SelectTable<T>(
       rowSelection,
     },
   })
+
+  useEffect(() => {
+
+  }, [data]);
 
   return (
     <Card className="p-4">
@@ -74,7 +82,11 @@ export default function SelectTable<T>(
           </Table>
         </div>
 
-        <SelectTableFooter table={table} />
+        <SelectTableFooter
+          table={table}
+          isLastPage={isLastPage}
+          handleNextPage={handleNextPage}
+        />
       </CardContent>
     </Card>
   )
