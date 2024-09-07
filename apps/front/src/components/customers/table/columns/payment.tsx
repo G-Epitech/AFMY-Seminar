@@ -7,8 +7,8 @@ export const paymentColumn: ColumnDef<Customer> = {
   header: "Payment Methods",
   cell: ({ row }) => {
     const paymentMethods = row.original.paymentMethods;
-    if (!paymentMethods) return <div>Unknown</div>;
-    return <div className="flex space-x-3">
+    if (!paymentMethods) return <div key={row.original.id}>Unknown</div>;
+    return <div className="flex space-x-3" key={row.original.id}>
       {paymentMethods.map((method) => (
         paymentIcons[method]()
       ))}

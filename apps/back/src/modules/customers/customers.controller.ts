@@ -144,6 +144,11 @@ export class CustomersController {
     };
   }
 
+  @Get('count')
+  async getCustomersCount(): Promise<number> {
+    return await this.customersService.getCustomersCount();
+  }
+
   @Get(':id')
   async getCustomer(
     @Body() _: InGetCustomerDTO,
