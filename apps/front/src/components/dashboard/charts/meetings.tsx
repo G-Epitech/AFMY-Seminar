@@ -58,7 +58,6 @@ export default function DashboardChartMeetings(
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
         <CardTitle>Meetings top sources</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         {meetings.length > 0 ? (
