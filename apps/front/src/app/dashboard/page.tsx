@@ -26,9 +26,10 @@ export default function DashboardPage() {
       from: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30),
       to: today,
     });
-    console.log(response);
-    if (response) {
+    if (response && response.data) {
       setStatistics(response.data);
+    } else {
+      console.error("Failed to fetch");
     }
   }
 

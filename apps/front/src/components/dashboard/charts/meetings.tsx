@@ -87,15 +87,15 @@ export default function DashboardChartMeetings(
         )}
       </CardContent>
       <CardFooter>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap">
           {meetings.map((meeting) => (
-            <div key={meeting.source} className="flex items-center gap-2">
+            <div key={meeting.source} className="flex items-center gap-2 w-1/2 mb-2">
               <div
                 className="w-4 h-4 rounded-full"
                 style={{ backgroundColor: meeting.fill }}
               />
               <div>
-                {meeting.source} - {meeting.count} ({meeting.percentage}%)
+                {meeting.source} - {meeting.count} ({meeting.percentage.toFixed(2)}%)
               </div>
             </div>
           ))}
