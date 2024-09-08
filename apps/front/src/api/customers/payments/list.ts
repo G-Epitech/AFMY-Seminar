@@ -1,4 +1,3 @@
-
 import { Customer, OutGetCustomerPaymentsDTO, QueryGetCustomerPaymentsDTO } from "@seminar/common";
 import { call } from "../../call";
 

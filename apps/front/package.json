@@ -25,6 +25,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
+    "d3-scale": "^4.0.2",
     "dateformat": "^5.0.3",
     "lucide-react": "^0.438.0",
     "next": "14.2.7",
@@ -36,8 +37,7 @@
     "reflect-metadata": "^0.2.2",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
-    "undefined": "^0.1.0",
-    "reflect-metadata": "^0.2.2"
+    "undefined": "^0.1.0"
   },
   "devDependencies": {
     "@types/dateformat": "^5.0.2",
