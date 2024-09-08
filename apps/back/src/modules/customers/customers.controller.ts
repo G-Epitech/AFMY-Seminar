@@ -119,7 +119,7 @@ export class CustomersController {
     const customerCount =
       await this.customersService.getCustomersCount(filters);
 
-    const isLast = customerCount < page * size + size;
+    const isLast = customerCount <= page * size + size;
     const startIndex = isLast ? Math.max(0, customerCount - size) : page * size;
     const items = (
       await this.customersService.getCustomers(filters, size, startIndex)
