@@ -15,9 +15,15 @@ export type EncounterProps = {
 }
 
 const colors: {[key: string]: string} = {
-    "Dating App": "bg-pink-500",
-    "Friends": "bg-green-500",
-    "Social Network": "bg-blue-500",
+    "dating app": "bg-pink-500",
+    "friends": "bg-green-500",
+    "social network": "bg-blue-500",
+    "concert": "bg-yellow-500",
+    "neighborhood": "bg-purple-500",
+    "park": "bg-red-500",
+    "school": "bg-indigo-500",
+    "hobby group": "bg-cyan-500",
+    "gym": "bg-rose-500",
 }
 
 export const columns: ColumnDef<EncounterProps>[] = [
@@ -38,10 +44,10 @@ export const columns: ColumnDef<EncounterProps>[] = [
             return (
                 <div className="flex gap-1">
                     {Array.from({ length: rating }).map((_, i) => (
-                        <StarIcon key="star" className="size-4 text-primary"/>
+                        <StarIcon key={i} className="size-4 text-primary"/>
                     ))}
                     {Array.from({ length: 5 - rating }).map((_, i) => (
-                        <StarIconOut key="star" className="size-4 text-primary"/>
+                        <StarIconOut key={i} className="size-4 text-primary"/>
                     ))}
                 </div>
             )
@@ -58,7 +64,7 @@ export const columns: ColumnDef<EncounterProps>[] = [
             return (
                 <div className="flex gap-2 items-center">
                     <div className={"border border-transparent rounded-sm size-3 " + (colors[row.original.source] || "bg-stone-500")}/>
-                    <p className="font-medium">{row.original.source}</p>
+                    <p className="font-medium capitalize">{row.original.source}</p>
                 </div>
             )
         }

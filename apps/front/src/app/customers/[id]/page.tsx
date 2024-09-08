@@ -11,6 +11,7 @@ import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
 import {
   Customer,
   Employee,
+  Encounter,
   Gender,
   Permission,
   PhotoFormat,
@@ -22,6 +23,7 @@ import { useEffect, useState } from "react";
 export default function CustomerPage() {
   const id = useParams().id;
   const [customer, setCustomer] = useState<Customer | null>(null);
+  const [encounters, setEncounters] = useState<Encounter[]>([]);
 
   const fetchCustomer = async () => {
     const response = await api.customers.get(Number(id));
@@ -31,8 +33,17 @@ export default function CustomerPage() {
     }
   }
 
+  const fetchEncounters = async () => {
+    const response = await api.customers.encounters.list(Number(id));
+    console.log(response);
+    if (response && response.data) {
+      setEncounters(response.data.items);
+    }
+  }
+
   useEffect(() => {
     fetchCustomer();
+    fetchEncounters();
   }, []);
 
   const coach: Employee = {
@@ -198,7 +209,7 @@ export default function CustomerPage() {
 
         <Card className="lg:basis-3/4 pt-4">
           <CardContent className="flex flex-col gap-5">
-            <EncountersList encounters={[]} />
+            <EncountersList encounters={encounters} />
             <PaymentsList payments={[]} />
           </CardContent>
         </Card>
