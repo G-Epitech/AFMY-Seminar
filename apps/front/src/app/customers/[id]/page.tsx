@@ -12,7 +12,9 @@ import {
   Customer,
   Employee,
   Encounter,
+  EncounterStatus,
   Gender,
+  Payment,
   Permission,
   PhotoFormat,
 } from "@seminar/common";
@@ -24,10 +26,10 @@ export default function CustomerPage() {
   const id = useParams().id;
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [encounters, setEncounters] = useState<Encounter[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
 
   const fetchCustomer = async () => {
     const response = await api.customers.get(Number(id));
-    console.log(response);
     if (response && response.data) {
       setCustomer(response.data);
     }
@@ -35,15 +37,22 @@ export default function CustomerPage() {
 
   const fetchEncounters = async () => {
     const response = await api.customers.encounters.list(Number(id));
-    console.log(response);
     if (response && response.data) {
       setEncounters(response.data.items);
+    }
+  }
+
+  const fetchPayments = async () => {
+    const response = await api.customers.payments.list(Number(id));
+    if (response && response.data) {
+      setPayments(response.data.items);
     }
   }
 
   useEffect(() => {
     fetchCustomer();
     fetchEncounters();
+    fetchPayments();
   }, []);
 
   const coach: Employee = {
@@ -62,127 +71,13 @@ export default function CustomerPage() {
     photoFormat: PhotoFormat.PNG,
   };
 
-  // const encounters: Encounter[] = [
-  //   {
-  //     id: 1,
-  //     rating: 4,
-  //     comment: "Great session, very insightful",
-  //     customerId: customer.id,
-  //     date: new Date("2024-07-23"),
-  //     status: EncounterStatus.DONE,
-  //     source: "Dating App",
-  //     isPositive: true,
-  //   },
-  //   {
-  //     id: 2,
-  //     rating: 3,
-  //     comment: "Not bad, but could be better",
-  //     customerId: customer.id,
-  //     date: new Date("2024-07-21"),
-  //     status: EncounterStatus.DONE,
-  //     source: "Friends",
-  //     isPositive: false,
-  //   },
-  //   {
-  //     id: 3,
-  //     rating: 0,
-  //     comment: "I don't know what to say, it was very awkward",
-  //     customerId: customer.id,
-  //     date: new Date("2024-06-19"),
-  //     status: EncounterStatus.DONE,
-  //     source: "Dating App",
-  //     isPositive: false,
-  //   },
-  //   {
-  //     id: 4,
-  //     rating: 2,
-  //     comment: "Not a good match",
-  //     customerId: customer.id,
-  //     date: new Date("2024-06-02"),
-  //     status: EncounterStatus.DONE,
-  //     source: "Dating App",
-  //     isPositive: false,
-  //   },
-  //   {
-  //     id: 5,
-  //     rating: 3,
-  //     comment: "Not bad, but could be better",
-  //     customerId: customer.id,
-  //     date: new Date("2024-05-12"),
-  //     status: EncounterStatus.DONE,
-  //     source: "Social Network",
-  //     isPositive: true,
-  //   },
-  //   {
-  //     id: 5,
-  //     rating: 1,
-  //     comment: "Not bad, but could be better",
-  //     customerId: customer.id,
-  //     date: new Date("2024-05-12"),
-  //     status: EncounterStatus.DONE,
-  //     source: "Other",
-  //     isPositive: true,
-  //   },
-  // ];
-
-  // const payments: Payment[] = [
-  //   {
-  //     id: 1,
-  //     customerId: customer.id,
-  //     date: new Date("2024-07-20"),
-  //     method: PaymentMethod.CREDIT_CARD,
-  //     amount: 49,
-  //     comment: "Monthly Subscription",
-  //   },
-  //   {
-  //     id: 2,
-  //     customerId: customer.id,
-  //     date: new Date("2024-06-20"),
-  //     method: PaymentMethod.CREDIT_CARD,
-  //     amount: 49,
-  //     comment: "Monthly Subscription",
-  //   },
-  //   {
-  //     id: 2,
-  //     customerId: customer.id,
-  //     date: new Date("2024-06-12"),
-  //     method: PaymentMethod.BANK_TRANSFER,
-  //     amount: 15.99,
-  //     comment: "Training bonus",
-  //   },
-  //   {
-  //     id: 3,
-  //     customerId: customer.id,
-  //     date: new Date("2024-05-20"),
-  //     method: PaymentMethod.CREDIT_CARD,
-  //     amount: 49,
-  //     comment: "Monthly Subscription",
-  //   },
-  //   {
-  //     id: 4,
-  //     customerId: customer.id,
-  //     date: new Date("2024-04-20"),
-  //     method: PaymentMethod.PAYPAL,
-  //     amount: 49,
-  //     comment: "Monthly Subscription",
-  //   },
-  //   {
-  //     id: 5,
-  //     customerId: customer.id,
-  //     date: new Date("2024-03-20"),
-  //     method: PaymentMethod.PAYPAL,
-  //     amount: 49,
-  //     comment: "Monthly Subscription",
-  //   },
-  // ];
-
-  // const totalEncounters = encounters.length;
-  // const positiveEncounters = encounters.filter(
-  //   (e) => e.rating && e.rating > 3
-  // ).length;
-  // const inProgressEncounters = encounters.filter(
-  //   (e) => e.status === EncounterStatus.PENDING
-  // ).length;
+  const totalEncounters = encounters.length;
+  const positiveEncounters = encounters.filter(
+    (e) => e.rating && e.rating > 3
+  ).length;
+  const inProgressEncounters = encounters.filter(
+    (e) => e.status === EncounterStatus.PENDING
+  ).length;
 
   return (
     <main>
@@ -201,16 +96,16 @@ export default function CustomerPage() {
           <CustomerProfile
             customer={customer}
             coach={coach}
-            totalEncounters={0}
-            positiveEncounters={0}
-            inProgressEncounters={0}
+            totalEncounters={totalEncounters}
+            positiveEncounters={positiveEncounters}
+            inProgressEncounters={inProgressEncounters}
           />
         }
 
         <Card className="lg:basis-3/4 pt-4">
           <CardContent className="flex flex-col gap-5">
             <EncountersList encounters={encounters} />
-            <PaymentsList payments={[]} />
+            <PaymentsList payments={payments} />
           </CardContent>
         </Card>
       </div>

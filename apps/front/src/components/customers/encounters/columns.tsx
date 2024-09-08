@@ -16,14 +16,25 @@ export type EncounterProps = {
 
 const colors: {[key: string]: string} = {
     "dating app": "bg-pink-500",
-    "friends": "bg-green-500",
-    "social network": "bg-blue-500",
+    "family friend": "bg-green-500",
+    "social media": "bg-blue-500",
     "concert": "bg-yellow-500",
     "neighborhood": "bg-purple-500",
     "park": "bg-red-500",
     "school": "bg-indigo-500",
     "hobby group": "bg-cyan-500",
     "gym": "bg-rose-500",
+    "sports club": "bg-lime-500",
+    "restaurant": "bg-amber-500",
+    "conference": "bg-emerald-500",
+    "event": "bg-violet-500",
+    "library": "bg-orange-500",
+    "travel group": "bg-teal-500",
+    "online forum": "bg-sky-500",
+    "book club": "bg-amber-500",
+    "work": "bg-lime-500",
+    "coffee shop": "bg-rose-500",
+    "mutual acquaintance": "bg-cyan-500",
 }
 
 export const columns: ColumnDef<EncounterProps>[] = [
