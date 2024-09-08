@@ -4,6 +4,7 @@ import { count } from "./count";
 import encounters from "./encounters";
 import { get } from "./get";
 import { list } from "./list";
+import payments from "./payments";
 
 const customers = {
     get,
@@ -12,6 +13,7 @@ const customers = {
     list,
     count,
     encounters,
+    payments,
 };
 
 export default customers;
