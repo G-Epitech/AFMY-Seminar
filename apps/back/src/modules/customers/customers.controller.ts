@@ -10,6 +10,8 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CustomersService } from './customers.service';
 import {
@@ -79,6 +81,7 @@ import { PermissionsService } from '../permissions/permissions.service';
 import { AuthEmployeeContext } from '../auth/auth.employee.context';
 import { ImagesService } from '../images/images.service';
 import { ImageTokenType } from '../../types/images';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('customers')
 export class CustomersController {
@@ -97,7 +100,7 @@ export class CustomersController {
   @Inject(ImagesService)
   private readonly imagesService: ImagesService;
 
-  constructor() {}
+  constructor() { }
 
   /**
    * Get customers paginated
@@ -205,15 +208,19 @@ export class CustomersController {
     };
   }
 
-  @Post('create')
+
+
+  @Post()
+  @UseInterceptors(FileInterceptor('photo'))
   async createCustomer(
     @Body() customer: InPostCreateCustomerDTO,
+    @UploadedFile() photo?: Express.Multer.File,
   ): Promise<OutPostCreateCustomerDTO> {
     const candidate: CreateCustomerCandidate = {
       ...customer,
       birthDate: new Date(customer.birthDate),
       phone: customer.phone ? customer.phone : null,
-      photo: customer.photo ? customer.photo : null,
+      photo: photo ? this.imagesService.convertFileToBase64(photo) : null,
       address: customer.address ? customer.address : null,
       coachId: customer.coachId ? customer.coachId : null,
       photoFormat: customer.photoFormat ? customer.photoFormat : null,
@@ -270,7 +277,7 @@ export class CustomersController {
     };
   }
 
-  @Post(':id/payments/create')
+  @Post(':id/payments')
   async createPayment(
     @Param() { id }: ParamPostCreateCustomerPaymentDTO,
     @Body() body: InPostCreateCustomerPaymentDTO,
@@ -406,7 +413,7 @@ export class CustomersController {
     return encounter!;
   }
 
-  @Post(':id/encounters/create')
+  @Post(':id/encounters')
   async createEncounter(
     @Param() { id }: ParamPostCreateCustomerEncounterDTO,
     @Body() body: InPostCreateCustomerEncounterDTO,
@@ -554,7 +561,7 @@ export class CustomersController {
     };
   }
 
-  @Post(':id/clothes/create')
+  @Post(':id/clothes')
   async createCustomerClothe(
     @Param() { id }: ParamPostCreateCustomerClotheDTO,
     @Body() body: InPostCreateCustomerClotheDTO,
