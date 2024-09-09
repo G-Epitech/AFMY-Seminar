@@ -15,9 +15,26 @@ export type EncounterProps = {
 }
 
 const colors: {[key: string]: string} = {
-    "Dating App": "bg-pink-500",
-    "Friends": "bg-green-500",
-    "Social Network": "bg-blue-500",
+    "dating app": "bg-pink-500",
+    "family friend": "bg-green-500",
+    "social media": "bg-blue-500",
+    "concert": "bg-yellow-500",
+    "neighborhood": "bg-purple-500",
+    "park": "bg-red-500",
+    "school": "bg-indigo-500",
+    "hobby group": "bg-cyan-500",
+    "gym": "bg-rose-500",
+    "sports club": "bg-lime-500",
+    "restaurant": "bg-amber-500",
+    "conference": "bg-emerald-500",
+    "event": "bg-violet-500",
+    "library": "bg-orange-500",
+    "travel group": "bg-teal-500",
+    "online forum": "bg-sky-500",
+    "book club": "bg-amber-500",
+    "work": "bg-lime-500",
+    "coffee shop": "bg-rose-500",
+    "mutual acquaintance": "bg-cyan-500",
 }
 
 export const columns: ColumnDef<EncounterProps>[] = [
@@ -38,10 +55,10 @@ export const columns: ColumnDef<EncounterProps>[] = [
             return (
                 <div className="flex gap-1">
                     {Array.from({ length: rating }).map((_, i) => (
-                        <StarIcon key="star" className="size-4 text-primary"/>
+                        <StarIcon key={i} className="size-4 text-primary"/>
                     ))}
                     {Array.from({ length: 5 - rating }).map((_, i) => (
-                        <StarIconOut key="star" className="size-4 text-primary"/>
+                        <StarIconOut key={i} className="size-4 text-primary"/>
                     ))}
                 </div>
             )
@@ -58,7 +75,7 @@ export const columns: ColumnDef<EncounterProps>[] = [
             return (
                 <div className="flex gap-2 items-center">
                     <div className={"border border-transparent rounded-sm size-3 " + (colors[row.original.source] || "bg-stone-500")}/>
-                    <p className="font-medium">{row.original.source}</p>
+                    <p className="font-medium capitalize">{row.original.source}</p>
                 </div>
             )
         }

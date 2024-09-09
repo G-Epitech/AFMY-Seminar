@@ -5,7 +5,7 @@ import SelectTableFooter from "./footer";
 import SelectTableBody from "./body";
 import SelectTableHeader from "./header";
 import SelectTableFilters from "./filters";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 /**
  * Props for the SelectTable component.
@@ -24,10 +24,14 @@ export interface SelectTableProps<T> {
   filterSearchColumn?: keyof T;
   filterColumn?: boolean;
   actionComponent?: (props: { table: ReturnType<typeof useReactTable<T>> }) => React.ReactNode;
+  isLastPage: boolean;
+  handleNextPage: (table: ReturnType<typeof useReactTable<T>>) => void;
+  handlePreviousPage: (table: ReturnType<typeof useReactTable<T>>) => void;
+  maxRows: number;
 }
 
 export default function SelectTable<T>(
-  { data, columns, filterSearchColumn, filterSearchPlaceholder, filterColumn, actionComponent }: SelectTableProps<T>
+  { data, columns, filterSearchColumn, filterSearchPlaceholder, filterColumn, actionComponent, isLastPage, handleNextPage, handlePreviousPage, maxRows }: SelectTableProps<T>
 ) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -45,6 +49,7 @@ export default function SelectTable<T>(
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    autoResetPageIndex: false,
     state: {
       sorting,
       columnFilters,
@@ -74,7 +79,13 @@ export default function SelectTable<T>(
           </Table>
         </div>
 
-        <SelectTableFooter table={table} />
+        <SelectTableFooter
+          table={table}
+          isLastPage={isLastPage}
+          handleNextPage={handleNextPage}
+          handlePreviousPage={handlePreviousPage}
+          maxRows={maxRows}
+        />
       </CardContent>
     </Card>
   )

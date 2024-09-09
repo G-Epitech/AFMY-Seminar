@@ -11,7 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
-import { OutGetMeDto, Permission, PhotoFormat } from '@seminar/common';
+import { OutGetMeDto, Permission, PhotoFormat, QueryGetEmployeesCountDTO } from '@seminar/common';
 import { ImagesService } from '../images/images.service';
 import { ImageTokenType } from '../../types/images';
 import {
@@ -71,8 +71,8 @@ export class EmployeesController {
   async getEmployees(
     @Query() { size, page, ...filters }: QueryGetEmployeesDTO,
   ): Promise<OutGetEmployeesDTO> {
-    const employeesCount = await this._employeesService.getEmployeesCount();
-    const isLast = employeesCount < page * size + size;
+    const employeesCount = await this._employeesService.getEmployeesCount(filters);
+    const isLast = employeesCount <= page * size + size;
     const startIndex = isLast
       ? Math.max(0, employeesCount - size)
       : page * size;
@@ -97,6 +97,14 @@ export class EmployeesController {
           : PhotoFormat.PNG,
       })),
     };
+  }
+
+  @Get('count')
+  async getEmployeesCount(
+    @Query() filters: QueryGetEmployeesCountDTO,
+  ): Promise<number> {
+    // TODO: Fix filters because they look doesn't apply to the service
+    return await this._employeesService.getEmployeesCount(filters);
   }
 
   @Get(':id')

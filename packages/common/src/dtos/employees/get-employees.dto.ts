@@ -1,4 +1,4 @@
-import { Employee, Gender, Page } from "../../types";
+import { Employee, Gender, Page, Permission } from "../../types";
 import {
   IsEmail,
   IsEnum,
@@ -40,6 +40,11 @@ export class QueryGetEmployeesDTO {
   @IsOptional()
   @Type(() => Number)
   public age?: number;
+
+  @IsEnum(Permission)
+  @IsOptional()
+  @Type(() => Number)
+  public permission?: Permission;
 }
 
 export type OutGetEmployeesDTO = Page<Employee>;
