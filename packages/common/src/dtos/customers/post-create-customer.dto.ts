@@ -8,7 +8,7 @@ import {
 import { IdOf } from "../../utils";
 import {
   IsBase64,
-  IsDateString,
+  IsDate,
   IsEmail,
   IsEnum,
   IsInt,
@@ -38,7 +38,7 @@ export class InPostCreateCustomerDTO {
   @IsString()
   public description: string;
 
-  @IsDateString()
+  @IsDate()
   public birthDate: string;
 
   @IsEnum(Gender)

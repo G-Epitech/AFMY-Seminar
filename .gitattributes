@@ -1,0 +1,1 @@
+apps/front/public/world-map.json filter=lfs diff=lfs merge=lfs -text
