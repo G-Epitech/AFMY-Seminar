@@ -235,6 +235,11 @@ export class EmployeesService {
             contains: filters?.role,
             mode: 'insensitive',
           },
+          permission: {
+            equals: filters?.permission
+              ? convertPermissionToPrisma(filters.permission)
+              : undefined,
+          }
         },
         take: limit,
         skip,

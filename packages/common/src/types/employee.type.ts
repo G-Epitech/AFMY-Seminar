@@ -28,5 +28,6 @@ export type EmployeesFilters = {
   age?: number;
   gender?: Gender;
   role?: string;
+  permission?: Permission;
   phone?: string;
 };
