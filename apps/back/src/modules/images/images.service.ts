@@ -14,6 +14,10 @@ export class ImagesService {
   @Inject(JwtService)
   private _jwtService: JwtService;
 
+  public convertFileToBase64(file: Express.Multer.File): string {
+    return file.buffer.toString('base64');
+  }
+
   private createToken(payload: ImageTokenPayload): string {
     return this._jwtService.sign(payload);
   }
