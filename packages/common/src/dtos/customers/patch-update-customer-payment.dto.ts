@@ -1,6 +1,6 @@
 import { Customer, Payment, PaymentMethod } from "../../types";
 import {
-  IsDateString,
+  IsDate,
   IsEnum,
   IsInt,
   IsNumber,
@@ -11,7 +11,7 @@ import { Type } from "class-transformer";
 import { IdOf } from "../../utils";
 
 export class InPatchCustomerPaymentDTO {
-  @IsDateString()
+  @IsDate()
   @IsOptional()
   public date?: string;
 

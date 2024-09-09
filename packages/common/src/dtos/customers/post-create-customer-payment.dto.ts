@@ -1,7 +1,7 @@
 import { Customer, Payment, PaymentMethod } from "../../types";
 import { IdOf } from "../../utils";
 import {
-  IsDateString,
+  IsDate,
   IsEnum,
   IsInt,
   IsNumber,
@@ -17,7 +17,7 @@ export class ParamPostCreateCustomerPaymentDTO {
 }
 
 export class InPostCreateCustomerPaymentDTO {
-  @IsDateString()
+  @IsDate()
   public date: string;
 
   @IsNumber()

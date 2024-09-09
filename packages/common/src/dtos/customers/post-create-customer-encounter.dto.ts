@@ -2,7 +2,7 @@ import { Customer, Encounter, EncounterStatus } from "../../types";
 import { IdOf } from "../../utils";
 import {
   IsBoolean,
-  IsDateString,
+  IsDate,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -20,7 +20,7 @@ export class ParamPostCreateCustomerEncounterDTO {
 }
 
 export class InPostCreateCustomerEncounterDTO {
-  @IsDateString()
+  @IsDate()
   public date: string;
 
   @IsInt()

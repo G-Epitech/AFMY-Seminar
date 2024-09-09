@@ -11,8 +11,8 @@ import 'reflect-metadata';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "Seminar App",
-    description: "What a good application for seminars!",
+    title: "Soul Connection",
+    description: "Soul Connection Dashboard",
 };
 
 export default function RootLayout({

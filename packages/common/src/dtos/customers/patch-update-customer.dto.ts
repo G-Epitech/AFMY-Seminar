@@ -1,7 +1,7 @@
 import { AstrologicalSign, Customer, Gender } from "../../types";
 import {
   IsBase64,
-  IsDateString,
+  IsDate,
   IsEmail,
   IsEnum,
   IsNumber,
@@ -33,7 +33,7 @@ export class InPatchCustomerDTO {
   @IsOptional()
   public description?: string;
 
-  @IsDateString()
+  @IsDate()
   @IsOptional()
   public birthDate?: string;
 

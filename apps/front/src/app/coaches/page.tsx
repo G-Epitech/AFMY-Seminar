@@ -38,6 +38,7 @@ const temporaryCoaches: Employee[] = [
     address: "456 Elm St, Metropolis",
     permission: Permission.COACH,
     role: "Fitness Coach",
+    legacyId: 1,
     numberOfCustomers: 20
   },
   {
@@ -51,6 +52,7 @@ const temporaryCoaches: Employee[] = [
     photo: null,
     address: "789 Oak St, Smallville",
     permission: Permission.COACH,
+    legacyId: 2,
     role: "Operations Manager"
   },
   {
@@ -64,7 +66,8 @@ const temporaryCoaches: Employee[] = [
     photo: null,
     address: "101 Maple St, Riverdale",
     permission: Permission.COACH,
-    role: "Yoga Instructor"
+    role: "Yoga Instructor",
+    legacyId: 3
   },
   {
     id: 5,
@@ -77,7 +80,8 @@ const temporaryCoaches: Employee[] = [
     photo: null,
     address: "202 Pine St, Hill Valley",
     permission: Permission.COACH,
-    role: "Strength Coach"
+    role: "Strength Coach",
+    legacyId: 4
   },
   {
     id: 6,
@@ -90,7 +94,8 @@ const temporaryCoaches: Employee[] = [
     photo: null,
     address: "303 Cedar St, Gotham",
     permission: Permission.COACH,
-    role: "HR Manager"
+    role: "HR Manager",
+    legacyId: 5
   },
   {
     id: 7,
@@ -103,7 +108,8 @@ const temporaryCoaches: Employee[] = [
     photo: null,
     address: "404 Birch St, Star City",
     permission: Permission.COACH,
-    role: "Cardio Coach"
+    role: "Cardio Coach",
+    legacyId: 6
   },
   {
     id: 8,
@@ -116,7 +122,8 @@ const temporaryCoaches: Employee[] = [
     photo: null,
     address: "505 Spruce St, Central City",
     permission: Permission.COACH,
-    role: "Pilates Instructor"
+    role: "Pilates Instructor",
+    legacyId: 7
   },
   {
     id: 9,
@@ -129,7 +136,8 @@ const temporaryCoaches: Employee[] = [
     photo: null,
     address: "606 Redwood St, Coast City",
     permission: Permission.COACH,
-    role: "Sales Manager"
+    role: "Sales Manager",
+    legacyId: 8
   },
   {
     id: 10,
@@ -142,7 +150,8 @@ const temporaryCoaches: Employee[] = [
     photo: null,
     address: "707 Oakwood St, National City",
     permission: Permission.COACH,
-    role: "Nutrition Coach"
+    role: "Nutrition Coach",
+    legacyId: 9
   },
   {
     id: 11,
@@ -155,7 +164,8 @@ const temporaryCoaches: Employee[] = [
     photo: null,
     address: "808 Willow St, Starling City",
     permission: Permission.COACH,
-    role: "CrossFit Coach"
+    role: "CrossFit Coach",
+    legacyId: 10
   },
   {
     id: 12,
@@ -168,7 +178,8 @@ const temporaryCoaches: Employee[] = [
     photo: null,
     address: "909 Aspen St, Keystone City",
     permission: Permission.COACH,
-    role: "Dance Instructor"
+    role: "Dance Instructor",
+    legacyId: 11
   },
   {
     id: 13,
@@ -181,7 +192,8 @@ const temporaryCoaches: Employee[] = [
     photo: null,
     address: "1010 Fir St, Blüdhaven",
     permission: Permission.COACH,
-    role: "Marketing Manager"
+    role: "Marketing Manager",
+    legacyId: 12
   },
   {
     id: 14,
@@ -194,7 +206,8 @@ const temporaryCoaches: Employee[] = [
     photo: null,
     address: "1111 Cypress St, Fawcett City",
     permission: Permission.COACH,
-    role: "Aerobics Instructor"
+    role: "Aerobics Instructor",
+    legacyId: 13
   },
   {
     id: 15,
@@ -207,7 +220,8 @@ const temporaryCoaches: Employee[] = [
     photo: null,
     address: "1212 Hickory St, Midway City",
     permission: Permission.COACH,
-    role: "Personal Trainer"
+    role: "Personal Trainer",
+    legacyId: 14
   },
   {
     id: 16,
@@ -220,7 +234,8 @@ const temporaryCoaches: Employee[] = [
     photo: null,
     address: "1313 Sequoia St, Gateway City",
     permission: Permission.COACH,
-    role: "Meditation Coach"
+    role: "Meditation Coach",
+    legacyId: 15
   },
   {
     id: 17,
@@ -233,6 +248,7 @@ const temporaryCoaches: Employee[] = [
     photo: null,
     address: "1414 Sycamore St, Opal City",
     permission: Permission.COACH,
-    role: "Finance Manager"
+    role: "Finance Manager",
+    legacyId: 16
   }
 ];
