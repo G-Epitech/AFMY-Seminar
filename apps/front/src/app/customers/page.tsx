@@ -4,17 +4,13 @@ import { AstrologicalSign, Customer, Gender, Page, PaymentMethod } from '@semina
 import CustomersTable from '@/components/customers/table';
 import { Subtitle } from '@/components/text/subtitle';
 import { Button } from '@/components/ui/button';
-import { CalendarIcon, PlusIcon } from '@radix-ui/react-icons';
+import { PlusIcon } from '@radix-ui/react-icons';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectValue } from '@/components/ui/select';
-import { SelectTrigger } from '@radix-ui/react-select';
 import { DatePicker } from '@/components/ui/date-picker';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function CustomersPage() {
   const [customersPage, setCustomersPage] = useState<Page<Customer>>({
@@ -25,6 +21,8 @@ export default function CustomersPage() {
   });
   const [numberOfCustomers, setNumberOfCustomers] = useState<number>(temporaryCustomers.length);
   const [newCustomer, setNewCustomer] = useState<Partial<Customer>>();
+
+  const fieldContainerStyle = "flex flex-wrap sm:grid sm:grid-cols-4 items-center gap-4 p-1";
 
   useEffect(() => {
     console.log(newCustomer);
@@ -47,90 +45,140 @@ export default function CustomersPage() {
                 <PlusIcon className="w-5 h-5" />
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[550px]">
               <DialogHeader>
                 <DialogTitle>Create a new customer</DialogTitle>
                 <DialogDescription>
                   Complete the form below to create a new customer.
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Name
-                  </Label>
-                  <Input
-                    id="name"
-                    className="col-span-3"
-                    value={newCustomer?.name}
-                    onChange={(event) => setNewCustomer(prev => ({ ...prev, name: event.target.value }))}
-                  />
+              <ScrollArea className='h-72'>
+                <div className="grid gap-4 py-4 sm:pr-6">
+                  <div className={fieldContainerStyle}>
+                    <Label htmlFor="name" className="text-right">
+                      Name
+                    </Label>
+                    <Input
+                      id="name"
+                      className="col-span-3"
+                      value={newCustomer?.name}
+                      onChange={(event) => setNewCustomer(prev => ({ ...prev, name: event.target.value }))}
+                    />
+                  </div>
+                  <div className={fieldContainerStyle}>
+                    <Label htmlFor="surname" className="text-right">
+                      Surname
+                    </Label>
+                    <Input
+                      id="surname"
+                      className="col-span-3"
+                      value={newCustomer?.surname}
+                      onChange={(event) => setNewCustomer(prev => ({ ...prev, surname: event.target.value }))}
+                    />
+                  </div>
+                  <div className={fieldContainerStyle}>
+                    <Label htmlFor="email" className="text-right">
+                      Email
+                    </Label>
+                    <Input
+                      id="email"
+                      className="col-span-3"
+                      value={newCustomer?.email}
+                      onChange={(event) => setNewCustomer(prev => ({ ...prev, email: event.target.value }))}
+                    />
+                  </div>
+                  <div className={fieldContainerStyle}>
+                    <Label htmlFor="phone" className="text-right">
+                      Phone
+                    </Label>
+                    <Input
+                      id="phone"
+                      className="col-span-3"
+                      value={newCustomer?.phone ?? ''}
+                      onChange={(event) => setNewCustomer(prev => ({ ...prev, phone: event.target.value }))}
+                    />
+                  </div>
+                  <div className={fieldContainerStyle}>
+                    <Label htmlFor="address" className="text-right">
+                      Address
+                    </Label>
+                    <Input
+                      id="address"
+                      className="col-span-3"
+                      value={newCustomer?.address ?? ''}
+                      onChange={(event) => setNewCustomer(prev => ({ ...prev, address: event.target.value }))}
+                    />
+                  </div>
+                  <div className={fieldContainerStyle}>
+                    <Label htmlFor="description" className="text-right">
+                      Description
+                    </Label>
+                    <Input
+                      id="description"
+                      className="col-span-3"
+                      value={newCustomer?.description ?? ''}
+                      onChange={(event) => setNewCustomer(prev => ({ ...prev, description: event.target.value }))}
+                    />
+                  </div>
+                  <div className={fieldContainerStyle}>
+                    <Label htmlFor="birthDate" className="text-right">
+                      Birth Date
+                    </Label>
+                    <DatePicker
+                      date={newCustomer?.birthDate ?? null}
+                      onSelect={(date) => setNewCustomer(prev => ({ ...prev, birthDate: date }))}
+                    />
+                  </div>
+                  <div className={fieldContainerStyle}>
+                    <Label htmlFor="Gender" className="text-right">
+                      Gender
+                    </Label>
+                    <Select
+                      onValueChange={(value) => setNewCustomer(prev => ({
+                        ...prev,
+                        gender: value as Gender,
+                      }))}
+                    >
+                      <SelectTrigger className='col-span-3'>
+                        <SelectValue placeholder="Select a Gender" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value={Gender.FE}>Woman</SelectItem>
+                          <SelectItem value={Gender.MA}>Man</SelectItem>
+                          <SelectItem value={Gender.OT}>He prefer not to say</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className={fieldContainerStyle}>
+                    <Label htmlFor="sign" className="text-right">
+                      Astrological
+                    </Label>
+                    <Select>
+                      <SelectTrigger className='col-span-3'>
+                        <SelectValue placeholder="Select an Astrological Sign" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value={AstrologicalSign.ARIES}>Aries</SelectItem>
+                          <SelectItem value={AstrologicalSign.TAURUS}>Taurus</SelectItem>
+                          <SelectItem value={AstrologicalSign.GEMINI}>Gemini</SelectItem>
+                          <SelectItem value={AstrologicalSign.CANCER}>Cancer</SelectItem>
+                          <SelectItem value={AstrologicalSign.LEO}>Leo</SelectItem>
+                          <SelectItem value={AstrologicalSign.VIRGO}>Virgo</SelectItem>
+                          <SelectItem value={AstrologicalSign.LIBRA}>Libra</SelectItem>
+                          <SelectItem value={AstrologicalSign.SCORPIO}>Scorpio</SelectItem>
+                          <SelectItem value={AstrologicalSign.SAGITTARIUS}>Sagittarius</SelectItem>
+                          <SelectItem value={AstrologicalSign.CAPRICORN}>Capricorn</SelectItem>
+                          <SelectItem value={AstrologicalSign.AQUARIUS}>Aquarius</SelectItem>
+                          <SelectItem value={AstrologicalSign.PISCES}>Pisces</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="surname" className="text-right">
-                    Surname
-                  </Label>
-                  <Input
-                    id="surname"
-                    className="col-span-3"
-                    value={newCustomer?.surname}
-                    onChange={(event) => setNewCustomer(prev => ({ ...prev, surname: event.target.value }))}
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="email" className="text-right">
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    className="col-span-3"
-                    value={newCustomer?.email}
-                    onChange={(event) => setNewCustomer(prev => ({ ...prev, email: event.target.value }))}
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="phone" className="text-right">
-                    Phone
-                  </Label>
-                  <Input
-                    id="phone"
-                    className="col-span-3"
-                    value={newCustomer?.phone ?? ''}
-                    onChange={(event) => setNewCustomer(prev => ({ ...prev, phone: event.target.value }))}
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="address" className="text-right">
-                    Address
-                  </Label>
-                  <Input
-                    id="address"
-                    className="col-span-3"
-                    value={newCustomer?.address ?? ''}
-                    onChange={(event) => setNewCustomer(prev => ({ ...prev, address: event.target.value }))}
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="description" className="text-right">
-                    Description
-                  </Label>
-                  <Input
-                    id="description"
-                    className="col-span-3"
-                    value={newCustomer?.description ?? ''}
-                    onChange={(event) => setNewCustomer(prev => ({ ...prev, description: event.target.value }))}
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="birthDate" className="text-right">
-                    Birth Date
-                  </Label>
-                  <DatePicker
-                    date={newCustomer?.birthDate ?? null}
-                    onSelect={(date) => setNewCustomer(prev => ({ ...prev, birthDate: date }))}
-                  />
-                </div>
-              </div>
+              </ScrollArea>
               <DialogFooter>
                 <Button type="submit">Save changes</Button>
               </DialogFooter>
