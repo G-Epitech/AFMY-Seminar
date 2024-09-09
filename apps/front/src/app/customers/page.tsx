@@ -11,8 +11,10 @@ import { Input } from '@/components/ui/input';
 import { DatePicker } from '@/components/ui/date-picker';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import mapData from '../../../public/world-map.json';
 
 export default function CustomersPage() {
+  const sortedCountries = mapData.objects.world.geometries.sort((a, b) => a.properties.name.localeCompare(b.properties.name));
   const [customersPage, setCustomersPage] = useState<Page<Customer>>({
     index: 0,
     size: 15,
@@ -146,7 +148,7 @@ export default function CustomersPage() {
                         <SelectGroup>
                           <SelectItem value={Gender.FE}>Woman</SelectItem>
                           <SelectItem value={Gender.MA}>Man</SelectItem>
-                          <SelectItem value={Gender.OT}>He prefer not to say</SelectItem>
+                          <SelectItem value={Gender.OT}>Prefer not to say</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -155,7 +157,12 @@ export default function CustomersPage() {
                     <Label htmlFor="sign" className="text-right">
                       Astrological
                     </Label>
-                    <Select>
+                    <Select
+                      onValueChange={(value) => setNewCustomer(prev => ({
+                        ...prev,
+                        sign: value as AstrologicalSign,
+                      }))}
+                    >
                       <SelectTrigger className='col-span-3'>
                         <SelectValue placeholder="Select an Astrological Sign" />
                       </SelectTrigger>
@@ -173,6 +180,30 @@ export default function CustomersPage() {
                           <SelectItem value={AstrologicalSign.CAPRICORN}>Capricorn</SelectItem>
                           <SelectItem value={AstrologicalSign.AQUARIUS}>Aquarius</SelectItem>
                           <SelectItem value={AstrologicalSign.PISCES}>Pisces</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className={fieldContainerStyle}>
+                    <Label htmlFor="Country" className="text-right">
+                      Country
+                    </Label>
+                    <Select
+                      onValueChange={(value) => setNewCustomer(prev => ({
+                        ...prev,
+                        country: value,
+                      }))}
+                    >
+                      <SelectTrigger className='col-span-3'>
+                        <SelectValue placeholder="Select country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {sortedCountries.map((country) => (
+                            <SelectItem key={country.id} value={country.properties.name}>
+                              {country.properties.name}
+                            </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
