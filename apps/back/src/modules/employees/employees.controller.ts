@@ -99,6 +99,11 @@ export class EmployeesController {
     };
   }
 
+  @Get('count')
+  async getEmployeesCount(): Promise<number> {
+    return this._employeesService.getEmployeesCount();
+  }
+
   @Get(':id')
   async getEmployeeById(
     @Body() _: InGetEmployeeDTO,

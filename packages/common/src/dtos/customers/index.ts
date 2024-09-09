@@ -16,4 +16,4 @@ export * from "./patch-update-customer-encounter.dto";
 export * from "./delete-customer-clothe.dto";
 export * from "./patch-update-customer-clothe.dto";
 export * from "./get-customer-compatibility.dto";
-export * from "./get-customer-count.dto";
+export * from "./get-customers-count.dto";
