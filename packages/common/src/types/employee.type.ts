@@ -31,3 +31,9 @@ export type EmployeesFilters = {
   permission?: Permission;
   phone?: string;
 };
+
+export type EmployeesCountFilters = {
+  age?: number;
+  gender?: Gender;
+  permission?: Permission;
+}

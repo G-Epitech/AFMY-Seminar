@@ -7,7 +7,7 @@ import {
 } from '../../types/employees';
 import * as bcrypt from 'bcrypt';
 import { FieldsError } from '../../classes/errors/fields.error';
-import { ALREADY_USED, Employee, EmployeesFilters } from '@seminar/common';
+import { ALREADY_USED, Employee, EmployeesCountFilters, EmployeesFilters } from '@seminar/common';
 import {
   convertEmployee,
   convertGender,
@@ -264,7 +264,26 @@ export class EmployeesService {
       );
   }
 
-  async getEmployeesCount(): Promise<number> {
-    return this._prismaService.employee.count();
+  async getEmployeesCount(filters?: EmployeesCountFilters): Promise<number> {
+    return this._prismaService.employee.count({
+      where: {
+        birthDate: {
+          gte: filters?.age
+            ? new Date(new Date().getFullYear() - filters.age, 0)
+            : undefined,
+          lte: filters?.age
+            ? new Date(new Date().getFullYear() - filters.age + 1, 0)
+            : undefined,
+        },
+        gender: filters?.gender
+          ? convertGenderToPrisma(filters.gender)
+          : undefined,
+        permission: {
+          equals: filters?.permission
+            ? convertPermissionToPrisma(filters.permission)
+            : undefined,
+        }
+      },
+    });
   }
 }
