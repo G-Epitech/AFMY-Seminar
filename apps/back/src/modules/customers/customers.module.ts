@@ -16,6 +16,11 @@ const CustomersService = {
 @Module({
   imports: [PrismaModule, AuthModule, PermissionsModule, LegacyApiModule],
   controllers: [CustomersController],
-  providers: [CustomersService, CustomersCompatibilityService],
+  providers: [
+    CustomersService,
+    CustomersCompatibilityService,
+    CustomersMigrationService,
+  ],
+  exports: [CustomersMigrationService],
 })
 export class CustomersModule {}

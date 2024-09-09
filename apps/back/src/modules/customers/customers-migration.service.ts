@@ -120,7 +120,7 @@ export class CustomersMigrationService extends CustomersService {
     }
   }
 
-  private async syncCustomers(): Promise<void> {
+  public async syncCustomers(): Promise<void> {
     if (!this._authEmployeeContext.isLegacyAuthenticated) return;
     try {
       const newCustomers = await this.getNewCustomers();
