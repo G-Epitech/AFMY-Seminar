@@ -23,6 +23,11 @@ const CustomersService = {
     ImagesModule,
   ],
   controllers: [CustomersController],
-  providers: [CustomersService, CustomersCompatibilityService],
+  providers: [
+    CustomersService,
+    CustomersCompatibilityService,
+    CustomersMigrationService,
+  ],
+  exports: [CustomersMigrationService],
 })
 export class CustomersModule {}

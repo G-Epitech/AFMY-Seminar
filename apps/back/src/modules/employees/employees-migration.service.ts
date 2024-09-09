@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { LegacyApiService } from '../../providers/legacy-api/legacy-api.service';
 import {
+  Employee as PrismaEmployee,
   Gender,
   Permission,
-  Employee as PrismaEmployee,
   PhotoFormat,
 } from '@prisma/client';
 import { legacyApiConvertGender } from '../../providers/legacy-api/legacy-api-convertors';
@@ -149,5 +149,38 @@ export class EmployeesMigrationService extends EmployeesService {
       });
     }
     return employee ? convertEmployee(employee) : null;
+  }
+
+  public async syncEmployees(): Promise<void> {
+    try {
+      const employees = await this._legacyApiService.request(
+        'GET /employees',
+        {},
+        this._authEmployeeContext.employee.legacyToken!,
+      );
+
+      const existingLegacyIds: number[] = (
+        await this._prismaService.employee.findMany({
+          select: {
+            legacyId: true,
+          },
+        })
+      )
+        .filter((employee) => employee.legacyId)
+        .map((employee) => employee.legacyId!);
+
+      employees.data = employees.data.filter(
+        (employee) => !existingLegacyIds.includes(employee.id),
+      );
+
+      for (const employee of employees.data) {
+        await this.importEmployeeIfNotExists(
+          this._authEmployeeContext.employee.legacyToken!,
+          employee.id,
+        );
+      }
+    } catch (_) {
+      return;
+    }
   }
 }

@@ -119,6 +119,8 @@ model Location {
   x      String
   y      String
   events Event[]
+
+  @@unique([name, x, y])
 }
 
 model Event {
