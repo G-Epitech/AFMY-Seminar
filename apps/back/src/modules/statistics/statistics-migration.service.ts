@@ -32,6 +32,9 @@ export class StatisticsMigrationService {
   private readonly _customersMigrationService: CustomersMigrationService;
 
   public async syncEvents(): Promise<void> {
+    if (!this._authEmployeeContext.isLegacyAuthenticated) {
+      return;
+    }
     const events = await this._legacyApiService.request(
       'GET /events',
       {},
@@ -136,6 +139,9 @@ export class StatisticsMigrationService {
   }
 
   public async syncEncounters(): Promise<void> {
+    if (!this._authEmployeeContext.isLegacyAuthenticated) {
+      return;
+    }
     let legacyIds: IdOf<Encounter>[] = (
       await this._prismaService.event.findMany({
         select: {
