@@ -10,9 +10,7 @@ import {
   Patch,
   Post,
   Query,
-  Res,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { CustomersService } from './customers.service';
 import {
   Customer,
@@ -76,10 +74,11 @@ import {
   CreateCustomerCandidate,
   UpdateCustomerCandidate,
 } from '../../types/customers';
-import fetch from 'node-fetch';
 import { CustomersCompatibilityService } from './compatiblity.service';
 import { PermissionsService } from '../permissions/permissions.service';
 import { AuthEmployeeContext } from '../auth/auth.employee.context';
+import { ImagesService } from '../images/images.service';
+import { ImageTokenType } from '../../types/images';
 
 @Controller('customers')
 export class CustomersController {
@@ -94,6 +93,9 @@ export class CustomersController {
 
   @Inject(AuthEmployeeContext)
   private readonly authEmployeeContext: AuthEmployeeContext;
+
+  @Inject(ImagesService)
+  private readonly imagesService: ImagesService;
 
   constructor() {}
 
@@ -124,7 +126,10 @@ export class CustomersController {
     ).map((customer: Customer): Customer => {
       return {
         ...customer,
-        photo: '/customers/' + customer.id + '/photo',
+        photo: this.imagesService.getLinkOf({
+          id: customer.id,
+          type: ImageTokenType.CUSTOMER,
+        }),
         photoFormat: customer.photoFormat
           ? customer.photoFormat
           : PhotoFormat.PNG,
@@ -155,41 +160,14 @@ export class CustomersController {
 
     return {
       ...customer,
-      photo: '/customers/' + customer.id + '/photo',
+      photo: this.imagesService.getLinkOf({
+        id: customer.id,
+        type: ImageTokenType.CUSTOMER,
+      }),
       photoFormat: customer.photoFormat
         ? customer.photoFormat
         : PhotoFormat.PNG,
     };
-  }
-
-  @Get(':id/photo')
-  async getCustomerPhoto(
-    @Res() res: Response,
-    @Param() { id }: ParamGetCustomerDTO,
-  ): Promise<Response | string> {
-    const customer = await this.customersService.getCustomerById(id);
-
-    if (
-      customer === null ||
-      !(await this.permissionsService.canCoachAccessCustomer(id))
-    ) {
-      throw new NotFoundException(`Customer with id ${id} not found`);
-    }
-
-    if (!customer.photo || !customer.photoFormat) {
-      const avatar = await fetch(
-        'https://ui-avatars.com/api/?background=random&name=' +
-          customer.name +
-          '+' +
-          customer.surname,
-      );
-      const buffer = await avatar.buffer();
-      return res.set('Content-Type', 'image/png').send(buffer);
-    }
-
-    return res
-      .set('Content-Type', 'image/' + customer.photoFormat)
-      .send(Buffer.from(customer.photo, 'base64'));
   }
 
   @Patch(':id')
@@ -219,7 +197,10 @@ export class CustomersController {
 
     return {
       ...updated,
-      photo: '/customers/' + id + '/photo',
+      photo: this.imagesService.getLinkOf({
+        id: updated.id,
+        type: ImageTokenType.CUSTOMER,
+      }),
       photoFormat: updated.photoFormat ? updated.photoFormat : PhotoFormat.PNG,
     };
   }
@@ -249,7 +230,10 @@ export class CustomersController {
 
     return {
       ...created,
-      photo: '/customers/' + created.id + '/photo',
+      photo: this.imagesService.getLinkOf({
+        id: created.id,
+        type: ImageTokenType.CUSTOMER,
+      }),
       photoFormat: created.photoFormat ? created.photoFormat : PhotoFormat.PNG,
     };
   }

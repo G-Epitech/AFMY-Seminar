@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
@@ -14,7 +14,7 @@ import { LegacyApiModule } from '../../providers/legacy-api/legacy-api.module';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '2h' },
     }),
-    EmployeesModule,
+    forwardRef(() => EmployeesModule),
     LegacyApiModule,
   ],
   providers: [AuthService, AuthGuard, AuthEmployeeContext],

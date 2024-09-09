@@ -42,6 +42,8 @@ import {
   UpdateCustomerPaymentCandidate,
 } from '../../types/customers';
 import { AuthEmployeeContext } from '../auth/auth.employee.context';
+import { ImageTokenType } from '../../types/images';
+import { ImagesService } from '../images/images.service';
 
 @Injectable()
 export class CustomersService {
@@ -50,6 +52,9 @@ export class CustomersService {
 
   @Inject(AuthEmployeeContext)
   protected readonly _authEmployeeContext: AuthEmployeeContext;
+
+  @Inject(ImagesService)
+  protected readonly _imagesService: ImagesService;
 
   async getCustomersCount(filters?: CustomersFilters): Promise<number> {
     return this._prismaService.customer.count({
@@ -140,6 +145,12 @@ export class CustomersService {
             ...customer,
             gender: convertGender(customer.gender),
             sign: convertAstrologicalSign(customer.sign),
+            photo: customer.photo
+              ? this._imagesService.getLinkOf({
+                  type: ImageTokenType.CUSTOMER,
+                  id: customer.id,
+                })
+              : null,
             photoFormat: customer.photoFormat
               ? convertPhotoFormat(customer.photoFormat)
               : null,
@@ -162,6 +173,12 @@ export class CustomersService {
           ...customer,
           gender: convertGender(customer.gender),
           sign: convertAstrologicalSign(customer.sign),
+          photo: customer.photo
+            ? this._imagesService.getLinkOf({
+                type: ImageTokenType.CUSTOMER,
+                id: customer.id,
+              })
+            : null,
           photoFormat: customer.photoFormat
             ? convertPhotoFormat(customer.photoFormat)
             : null,
@@ -209,6 +226,12 @@ export class CustomersService {
           ...customer,
           gender: convertGender(customer.gender),
           sign: convertAstrologicalSign(customer.sign),
+          photo: customer.photo
+            ? this._imagesService.getLinkOf({
+                type: ImageTokenType.CUSTOMER,
+                id: customer.id,
+              })
+            : null,
           photoFormat: customer.photoFormat
             ? convertPhotoFormat(customer.photoFormat)
             : null,
@@ -256,6 +279,12 @@ export class CustomersService {
           ...customer,
           gender: convertGender(customer.gender),
           sign: convertAstrologicalSign(customer.sign),
+          photo: customer.photo
+            ? this._imagesService.getLinkOf({
+                type: ImageTokenType.CUSTOMER,
+                id: customer.id,
+              })
+            : null,
           photoFormat: customer.photoFormat
             ? convertPhotoFormat(customer.photoFormat)
             : null,
@@ -660,6 +689,10 @@ export class CustomersService {
         return customer.clothes.map(
           (clothe: PrismaClothe): Clothe => ({
             ...clothe,
+            image: this._imagesService.getLinkOf({
+              type: ImageTokenType.CLOTHE,
+              id: clothe.id,
+            }),
             type: convertClotheType(clothe.type),
           }),
         );
@@ -766,6 +799,10 @@ export class CustomersService {
 
         return {
           ...clothe,
+          image: this._imagesService.getLinkOf({
+            type: ImageTokenType.CLOTHE,
+            id: clothe.id,
+          }),
           type: convertClotheType(clothe.type),
         };
       });
@@ -846,6 +883,10 @@ export class CustomersService {
 
         return {
           ...clothe,
+          image: this._imagesService.getLinkOf({
+            type: ImageTokenType.CLOTHE,
+            id: clothe.id,
+          }),
           type: convertClotheType(clothe.type),
         };
       });
