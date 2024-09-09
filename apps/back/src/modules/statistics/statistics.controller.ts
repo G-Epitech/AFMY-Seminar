@@ -40,9 +40,10 @@ export class StatisticsController {
       end: query.to,
     };
 
-    await this._customersMigrationService.syncCustomers();
-    await this._statisticsMigrationService.syncEvents();
-    await this._statisticsMigrationService.syncEncounters();
+    // BUG: This make the legacy API to rate limit us
+    //await this._customersMigrationService.syncCustomers();
+    //await this._statisticsMigrationService.syncEvents();
+    //await this._statisticsMigrationService.syncEncounters();
 
     const previousTimeFrame: TimeFrame =
       this._statisticsService.getPreviousTimeframe(timeFrame);
