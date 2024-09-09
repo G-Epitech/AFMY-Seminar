@@ -171,7 +171,7 @@ export default function CustomersPage() {
                     <Input
                       id="name"
                       className="col-span-3"
-                      value={newCustomer?.name}
+                      value={newCustomer?.name ?? ''}
                       onChange={(event) => setNewCustomer(prev => ({ ...prev, name: event.target.value }))}
                     />
                   </div>
@@ -182,7 +182,7 @@ export default function CustomersPage() {
                     <Input
                       id="surname"
                       className="col-span-3"
-                      value={newCustomer?.surname}
+                      value={newCustomer?.surname ?? ''}
                       onChange={(event) => setNewCustomer(prev => ({ ...prev, surname: event.target.value }))}
                     />
                   </div>
@@ -193,7 +193,7 @@ export default function CustomersPage() {
                     <Input
                       id="email"
                       className="col-span-3"
-                      value={newCustomer?.email}
+                      value={newCustomer?.email ?? ''}
                       onChange={(event) => setNewCustomer(prev => ({ ...prev, email: event.target.value }))}
                     />
                   </div>
