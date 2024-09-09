@@ -107,34 +107,40 @@ export class StatisticsMigrationService {
     });
 
     const locationsMap = new Map<string, number>(locations);
+    const employees = await this._prismaService.employee.findMany({
+      select: {
+        id: true,
+        legacyId: true,
+      },
+    });
 
     const employeesMap = new Map<number, number>(
-      (
-        await this._prismaService.employee.findMany({
-          select: {
-            id: true,
-            legacyId: true,
-          },
-        })
-      )
+      employees
         .filter((employee) => employee.legacyId)
         .map((employee) => [employee.legacyId!, employee.id]),
     );
+    console.log(employeesMap);
+    const data = toCreate.map((event): Omit<PrismaEvent, 'id'> => {
+      console.log(
+        `Looking for: ${event.employee_id}`,
+        employeesMap.get(event.employee_id),
+      );
+      return {
+        locationId: locationsMap.get(
+          event.location_name + event.location_x + event.location_y,
+        )!,
+        title: event.name,
+        maxParticipants: event.max_participants,
+        employeeId: employeesMap.get(event.employee_id)!,
+        date: new Date(event.date),
+        legacyId: event.id,
+        type: event.type,
+      };
+    });
 
     await this._prismaService.event.createMany({
-      data: toCreate.map(
-        (event): Omit<PrismaEvent, 'id'> => ({
-          locationId: locationsMap.get(
-            event.location_name + event.location_x + event.location_y,
-          )!,
-          title: event.name,
-          maxParticipants: event.max_participants,
-          employeeId: employeesMap.get(event.employee_id)!,
-          date: new Date(event.date),
-          legacyId: event.id,
-          type: event.type,
-        }),
-      ),
+      data,
+      skipDuplicates: true,
     });
   }
 
@@ -222,6 +228,7 @@ export class StatisticsMigrationService {
           customerId: customersMap.get(encounter.customerId)!,
         }),
       ),
+      skipDuplicates: true,
     });
   }
 }

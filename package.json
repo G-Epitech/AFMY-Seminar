@@ -16,6 +16,7 @@
     "clean": "docker compose down",
     "back:dev": "npm run start:dev --workspace=@seminar/back",
     "front:dev": "npm run dev --workspace=@seminar/front",
+    "front:start": "npm run start --workspace=@seminar/front",
     "postinstall": "npm run build --workspace=@seminar/common"
   }
 }

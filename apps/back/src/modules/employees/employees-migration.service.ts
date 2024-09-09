@@ -144,9 +144,16 @@ export class EmployeesMigrationService extends EmployeesService {
     if (legacyEmployee) {
       const photo = await this.getEmployeePhoto(token, legacyEmployee.id);
       const employeeData = this.formatEmployeeData(legacyEmployee, photo);
-      employee = await this._prismaService.employee.create({
-        data: employeeData,
-      });
+      try {
+        const res = await this._prismaService.employee.createManyAndReturn({
+          data: [employeeData],
+          skipDuplicates: true,
+        });
+        employee = res[0];
+      } catch (error) {
+        console.log(error);
+        return null;
+      }
     }
     return employee ? convertEmployee(employee) : null;
   }
@@ -179,7 +186,8 @@ export class EmployeesMigrationService extends EmployeesService {
           employee.id,
         );
       }
-    } catch (_) {
+    } catch (error) {
+      console.log(error);
       return;
     }
   }
