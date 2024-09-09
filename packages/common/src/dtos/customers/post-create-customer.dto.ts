@@ -1,3 +1,4 @@
+import { Type } from "class-transformer";
 import {
   AstrologicalSign,
   Customer,
@@ -8,7 +9,7 @@ import {
 import { IdOf } from "../../utils";
 import {
   IsBase64,
-  IsDateString,
+  IsDate,
   IsEmail,
   IsEnum,
   IsInt,
@@ -38,18 +39,15 @@ export class InPostCreateCustomerDTO {
   @IsString()
   public description: string;
 
-  @IsDateString()
-  public birthDate: string;
+  @IsDate()
+  @Type(() => Date)
+  public birthDate: Date;
 
   @IsEnum(Gender)
   public gender: Gender;
 
   @IsEnum(AstrologicalSign)
   public sign: AstrologicalSign;
-
-  @IsBase64()
-  @IsOptional()
-  public photo?: string;
 
   @IsEnum(PhotoFormat)
   @IsOptional()

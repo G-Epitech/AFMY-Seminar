@@ -1,7 +1,7 @@
 import { Customer, Encounter, EncounterStatus } from "../../types";
 import {
   IsBoolean,
-  IsDateString,
+  IsDate,
   IsEnum,
   IsInt,
   IsNumber,
@@ -14,7 +14,7 @@ import { Type } from "class-transformer";
 import { IdOf } from "../../utils";
 
 export class InPatchCustomerEncounterDTO {
-  @IsDateString()
+  @IsDate()
   @IsOptional()
   public date?: string;
 

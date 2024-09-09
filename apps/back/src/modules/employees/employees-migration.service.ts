@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { LegacyApiService } from '../../providers/legacy-api/legacy-api.service';
 import {
+  Employee as PrismaEmployee,
   Gender,
   Permission,
-  Employee as PrismaEmployee,
   PhotoFormat,
 } from '@prisma/client';
 import { legacyApiConvertGender } from '../../providers/legacy-api/legacy-api-convertors';
@@ -144,10 +144,56 @@ export class EmployeesMigrationService extends EmployeesService {
     if (legacyEmployee) {
       const photo = await this.getEmployeePhoto(token, legacyEmployee.id);
       const employeeData = this.formatEmployeeData(legacyEmployee, photo);
-      employee = await this._prismaService.employee.create({
-        data: employeeData,
-      });
+      try {
+        const res = await this._prismaService.employee.createManyAndReturn({
+          data: [employeeData],
+          skipDuplicates: true,
+        });
+        employee = res[0];
+      } catch (error) {
+        console.log(error);
+        return null;
+      }
     }
     return employee ? convertEmployee(employee) : null;
+  }
+
+  public async syncEmployees(): Promise<void> {
+    try {
+      const employees = await this._legacyApiService.request(
+        'GET /employees',
+        {},
+        this._authEmployeeContext.employee.legacyToken!,
+      );
+
+      const existingLegacyIds: number[] = (
+        await this._prismaService.employee.findMany({
+          select: {
+            legacyId: true,
+          },
+        })
+      )
+        .filter((employee) => employee.legacyId)
+        .map((employee) => employee.legacyId!);
+
+      employees.data = employees.data.filter(
+        (employee) => !existingLegacyIds.includes(employee.id),
+      );
+
+      for (const employee of employees.data) {
+        await this.importEmployeeIfNotExists(
+          this._authEmployeeContext.employee.legacyToken!,
+          employee.id,
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  }
+
+  public async getEmployeesCount(): Promise<number> {
+    await this.syncEmployees();
+    return await super.getEmployeesCount();
   }
 }
