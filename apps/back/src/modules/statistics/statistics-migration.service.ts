@@ -135,6 +135,7 @@ export class StatisticsMigrationService {
           type: event.type,
         }),
       ),
+      skipDuplicates: true,
     });
   }
 
@@ -222,6 +223,7 @@ export class StatisticsMigrationService {
           customerId: customersMap.get(encounter.customerId)!,
         }),
       ),
+      skipDuplicates: true,
     });
   }
 }

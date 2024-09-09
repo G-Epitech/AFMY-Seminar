@@ -3,17 +3,24 @@ import { PrismaService } from '../../providers';
 import {
   CreateEmployeeCandidate,
   EmployeeWithCredentials,
+  UpdateEmployeeCandidate,
 } from '../../types/employees';
 import * as bcrypt from 'bcrypt';
 import { FieldsError } from '../../classes/errors/fields.error';
-import { ALREADY_USED, Employee } from '@seminar/common';
+import { ALREADY_USED, Employee, EmployeesFilters } from '@seminar/common';
 import {
   convertEmployee,
+  convertGender,
   convertGenderToPrisma,
+  convertPermission,
   convertPermissionToPrisma,
+  convertPhotoFormat,
+  convertPhotoFormatToPrisma,
 } from '../../utils';
 import { AuthEmployeeContext } from '../auth/auth.employee.context';
 import { InternalServerError } from '../../classes/responses';
+import { ImageTokenType } from '../../types/images';
+import { ImagesService } from '../images/images.service';
 
 @Injectable()
 export class EmployeesService {
@@ -23,9 +30,22 @@ export class EmployeesService {
   @Inject(AuthEmployeeContext)
   protected readonly _authEmployeeContext: AuthEmployeeContext;
 
+  @Inject(ImagesService)
+  protected readonly _imagesService: ImagesService;
+
   async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt();
     return await bcrypt.hash(password, salt);
+  }
+
+  async doesEmployeeExists(id: number): Promise<boolean> {
+    return this._prismaService.employee
+      .findUnique({
+        where: {
+          id,
+        },
+      })
+      .then((e) => !!e);
   }
 
   public async getMe(): Promise<Employee> {
@@ -91,6 +111,33 @@ export class EmployeesService {
     return convertEmployee(employee);
   }
 
+  async updateEmployee(
+    id: number,
+    candidate: UpdateEmployeeCandidate,
+  ): Promise<Employee | null> {
+    const employee = await this._prismaService.employee.update({
+      where: {
+        id,
+      },
+      data: {
+        ...candidate,
+        photoFormat: candidate.photoFormat
+          ? convertPhotoFormatToPrisma(candidate.photoFormat)
+          : undefined,
+        gender: candidate.gender
+          ? convertGenderToPrisma(candidate.gender)
+          : undefined,
+        permission: candidate.permission
+          ? convertPermissionToPrisma(candidate.permission)
+          : undefined,
+      },
+    });
+    if (!employee) {
+      return null;
+    }
+    return convertEmployee(employee);
+  }
+
   async getEmployeeByEmail(email: string): Promise<Employee | null> {
     const employee = await this._prismaService.employee.findFirst({
       where: {
@@ -136,5 +183,83 @@ export class EmployeesService {
       ...convertEmployee(employee),
       credentials: employee.credentials?.at(0),
     };
+  }
+
+  async deleteEmployeeById(id: number): Promise<Employee | null> {
+    const employee = await this._prismaService.employee.delete({
+      where: {
+        id,
+      },
+    });
+
+    if (!employee) {
+      return null;
+    }
+    return convertEmployee(employee);
+  }
+
+  async getEmployees(
+    filters?: EmployeesFilters,
+    limit?: number,
+    skip?: number,
+  ): Promise<Employee[]> {
+    return this._prismaService.employee
+      .findMany({
+        where: {
+          OR: filters?.name
+            ? [
+                { name: { contains: filters.name, mode: 'insensitive' } },
+                { surname: { contains: filters.name, mode: 'insensitive' } },
+              ]
+            : undefined,
+          birthDate: {
+            gte: filters?.age
+              ? new Date(new Date().getFullYear() - filters.age, 0)
+              : undefined,
+            lte: filters?.age
+              ? new Date(new Date().getFullYear() - filters.age + 1, 0)
+              : undefined,
+          },
+          email: {
+            contains: filters?.email,
+            mode: 'insensitive',
+          },
+          gender: filters?.gender
+            ? convertGenderToPrisma(filters.gender)
+            : undefined,
+          phone: {
+            contains: filters?.phone,
+            mode: 'insensitive',
+          },
+          role: {
+            contains: filters?.role,
+            mode: 'insensitive',
+          },
+        },
+        take: limit,
+        skip,
+      })
+      .then((employees) =>
+        employees.map(
+          (employee): Employee => ({
+            ...employee,
+            gender: convertGender(employee.gender),
+            photo: employee.photo
+              ? this._imagesService.getLinkOf({
+                  type: ImageTokenType.CUSTOMER,
+                  id: employee.id,
+                })
+              : null,
+            photoFormat: employee.photoFormat
+              ? convertPhotoFormat(employee.photoFormat)
+              : null,
+            permission: convertPermission(employee.permission),
+          }),
+        ),
+      );
+  }
+
+  async getEmployeesCount(): Promise<number> {
+    return this._prismaService.employee.count();
   }
 }

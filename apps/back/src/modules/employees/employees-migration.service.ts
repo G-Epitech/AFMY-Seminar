@@ -183,4 +183,9 @@ export class EmployeesMigrationService extends EmployeesService {
       return;
     }
   }
+
+  public async getEmployeesCount(): Promise<number> {
+    await this.syncEmployees();
+    return await super.getEmployeesCount();
+  }
 }
