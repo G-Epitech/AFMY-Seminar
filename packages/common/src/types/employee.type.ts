@@ -20,4 +20,13 @@ export type Employee = {
   permission: Permission;
   role: string;
   numberOfCustomers?: number;
-}
+};
+
+export type EmployeesFilters = {
+  name?: string;
+  email?: string;
+  age?: number;
+  gender?: Gender;
+  role?: string;
+  phone?: string;
+};

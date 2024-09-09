@@ -13,11 +13,19 @@ import {
   Statistics,
   TimeFrame,
 } from '@seminar/common';
+import { StatisticsMigrationService } from './statistics-migration.service';
+import { CustomersMigrationService } from '../customers/customers-migration.service';
 
 @Controller('statistics')
 export class StatisticsController {
   @Inject(StatisticsService)
   private readonly _statisticsService: StatisticsService;
+
+  @Inject(StatisticsMigrationService)
+  private readonly _statisticsMigrationService: StatisticsMigrationService;
+
+  @Inject(CustomersMigrationService)
+  private readonly _customersMigrationService: CustomersMigrationService;
 
   @Get()
   @Allow(Permission.MANAGER)
@@ -31,6 +39,11 @@ export class StatisticsController {
       start: query.from,
       end: query.to,
     };
+
+    await this._customersMigrationService.syncCustomers();
+    await this._statisticsMigrationService.syncEvents();
+    await this._statisticsMigrationService.syncEncounters();
+
     const previousTimeFrame: TimeFrame =
       this._statisticsService.getPreviousTimeframe(timeFrame);
 

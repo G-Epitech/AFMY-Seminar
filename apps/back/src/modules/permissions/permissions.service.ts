@@ -41,4 +41,17 @@ export class PermissionsService {
 
     return this.authEmployeeContext.employee.permission === Permission.MANAGER;
   }
+
+  public canAccessEmployee(employeeOrId: { id: number } | number): boolean {
+    const id: number =
+      typeof employeeOrId === 'number' ? employeeOrId : employeeOrId.id;
+
+    if (!this.authEmployeeContext.authenticated) {
+      return false;
+    }
+    if (this.isManager()) {
+      return true;
+    }
+    return this.authEmployeeContext.employee.id === id;
+  }
 }
