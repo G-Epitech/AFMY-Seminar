@@ -25,7 +25,6 @@ const defaultCodesMap = {
   maxLength: TOO_LONG,
   isEnum: INVALID_TYPE,
   isDate: INVALID_DATE,
-  IsDate: INVALID_DATE,
 };
 
 function getCodesMap(validator: ValidationError, constraint: string): object {
@@ -53,7 +52,6 @@ export class DtoValidationPipe extends ValidationPipe {
 
         for (const error of errors) {
           result[error.property] = getErrorCode(error);
-          console.log(error);
         }
         return new BadRequest({ errors: result });
       },
