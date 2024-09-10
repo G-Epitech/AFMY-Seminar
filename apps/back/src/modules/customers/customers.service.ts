@@ -138,11 +138,25 @@ export class CustomersService {
         },
         take: limit,
         skip,
+        include: {
+          payements: true,
+        },
       })
       .then((customers) =>
         customers.map(
-          (customer: PrismaCustomer): Customer => ({
-            ...customer,
+          (customer): Customer => ({
+            id: customer.id,
+            legacyId: customer.legacyId ? customer.legacyId : null,
+            email: customer.email,
+            name: customer.name,
+            surname: customer.surname,
+            description: customer.description,
+            birthDate: customer.birthDate,
+            phone: customer.phone ? customer.phone : null,
+            address: customer.address ? customer.address : null,
+            coachId: customer.coachId ? customer.coachId : null,
+            createdAt: customer.createdAt,
+            country: customer.country,
             gender: convertGender(customer.gender),
             sign: convertAstrologicalSign(customer.sign),
             photo: customer.photo
@@ -154,6 +168,15 @@ export class CustomersService {
             photoFormat: customer.photoFormat
               ? convertPhotoFormat(customer.photoFormat)
               : null,
+            paymentMethods: customer.payements
+              .reduce(
+                (acc, payment) => [
+                  ...acc,
+                  convertPaymentMethod(payment.method),
+                ],
+                [],
+              )
+              .filter((value, index, self) => self.indexOf(value) === index),
           }),
         ),
       );

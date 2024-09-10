@@ -1,6 +1,7 @@
 import { LegacyApiGender } from '../gender.type';
 import { LegacyApiAstrologicalSign } from '../astrological-sign.type';
 import { LegacyApiClotheType } from '../clothe-type.type';
+import { LegacyApiPaymentMethod } from '../payment-method.type';
 
 export interface ClotheLegacyDto {
   id: number;
@@ -74,7 +75,7 @@ export interface ItemsLegacyDto {
 export interface PaymentHistoryLegacyDto {
   id: number;
   date: string;
-  payment_method: string;
+  payment_method: LegacyApiPaymentMethod;
   amount: number;
   comment: string;
 }
