@@ -11,7 +11,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.gepitech.soulconnection.api.RetrofitInstance
-import com.gepitech.soulconnection.api.auth.login.LoginService
+import com.gepitech.soulconnection.api.auth.login.AuthLoginService
 import com.gepitech.soulconnection.api.auth.login.post.LoginPOSTRequest
 import com.gepitech.soulconnection.api.auth.login.post.LoginPOSTResponse
 import retrofit2.Call
@@ -20,7 +20,7 @@ import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var loginService: LoginService
+    private lateinit var authLoginService: AuthLoginService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,13 +57,17 @@ class LoginActivity : AppCompatActivity() {
         editor.apply()
     }
 
+    private fun getSavedToken(): String? {
+        return null
+    }
+
     private fun getApiInterfaces() {
-        loginService = RetrofitInstance.getInstance().create(LoginService::class.java)
+        authLoginService = RetrofitInstance.getInstance({ getSavedToken() }).create(AuthLoginService::class.java)
     }
 
     fun login(username: String, password: String) {
         val loginRequest = LoginPOSTRequest(username, password)
-        val call = loginService.login(loginRequest)
+        val call = authLoginService.login(loginRequest)
 
         call.enqueue(object : Callback<LoginPOSTResponse> {
             override fun onResponse(call: Call<LoginPOSTResponse>, response: Response<LoginPOSTResponse>) {

@@ -55,4 +55,5 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.okhttp)
     implementation(libs.loggingInterceptor)
+    implementation(libs.glide)
 }
