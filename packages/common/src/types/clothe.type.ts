@@ -11,3 +11,7 @@ export type Clothe = {
   type: ClotheType;
   image: string;
 };
+
+export type ClothesFilters = {
+  type?: ClotheType;
+};

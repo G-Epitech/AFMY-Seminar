@@ -100,7 +100,7 @@ export class CustomersController {
   @Inject(ImagesService)
   private readonly imagesService: ImagesService;
 
-  constructor() { }
+  constructor() {}
 
   /**
    * Get customers paginated
@@ -212,8 +212,6 @@ export class CustomersController {
       photoFormat: updated.photoFormat ? updated.photoFormat : PhotoFormat.PNG,
     };
   }
-
-
 
   @Post()
   @UseInterceptors(FileInterceptor('photo'))
@@ -534,7 +532,7 @@ export class CustomersController {
   @Get(':id/clothes')
   async getCustomerClothes(
     @Param() { id }: ParamGetCustomerDTO,
-    @Query() { page, size }: QueryGetCustomerClothesDTO,
+    @Query() { page, size, type }: QueryGetCustomerClothesDTO,
   ): Promise<OutGetCustomerClothesDTO> {
     if (
       !(await this.customersService.doesCustomerExist(id)) ||
@@ -548,11 +546,13 @@ export class CustomersController {
 
     const isLast = clothesCount < page * size + size;
     const startIndex = isLast ? Math.max(0, clothesCount - size) : page * size;
-    const items = await this.customersService.getCustomerClothes(
-      id,
-      size,
-      startIndex,
-    );
+    const items = await this.customersService.getCustomerClothes(id, {
+      limit: size,
+      skip: startIndex,
+      filters: {
+        type,
+      },
+    });
 
     if (items === null) {
       throw new NotFoundException(`Customer with id ${id} not found`);
