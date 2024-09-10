@@ -33,7 +33,11 @@ export type EmployeesFilters = {
 };
 
 export type EmployeesCountFilters = {
+  name?: string;
+  email?: string;
   age?: number;
   gender?: Gender;
+  role?: string;
   permission?: Permission;
-}
+  phone?: string;
+};

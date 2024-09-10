@@ -11,7 +11,7 @@ import { EmployeesService } from './employees.service';
 import { convertEmployee } from '../../utils';
 import { EmployeeWithCredentials } from '../../types/employees';
 import { EmployeeLegacyDto } from '../../types/legacy-api/dtos';
-import { Employee } from '@seminar/common';
+import { Employee, EmployeesCountFilters } from '@seminar/common';
 
 @Injectable()
 export class EmployeesMigrationService extends EmployeesService {
@@ -192,8 +192,10 @@ export class EmployeesMigrationService extends EmployeesService {
     }
   }
 
-  public async getEmployeesCount(): Promise<number> {
+  public async getEmployeesCount(
+    filters?: EmployeesCountFilters,
+  ): Promise<number> {
     await this.syncEmployees();
-    return await super.getEmployeesCount();
+    return await super.getEmployeesCount(filters);
   }
 }

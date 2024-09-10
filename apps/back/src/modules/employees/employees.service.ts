@@ -7,7 +7,12 @@ import {
 } from '../../types/employees';
 import * as bcrypt from 'bcrypt';
 import { FieldsError } from '../../classes/errors/fields.error';
-import { ALREADY_USED, Employee, EmployeesCountFilters, EmployeesFilters } from '@seminar/common';
+import {
+  ALREADY_USED,
+  Employee,
+  EmployeesCountFilters,
+  EmployeesFilters,
+} from '@seminar/common';
 import {
   convertEmployee,
   convertGender,
@@ -239,7 +244,7 @@ export class EmployeesService {
             equals: filters?.permission
               ? convertPermissionToPrisma(filters.permission)
               : undefined,
-          }
+          },
         },
         take: limit,
         skip,
@@ -267,6 +272,16 @@ export class EmployeesService {
   async getEmployeesCount(filters?: EmployeesCountFilters): Promise<number> {
     return this._prismaService.employee.count({
       where: {
+        OR: filters?.name
+          ? [
+              { name: { contains: filters.name, mode: 'insensitive' } },
+              { surname: { contains: filters.name, mode: 'insensitive' } },
+            ]
+          : undefined,
+        phone: {
+          contains: filters?.phone,
+          mode: 'insensitive',
+        },
         birthDate: {
           gte: filters?.age
             ? new Date(new Date().getFullYear() - filters.age, 0)
@@ -275,6 +290,10 @@ export class EmployeesService {
             ? new Date(new Date().getFullYear() - filters.age + 1, 0)
             : undefined,
         },
+        email: {
+          contains: filters?.email,
+          mode: 'insensitive',
+        },
         gender: filters?.gender
           ? convertGenderToPrisma(filters.gender)
           : undefined,
@@ -282,7 +301,7 @@ export class EmployeesService {
           equals: filters?.permission
             ? convertPermissionToPrisma(filters.permission)
             : undefined,
-        }
+        },
       },
     });
   }
