@@ -3,6 +3,7 @@ import { CustomersService } from './customers.service';
 import { LegacyApiService } from '../../providers/legacy-api/legacy-api.service';
 import {
   AstrologicalSign,
+  ClothesFilters,
   Customer,
   CustomersFilters,
   EncounterStatus,
@@ -463,9 +464,12 @@ export class CustomersMigrationService extends CustomersService {
     return super.getCustomersCount(filters);
   }
 
-  public async getCustomerClothesCount(id: IdOf<Customer>): Promise<number> {
+  public async getCustomerClothesCount(
+    id: IdOf<Customer>,
+    filters?: ClothesFilters,
+  ): Promise<number> {
     await this.syncCustomerClothes(id);
-    return super.getCustomerClothesCount(id);
+    return super.getCustomerClothesCount(id, filters);
   }
 
   public async getCustomerEncountersCount(id: IdOf<Customer>): Promise<number> {

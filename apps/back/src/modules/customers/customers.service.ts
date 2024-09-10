@@ -8,6 +8,7 @@ import {
   Encounter,
   IdOf,
   Payment,
+  ClothesFilters,
 } from '@seminar/common';
 import {
   Clothe as PrismaClothe,
@@ -668,8 +669,11 @@ export class CustomersService {
 
   async getCustomerClothes(
     id: IdOf<Customer>,
-    limit?: number,
-    skip?: number,
+    {
+      limit,
+      skip,
+      filters,
+    }: { limit?: number; skip?: number; filters?: ClothesFilters } = {},
   ): Promise<Clothe[] | null> {
     return this._prismaService.customer
       .findUnique({
@@ -680,6 +684,11 @@ export class CustomersService {
           clothes: {
             take: limit,
             skip,
+            where: {
+              type: filters?.type
+                ? convertClotheTypeToPrisma(filters.type)
+                : undefined,
+            },
           },
         },
       })
@@ -842,7 +851,10 @@ export class CustomersService {
       });
   }
 
-  async getCustomerClothesCount(id: IdOf<Customer>): Promise<number> {
+  async getCustomerClothesCount(
+    id: IdOf<Customer>,
+    filters?: ClothesFilters,
+  ): Promise<number> {
     return this._prismaService.clothe.count({
       where: {
         customers: {
@@ -850,6 +862,9 @@ export class CustomersService {
             id,
           },
         },
+        type: filters?.type
+          ? convertClotheTypeToPrisma(filters.type)
+          : undefined,
       },
     });
   }
