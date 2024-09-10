@@ -1,9 +1,11 @@
 package com.gepitech.soulconnection
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.LinearGradient
+import android.graphics.Shader
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -60,6 +62,15 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        val txtTitle = findViewById<TextView>(R.id.appTitle)
+        val paint = txtTitle.paint
+        val width = paint.measureText(txtTitle.text.toString())
+        txtTitle.paint.shader = LinearGradient(
+            0f, 0f, width, txtTitle.textSize, intArrayOf(
+                Color.parseColor("#FCAF6F"),
+                Color.parseColor("#F97316"),
+            ), null, Shader.TileMode.REPEAT)
+
         authenticated { isAuthenticated ->
             Log.i("MainActivity", "Authenticated: $isAuthenticated")
             if (!isAuthenticated) {
@@ -69,13 +80,6 @@ class MainActivity : AppCompatActivity() {
                 return@authenticated
             }
         }
-    }
-
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
     }
 
     override fun onSupportNavigateUp(): Boolean {
