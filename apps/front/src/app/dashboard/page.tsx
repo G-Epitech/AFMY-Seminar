@@ -23,7 +23,11 @@ export default function DashboardPage() {
   const fetchStatistics = async () => {
     const today = new Date();
     const response = await api.statistics.get({
-      from: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30),
+      from: new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate() - 30,
+      ),
       to: today,
     });
     if (response && response.data) {
@@ -31,7 +35,7 @@ export default function DashboardPage() {
     } else {
       console.error("Failed to fetch");
     }
-  }
+  };
 
   useEffect(() => {
     fetchStatistics();
@@ -40,27 +44,27 @@ export default function DashboardPage() {
   return (
     <main>
       <Subtitle text="Dashboard" />
-      <h3 className="mb-4 text-stone-500">
-        welcome!
-      </h3>
+      <h3 className="mb-4 text-stone-500">welcome!</h3>
       <div className="flex flex-wrap sm:flex-nowrap">
-        {statistics && <>
-          <div className="w-full">
-            {dashboardsLeft(statistics).map((dashboard, index) => (
-              <div className="p-2" key={index}>
-                {dashboard}
-              </div>
-            ))}
-          </div>
-          <div className="w-full">
-            {dashboardsRight(statistics).map((dashboard, index) => (
-              <div className="p-2" key={index}>
-                {dashboard}
-              </div>
-            ))}
-          </div>
-        </>}
+        {statistics && (
+          <>
+            <div className="w-full">
+              {dashboardsLeft(statistics).map((dashboard, index) => (
+                <div className="p-2" key={index}>
+                  {dashboard}
+                </div>
+              ))}
+            </div>
+            <div className="w-full">
+              {dashboardsRight(statistics).map((dashboard, index) => (
+                <div className="p-2" key={index}>
+                  {dashboard}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </main>
-  )
-} 
+  );
+}
