@@ -6,6 +6,7 @@ import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -14,6 +15,7 @@ import com.gepitech.soulconnection.api.RetrofitInstance
 import com.gepitech.soulconnection.api.auth.login.AuthLoginService
 import com.gepitech.soulconnection.api.auth.login.post.LoginPOSTRequest
 import com.gepitech.soulconnection.api.auth.login.post.LoginPOSTResponse
+import com.google.android.material.snackbar.Snackbar
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -46,7 +48,7 @@ class LoginActivity : AppCompatActivity() {
             val password = passwordInput.text.toString()
 
             Log.e("LoginActivity", "Username: $username, Password: $password")
-            login(username, password)
+            login(username, password, findViewById(android.R.id.content))
         }
     }
 
@@ -65,17 +67,17 @@ class LoginActivity : AppCompatActivity() {
         authLoginService = RetrofitInstance.getInstance({ getSavedToken() }).create(AuthLoginService::class.java)
     }
 
-    fun login(username: String, password: String) {
+    private fun login(username: String, password: String, view: View) {
         val loginRequest = LoginPOSTRequest(username, password)
         val call = authLoginService.login(loginRequest)
 
         call.enqueue(object : Callback<LoginPOSTResponse> {
             override fun onResponse(call: Call<LoginPOSTResponse>, response: Response<LoginPOSTResponse>) {
-                Log.i("LoginActivity", "Response: ${response.body()}")
                 if (response.isSuccessful) {
                     val token = response.body()?.tokens?.access
                     if (token == null) {
                         Log.e("LoginActivity", "Token is null")
+                        Snackbar.make(view, "Login failed: Token is null", Snackbar.LENGTH_LONG).show()
                         return
                     }
                     saveToken(token)
@@ -84,13 +86,16 @@ class LoginActivity : AppCompatActivity() {
                     finish()
                 } else {
                     Log.e("LoginActivity", "Error: ${response.message()}")
+                    Snackbar.make(view, "Login failed: invalid credentials", Snackbar.LENGTH_LONG).show()
                 }
             }
 
             override fun onFailure(call: Call<LoginPOSTResponse>, t: Throwable) {
                 Log.e("LoginActivity", "Error: ${t.message}")
+                Snackbar.make(view, "Login failed: ${t.message}", Snackbar.LENGTH_LONG).show()
             }
         })
     }
+
 
 }

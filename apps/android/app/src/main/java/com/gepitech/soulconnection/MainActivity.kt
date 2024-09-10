@@ -33,16 +33,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var emmployeesMeService: EmployeesMeService
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState)
 
-        initApiInterfaces();
+        initApiInterfaces()
 
-        if (!authenticated()) {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
-            return
-        }
+        Log.i("MainActivity", "onCreate")
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -56,8 +52,6 @@ class MainActivity : AppCompatActivity() {
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow
@@ -65,7 +59,18 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        authenticated { isAuthenticated ->
+            Log.i("MainActivity", "Authenticated: $isAuthenticated")
+            if (!isAuthenticated) {
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+                return@authenticated
+            }
+        }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -88,12 +93,15 @@ class MainActivity : AppCompatActivity() {
         emmployeesMeService = RetrofitInstance.getInstance({ getSavedToken() }).create(EmployeesMeService::class.java)
     }
 
-    private fun authenticated(): Boolean {
-        val token = getSavedToken();
+    private fun authenticated(callback: (Boolean) -> Unit) {
+        val token = getSavedToken()
 
         if (token.isNullOrEmpty()) {
-            return false
+            callback(false)
+            return
         }
+
+        Log.i("MainActivity", "Token: $token")
         val call = emmployeesMeService.getMe()
         call.enqueue(object : Callback<EmployeesMeGETResponse> {
             override fun onResponse(call: Call<EmployeesMeGETResponse>, response: Response<EmployeesMeGETResponse>) {
@@ -101,25 +109,30 @@ class MainActivity : AppCompatActivity() {
                     val user = response.body()
                     if (user == null) {
                         Log.e("MainActivity", "User is null")
+                        callback(false)
                         return
                     }
+                    Log.i("MainActivity", "User: $user")
                     setEmployeeData(user)
                     Log.i("MainActivity", "User: ${response.body()}")
+                    callback(true)
                 } else {
                     Log.e("MainActivity", "Error: ${response.errorBody()}")
+                    callback(false)
                 }
             }
 
             override fun onFailure(call: Call<EmployeesMeGETResponse>, t: Throwable) {
                 Log.e("MainActivity", "Error: ${t.message}")
+                callback(false)
             }
         })
-
-        return true;
     }
+
 
     private fun setEmployeeData(user: EmployeesMeGETResponse) {
         val imageView = findViewById<ImageView>(R.id.imageProfile);
+        Log.i("MainActivity", "ImageView: $imageView");
         Glide.with(this)
             .load(API_URL + user.photo)
             .circleCrop()
