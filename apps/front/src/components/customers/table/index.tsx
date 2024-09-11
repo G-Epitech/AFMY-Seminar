@@ -6,6 +6,7 @@ import { useReactTable } from "@tanstack/react-table";
 
 export interface CustomersTableProps {
   customers: Customer[];
+  setCustomers: (customers: Customer[]) => void;
   isLastPage: boolean;
   handleNextPage: (table: ReturnType<typeof useReactTable<Customer>>) => void;
   handlePreviousPage: (table: ReturnType<typeof useReactTable<Customer>>) => void;
@@ -13,7 +14,7 @@ export interface CustomersTableProps {
 }
 
 export default function CustomersTable(
-  { customers, isLastPage, handleNextPage, handlePreviousPage, maxRows }: CustomersTableProps
+  { customers, setCustomers, isLastPage, handleNextPage, handlePreviousPage, maxRows }: CustomersTableProps
 ) {
   return (
     <SelectTable
@@ -21,7 +22,7 @@ export default function CustomersTable(
       columns={customersColumns}
       filterSearchColumn='email'
       filterSearchPlaceholder='Filter emails...'
-      actionComponent={({ table }) => <CustomersTableActions table={table} />}
+      actionComponent={({ table }) => <CustomersTableActions table={table} setCustomers={setCustomers} />}
       isLastPage={isLastPage}
       handleNextPage={handleNextPage}
       handlePreviousPage={handlePreviousPage}

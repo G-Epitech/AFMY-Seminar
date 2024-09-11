@@ -1,6 +1,7 @@
 import { clothes } from "./clothes";
 import { compatibility } from "./compatibility";
 import { count } from "./count";
+import { _delete } from "./delete";
 import encounters from "./encounters";
 import { get } from "./get";
 import { list } from "./list";
@@ -14,6 +15,7 @@ const customers = {
     count,
     encounters,
     payments,
+    "delete": _delete,
 };
 
 export default customers;
