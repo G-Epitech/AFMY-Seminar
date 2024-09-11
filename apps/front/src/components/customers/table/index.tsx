@@ -11,10 +11,11 @@ export interface CustomersTableProps {
   handleNextPage: (table: ReturnType<typeof useReactTable<Customer>>) => void;
   handlePreviousPage: (table: ReturnType<typeof useReactTable<Customer>>) => void;
   maxRows: number;
+  setFilter: (filter: string) => void;
 }
 
 export default function CustomersTable(
-  { customers, setCustomers, isLastPage, handleNextPage, handlePreviousPage, maxRows }: CustomersTableProps
+  { customers, setCustomers, isLastPage, handleNextPage, handlePreviousPage, maxRows, setFilter }: CustomersTableProps
 ) {
   return (
     <SelectTable
@@ -27,6 +28,7 @@ export default function CustomersTable(
       handleNextPage={handleNextPage}
       handlePreviousPage={handlePreviousPage}
       maxRows={maxRows}
+      setFilter={setFilter}
     />
   )
 }

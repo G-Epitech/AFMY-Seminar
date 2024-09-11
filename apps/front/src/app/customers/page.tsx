@@ -19,17 +19,27 @@ import auth from '@/api/auth';
 import { credentials } from '@/auth/credentials';
 import api from '@/api';
 import { useReactTable } from '@tanstack/react-table';
+import { set } from 'date-fns';
 
 export default function CustomersPage() {
   const { toast } = useToast();
   const sortedCountries = mapData.objects.world.geometries.sort((a, b) => a.properties.name.localeCompare(b.properties.name));
 
   const [allCustomers, setAllCustomers] = useState<Customer[]>([]);
+  const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const [fetchedPages, setFetchedPages] = useState<number[]>([]);
+  const [filteredFetchedPages, setFilteredFetchedPages] = useState<number[]>([]);
   const [lastCustomersPage, setLastCustomersPage] = useState<Page<Customer>>({
     index: 0,
     size: 10,
-    isLast: false,
+    isLast: true,
+    items: [],
+  });
+  const [lastFilteredCustomersPage, setLastFilteredCustomersPage] = useState<Page<Customer>>({
+    index: 0,
+    size: 10,
+    isLast: true,
     items: [],
   });
   const [numberOfCustomers, setNumberOfCustomers] = useState<number>(0);
@@ -49,7 +59,7 @@ export default function CustomersPage() {
 
     form.append("photo", photo as Blob);
     for (const key in newCustomer) {
-      form.append(key, newCustomer[key as keyof(typeof newCustomer) ]! as string);
+      form.append(key, newCustomer[key as keyof (typeof newCustomer)]! as string);
     }
     const response = await fetch(`${config.api.url}/customers`, {
       method: "POST",
@@ -97,7 +107,33 @@ export default function CustomersPage() {
     fetchCustomers(lastCustomersPage.index, lastCustomersPage.size);
   }, []);
 
+  const handleFilteredNextPage = async (table: ReturnType<typeof useReactTable<Customer>>) => {
+    const tableState = table.getState();
+    if (filteredFetchedPages.includes(tableState.pagination.pageIndex + 1)) {
+      if (tableState.pagination.pageIndex + 1 === lastFilteredCustomersPage.index && lastFilteredCustomersPage.isLast) {
+        setIsLastPage(true);
+      }
+      table.setPageIndex(tableState.pagination.pageIndex + 1);
+      return;
+    }
+    const response = await api.customers.list({
+      page: lastFilteredCustomersPage.index + 1,
+      size: lastFilteredCustomersPage.size,
+      email: searchTerm,
+    });
+    if (response && response.ok) {
+      setLastFilteredCustomersPage(response.data);
+      setFilteredCustomers(prev => [...prev, ...response.data.items]);
+      table.setPageIndex(response.data.index);
+      setFilteredFetchedPages(prev => [...prev, response.data.index]);
+      setIsLastPage(response.data.isLast);
+    }
+  };
+
   const handleNextPage = async (table: ReturnType<typeof useReactTable<Customer>>) => {
+    if (searchTerm.length > 0) {
+      return handleFilteredNextPage(table);
+    }
     const tableState = table.getState();
     if (fetchedPages.includes(tableState.pagination.pageIndex + 1)) {
       if (tableState.pagination.pageIndex + 1 === lastCustomersPage.index && lastCustomersPage.isLast) {
@@ -130,6 +166,31 @@ export default function CustomersPage() {
       setNumberOfCustomers(allCustomers.length);
     }
   }, [allCustomers]);
+
+  const handleSearch = async () => {
+    if (searchTerm === '') {
+      setFilteredCustomers([]);
+      return;
+    }
+    setFilteredFetchedPages([]);
+    const response = await api.customers.list({
+      page: 0,
+      size: 10,
+      email: searchTerm,
+    });
+    if (response && response.ok) {
+      setFilteredCustomers(response.data.items);
+      setLastFilteredCustomersPage(response.data);
+      setFilteredFetchedPages([response.data.index]);
+      setIsLastPage(response.data.isLast);
+    } else {
+      console.error(response);
+    }
+  }
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchTerm]);
 
   return (
     <main>
@@ -352,7 +413,8 @@ export default function CustomersPage() {
         </div>
       </div>
       <CustomersTable
-        customers={allCustomers}
+        customers={searchTerm.length > 0 ? filteredCustomers : allCustomers}
+        setFilter={setSearchTerm}
         setCustomers={setAllCustomers}
         isLastPage={isLastPage}
         handleNextPage={handleNextPage}

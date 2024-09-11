@@ -13,12 +13,21 @@ export default function Coaches() {
   const [lastCoachesPage, setLastCoachesPage] = useState<Page<Employee>>({
     index: 0,
     size: 10,
-    isLast: false,
+    isLast: true,
+    items: [],
+  });
+  const [lastFilteredPage, setLastFilteredPage] = useState<Page<Employee>>({
+    index: 0,
+    size: 10,
+    isLast: true,
     items: [],
   });
   const [numberOfCoaches, setNumberOfCoaches] = useState<number>(0);
   const [allEmployees, setAllEmployees] = useState<Employee[]>([]);
+  const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
   const [fetchedPages, setFetchedPages] = useState<number[]>([]);
+  const [filteredPages, setFilteredPages] = useState<number[]>([]);
+  const [searchFilter, setSearchFilter] = useState<string>('');
   const [isLastPage, setIsLastPage] = useState<boolean>(true);
 
   const fecthCoaches = async (index: number, size: number) => {
@@ -58,11 +67,34 @@ export default function Coaches() {
     fecthCoaches(lastCoachesPage.index, lastCoachesPage.size);
   }, []);
 
-  useEffect(() => {
-    console.log(allEmployees);
-  }, [allEmployees]);
+  const handleFilteredNextPage = async (table: ReturnType<typeof useReactTable<Employee>>) => {
+    const tableState = table.getState();
+    if (filteredPages.includes(tableState.pagination.pageIndex + 1)) {
+      if (tableState.pagination.pageIndex + 1 === lastFilteredPage.index && lastFilteredPage.isLast) {
+        setIsLastPage(true);
+      }
+      table.setPageIndex(tableState.pagination.pageIndex + 1);
+      return;
+    }
+    const response = await api.employees.list({
+      page: lastFilteredPage.index + 1,
+      size: lastFilteredPage.size,
+      permission: Permission.COACH,
+      email: searchFilter,
+    });
+    if (response && response.ok) {
+      setLastFilteredPage(response.data);
+      setFilteredEmployees(prev => [...prev, ...response.data.items]);
+      table.setPageIndex(response.data.index);
+      setFilteredPages(prev => [...prev, response.data.index]);
+      setIsLastPage(response.data.isLast);
+    }
+  };
 
   const handleNextPage = async (table: ReturnType<typeof useReactTable<Employee>>) => {
+    if (searchFilter.length > 0) {
+      return handleFilteredNextPage(table);
+    }
     const tableState = table.getState();
     if (fetchedPages.includes(tableState.pagination.pageIndex + 1)) {
       if (tableState.pagination.pageIndex + 1 === lastCoachesPage.index && lastCoachesPage.isLast) {
@@ -94,6 +126,38 @@ export default function Coaches() {
     setIsLastPage(false);
   };
 
+  useEffect(() => {
+    if (allEmployees.length > numberOfCoaches) {
+      setAllEmployees(allEmployees.slice(0, numberOfCoaches));
+    }
+  }, [allEmployees]);
+
+  const handleSearch = async () => {
+    if (searchFilter === '') {
+      setFilteredEmployees([]);
+      return;
+    }
+    setFilteredPages([]);
+    const response = await api.employees.list({
+      page: 0,
+      size: 10,
+      permission: Permission.COACH,
+      email: searchFilter,
+    });
+    if (response && response.ok) {
+      setFilteredEmployees(response.data.items);
+      setLastFilteredPage(response.data);
+      setFilteredPages([response.data.index]);
+      setIsLastPage(response.data.isLast);
+    } else {
+      console.error(response);
+    }
+  }
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchFilter]);
+
   return (
     <main>
       <Subtitle text="Coaches List" />
@@ -102,7 +166,8 @@ export default function Coaches() {
         You have total {numberOfCoaches} coaches.
       </h3>
       <CoachesTable
-        coaches={allEmployees}
+        coaches={searchFilter.length > 0 ? filteredEmployees : allEmployees}
+        setFilter={setSearchFilter}
         setCoaches={setAllEmployees}
         isLastPage={isLastPage}
         handleNextPage={handleNextPage}

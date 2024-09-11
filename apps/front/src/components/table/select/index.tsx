@@ -28,10 +28,11 @@ export interface SelectTableProps<T> {
   handleNextPage: (table: ReturnType<typeof useReactTable<T>>) => void;
   handlePreviousPage: (table: ReturnType<typeof useReactTable<T>>) => void;
   maxRows: number;
+  setFilter: (filter: string) => void;
 }
 
 export default function SelectTable<T>(
-  { data, columns, filterSearchColumn, filterSearchPlaceholder, filterColumn, actionComponent, isLastPage, handleNextPage, handlePreviousPage, maxRows }: SelectTableProps<T>
+  { data, columns, filterSearchColumn, filterSearchPlaceholder, filterColumn, actionComponent, isLastPage, handleNextPage, handlePreviousPage, maxRows, setFilter }: SelectTableProps<T>
 ) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -68,6 +69,7 @@ export default function SelectTable<T>(
             filterSearchColumn={filterSearchColumn}
             filterSearchPlaceholder={filterSearchPlaceholder}
             filterColumns={filterColumn}
+            setFilter={setFilter}
           />
         </div>
       </CardHeader>
