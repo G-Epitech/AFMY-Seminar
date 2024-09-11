@@ -25,7 +25,7 @@ struct CustomerView: View {
         Form {
             Section {
                 HStack {
-                    ImageView(urlString: "http://127.0.0.1:4000\(customer.photo!)")
+                    ImageView(urlString: "\(APIConfig.url)\(customer.photo!)")
                         .frame(width: 70, height: 70)
                         .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
                         .overlay {
@@ -41,15 +41,19 @@ struct CustomerView: View {
             Section {
                 HStack {
                     Image(systemName: "envelope")
+                        .foregroundStyle(.orange)
                     Text("Email")
                     Spacer()
                     Link(customer.email, destination: URL(string: "mailto://\(customer.email)")!)
+                        .foregroundStyle(Color.orange)
                 }
                 HStack {
                     Image(systemName: "phone")
+                        .foregroundStyle(.orange)
                     Text("Phone")
                     Spacer()
                     Link(customer.phone ?? "No phone", destination: URL(string: "tel://\(customer.phone ?? "#")")!)
+                        .foregroundStyle(Color.orange)
                 }
             }
             
@@ -71,12 +75,14 @@ struct CustomerView: View {
             Section {
                 HStack {
                     Image(systemName: "birthday.cake")
+                        .foregroundStyle(.orange)
                     Text("Birthday")
                     Spacer()
                     Text(getDateString(text: customer.birthDate))
                 }
                 HStack {
                     Image(systemName: "person.badge.plus")
+                        .foregroundStyle(.orange)
                     Text("User creation")
                     Spacer()
                     Text(getDateString(text: customer.createdAt))
@@ -86,12 +92,14 @@ struct CustomerView: View {
             Section {
                 HStack {
                     Image(systemName: "mappin.circle")
+                        .foregroundStyle(.orange)
                     Text("Address")
                     Spacer()
                     Text(customer.address ?? "Not provided")
                 }
                 HStack {
                     Image(systemName: "map")
+                        .foregroundStyle(.orange)
                     Text("Country")
                     Spacer()
                     Text(customer.country ?? "Not provided")

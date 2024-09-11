@@ -9,7 +9,7 @@ import Foundation
 
 func listCustomersAPI(token: String, page: Int) async throws -> CustomerPage
 {
-    guard let url = URL(string: "http://127.0.0.1:4000/customers?page=\(page)&size=20") else {
+    guard let url = URL(string: "\(APIConfig.url)/customers?page=\(page)&size=20") else {
         throw URLError(.badURL)
     }
     

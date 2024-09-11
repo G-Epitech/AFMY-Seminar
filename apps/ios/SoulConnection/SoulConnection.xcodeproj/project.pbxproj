@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C38A16CD2C91D7E300573C72 /* CustomerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38A16CC2C91D7E300573C72 /* CustomerView.swift */; };
+		C38A16D02C91F20500573C72 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38A16CF2C91F20500573C72 /* API.swift */; };
 		C3EB86072C90344600E159BE /* SoulConnectionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3EB86062C90344600E159BE /* SoulConnectionApp.swift */; };
 		C3EB86092C90344600E159BE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3EB86082C90344600E159BE /* ContentView.swift */; };
 		C3EB860B2C90344700E159BE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3EB860A2C90344700E159BE /* Assets.xcassets */; };
@@ -44,6 +45,7 @@
 
 /* Begin PBXFileReference section */
 		C38A16CC2C91D7E300573C72 /* CustomerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerView.swift; sourceTree = "<group>"; };
+		C38A16CF2C91F20500573C72 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		C3EB86032C90344600E159BE /* SoulConnection.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SoulConnection.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3EB86062C90344600E159BE /* SoulConnectionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoulConnectionApp.swift; sourceTree = "<group>"; };
 		C3EB86082C90344600E159BE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -89,6 +91,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C38A16CE2C91F1F800573C72 /* Configs */ = {
+			isa = PBXGroup;
+			children = (
+				C38A16CF2C91F20500573C72 /* API.swift */,
+			);
+			path = Configs;
+			sourceTree = "<group>";
+		};
 		C3EB85FA2C90344600E159BE = {
 			isa = PBXGroup;
 			children = (
@@ -112,6 +122,7 @@
 		C3EB86052C90344600E159BE /* SoulConnection */ = {
 			isa = PBXGroup;
 			children = (
+				C38A16CE2C91F1F800573C72 /* Configs */,
 				C3FD44832C90ADFF002833AE /* Model */,
 				C3EB86342C907D7F00E159BE /* Views */,
 				C3EB86322C90492100E159BE /* API */,
@@ -318,6 +329,7 @@
 				C3FD44892C918D91002833AE /* CustomersView.swift in Sources */,
 				C38A16CD2C91D7E300573C72 /* CustomerView.swift in Sources */,
 				C3FD448B2C91BEC4002833AE /* CustomerRow.swift in Sources */,
+				C38A16D02C91F20500573C72 /* API.swift in Sources */,
 				C3EB86072C90344600E159BE /* SoulConnectionApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

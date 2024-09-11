@@ -12,7 +12,7 @@ struct CustomerRow: View {
 
     var body: some View {
         HStack {
-            ImageView(urlString: "http://127.0.0.1:4000\(customer.photo!)")
+            ImageView(urlString: "\(APIConfig.url)\(customer.photo!)")
                 .frame(width: 50, height: 50).clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
             Text(customer.name)
             Text(customer.surname)

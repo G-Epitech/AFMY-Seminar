@@ -17,7 +17,7 @@ struct Tokens: Codable {
 
 func loginAPI(email: String, password: String) async throws -> Response
 {
-    guard let url = URL(string: "http://127.0.0.1:4000/auth/login") else {
+    guard let url = URL(string: "\(APIConfig.url)/auth/login") else {
         throw URLError(.badURL)
     }
     
