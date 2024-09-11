@@ -41,8 +41,6 @@ class MainActivity : AppCompatActivity() {
 
         initApiInterfaces()
 
-        Log.i("MainActivity", "onCreate")
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -69,7 +67,6 @@ class MainActivity : AppCompatActivity() {
             ), null, Shader.TileMode.REPEAT)
 
         authenticated { isAuthenticated ->
-            Log.i("MainActivity", "Authenticated: $isAuthenticated")
             if (!isAuthenticated) {
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
@@ -102,20 +99,16 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        Log.i("MainActivity", "Token: $token")
         val call = employeesMeRepository.getMe()
         call.enqueue(object : Callback<EmployeesMeGETResponse> {
             override fun onResponse(call: Call<EmployeesMeGETResponse>, response: Response<EmployeesMeGETResponse>) {
                 if (response.isSuccessful) {
                     val user = response.body()
                     if (user == null) {
-                        Log.e("MainActivity", "User is null")
                         callback(false)
                         return
                     }
-                    Log.i("MainActivity", "User: $user")
                     setEmployeeData(user)
-                    Log.i("MainActivity", "User: ${response.body()}")
                     callback(true)
                 } else {
                     Log.e("MainActivity", "Error: ${response.errorBody()}")
@@ -133,7 +126,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun setEmployeeData(user: EmployeesMeGETResponse) {
         val imageView = findViewById<ImageView>(R.id.imageProfile);
-        Log.i("MainActivity", "ImageView: $imageView");
         if (imageView == null) {
             return
         }
@@ -170,7 +162,6 @@ class MainActivity : AppCompatActivity() {
             putString("employee", jsonString)
             apply()
         }
-        Log.i("MainActivity", "Employee: $employee")
     }
 
     private fun getPermissions(permissions: String): Permissions {

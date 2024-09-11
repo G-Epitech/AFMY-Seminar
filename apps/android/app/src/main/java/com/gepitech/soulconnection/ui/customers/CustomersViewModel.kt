@@ -39,14 +39,12 @@ class CustomersViewModel(private val repository: CustomersRepository) : ViewMode
                 if (response.isSuccessful) {
                     val user = response.body()
                     if (user == null) {
-                        Log.e("MainActivity", "User is null")
                         return
                     }
                     _customers.value = _customers.value?.plus(user.items)
                     _page = page
                     _size = size
                     _isLastPage.value = user.isLast
-                    Log.i("MainActivity", "User: $user")
                 } else {
                     Log.e("MainActivity", "Error: ${response.errorBody()}")
                 }

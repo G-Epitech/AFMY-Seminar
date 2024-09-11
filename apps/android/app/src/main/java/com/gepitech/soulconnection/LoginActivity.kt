@@ -46,7 +46,6 @@ class LoginActivity : AppCompatActivity() {
             val username = usernameInput.text.toString()
             val password = passwordInput.text.toString()
 
-            Log.e("LoginActivity", "Username: $username, Password: $password")
             login(username, password, findViewById(android.R.id.content))
         }
     }
@@ -56,10 +55,6 @@ class LoginActivity : AppCompatActivity() {
         val editor = sharedPref.edit()
         editor.putString("authToken", token)
         editor.apply()
-    }
-
-    private fun getSavedToken(): String? {
-        return null
     }
 
     private fun getApiInterfaces() {
@@ -75,7 +70,6 @@ class LoginActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val token = response.body()?.tokens?.access
                     if (token == null) {
-                        Log.e("LoginActivity", "Token is null")
                         Snackbar.make(view, "Login failed: Token is null", Snackbar.LENGTH_LONG).show()
                         return
                     }
