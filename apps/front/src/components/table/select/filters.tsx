@@ -11,23 +11,23 @@ export interface CoachesTableFiltersProps<T> {
   filterSearchColumn?: keyof T;
   filterSearchPlaceholder?: string;
   filterColumns?: boolean;
+  setFilter: (filter: string) => void;
 }
 
 export default function SelectTableFilters<T>(
-  { table, filterSearchColumn, filterSearchPlaceholder, filterColumns }: CoachesTableFiltersProps<T>
+  { table, filterSearchColumn, filterSearchPlaceholder, filterColumns, setFilter }: CoachesTableFiltersProps<T>
 ) {
-  const [filter, setFilter] = useState<Boolean>(false);
+  const [filterVisibility, setFilterVisibility] = useState<Boolean>(false);
 
   const toggleFilter = () => {
-    setFilter(prev => !prev);
+    setFilterVisibility(prev => !prev);
   }
 
   const inputFilter = (
     <Input
       placeholder={filterSearchPlaceholder}
-      value={(table.getColumn(String(filterSearchColumn ? filterSearchColumn : ""))?.getFilterValue() as string) ?? ""}
       onChange={(event) =>
-        table.getColumn(String(filterSearchColumn ? filterSearchColumn : ""))?.setFilterValue(event.target.value)
+        setFilter(event.currentTarget.value)
       }
       className="max-w-sm"
     />
@@ -43,7 +43,7 @@ export default function SelectTableFilters<T>(
               onClick={toggleFilter}
             />
             <div className="hidden sm:block">
-              {filter && inputFilter}
+              {filterVisibility && inputFilter}
             </div>
           </div>
 
@@ -86,7 +86,7 @@ export default function SelectTableFilters<T>(
       }
     </div>
     <div className="block sm:hidden">
-      {filter && inputFilter}
+      {filterVisibility && inputFilter}
     </div>
   </>
 }

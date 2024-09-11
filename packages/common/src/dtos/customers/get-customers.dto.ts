@@ -1,7 +1,6 @@
 import { AstrologicalSign, Customer, Gender, Page } from "../../types";
 import {
   IsDate,
-  IsEmail,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -28,7 +27,7 @@ export class QueryGetCustomersDTO {
   @IsOptional()
   public name?: string;
 
-  @IsEmail()
+  @IsString()
   @IsOptional()
   public email?: string;
 
