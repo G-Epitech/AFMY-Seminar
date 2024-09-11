@@ -353,6 +353,7 @@ export default function CustomersPage() {
       </div>
       <CustomersTable
         customers={allCustomers}
+        setCustomers={setAllCustomers}
         isLastPage={isLastPage}
         handleNextPage={handleNextPage}
         maxRows={numberOfCustomers}
