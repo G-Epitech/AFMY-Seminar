@@ -1,6 +1,5 @@
 import { Employee, Gender, Page, Permission } from "../../types";
 import {
-  IsEmail,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -27,7 +26,7 @@ export class QueryGetEmployeesDTO {
   @IsOptional()
   public name?: string;
 
-  @IsEmail()
+  @IsString()
   @IsOptional()
   public email?: string;
 

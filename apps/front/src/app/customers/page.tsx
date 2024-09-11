@@ -189,8 +189,6 @@ export default function CustomersPage() {
   }
 
   useEffect(() => {
-    console.log(searchTerm);
-    console.log(searchTerm.length);
     handleSearch();
   }, [searchTerm]);
 

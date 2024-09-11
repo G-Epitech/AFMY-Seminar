@@ -26,8 +26,10 @@ export default function SelectTableFilters<T>(
   const inputFilter = (
     <Input
       placeholder={filterSearchPlaceholder}
-      onChange={(event) =>
+      onChange={(event) => {
+        table.setPageIndex(0)
         setFilter(event.currentTarget.value)
+      }
       }
       className="max-w-sm"
     />

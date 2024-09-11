@@ -11,10 +11,11 @@ export interface CoachesTableProps {
   handleNextPage: (table: ReturnType<typeof useReactTable<Employee>>) => void;
   handlePreviousPage: (table: ReturnType<typeof useReactTable<Employee>>) => void;
   maxRows: number;
+  setFilter: (filter: string) => void;
 }
 
 export default function CoachesTable(
-  { coaches, setCoaches, isLastPage, handleNextPage, handlePreviousPage, maxRows }: CoachesTableProps
+  { coaches, setCoaches, isLastPage, handleNextPage, handlePreviousPage, maxRows, setFilter }: CoachesTableProps
 ) {
   return (
     <SelectTable
@@ -27,6 +28,7 @@ export default function CoachesTable(
       handleNextPage={handleNextPage}
       handlePreviousPage={handlePreviousPage}
       maxRows={maxRows}
+      setFilter={setFilter}
     />
   )
 }
