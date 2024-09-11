@@ -9,5 +9,6 @@ data class EmployeesMeGETResponse(
     val photo: String,
     val address: String,
     val permissions: String,
-    val rol: String,
+    val gender: String,
+    val role: String,
 )

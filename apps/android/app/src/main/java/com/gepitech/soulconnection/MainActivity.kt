@@ -19,8 +19,12 @@ import com.bumptech.glide.Glide
 import com.gepitech.soulconnection.api.employees.me.EmployeesMeRepository
 import com.gepitech.soulconnection.api.employees.me.get.EmployeesMeGETResponse
 import com.gepitech.soulconnection.constants.config.API_URL
+import com.gepitech.soulconnection.data.Employee
+import com.gepitech.soulconnection.data.Gender
+import com.gepitech.soulconnection.data.Permissions
 import com.gepitech.soulconnection.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -49,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow
+                R.id.nav_customers, R.id.nav_profile
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -144,5 +148,44 @@ class MainActivity : AppCompatActivity() {
 
         val emailTextView = findViewById<TextView>(R.id.emailProfile);
         emailTextView.text = user.email;
+
+        val employee: Employee = Employee(
+            user.id,
+            user.name,
+            user.surname,
+            user.email,
+            user.phone,
+            user.photo,
+            user.address,
+            getPermissions(user.permissions),
+            getGender(user.gender),
+            user.role
+        )
+        val sharedPref = getSharedPreferences("app_prefs", MODE_PRIVATE)
+        val bundle = Bundle().apply {
+            putParcelable("employee", employee)
+        }
+        val jsonString = Gson().toJson(bundle)
+        with(sharedPref.edit()) {
+            putString("employee", jsonString)
+            apply()
+        }
+        Log.i("MainActivity", "Employee: $employee")
+    }
+
+    private fun getPermissions(permissions: String): Permissions {
+        return when (permissions) {
+            "EMPLOYEE" -> Permissions.EMPLOYEE
+            "COACH" -> Permissions.COACH
+            else -> Permissions.EMPLOYEE
+        }
+    }
+
+    private fun getGender(gender: String): Gender {
+        return when (gender) {
+            "MA" -> Gender.MA
+            "FE" -> Gender.FE
+            else -> Gender.OT
+        }
     }
 }

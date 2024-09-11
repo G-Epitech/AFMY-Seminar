@@ -11,18 +11,18 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gepitech.soulconnection.R
 import com.gepitech.soulconnection.adapter.CustomersAdapter
-import com.gepitech.soulconnection.databinding.FragmentHomeBinding
+import com.gepitech.soulconnection.databinding.FragmentCustomersBinding
 
 class CustomersFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentCustomersBinding? = null
     private val binding get() = _binding!!
     private val customerViewModel: CustomersViewModel by viewModels {
         CustomersViewModel.Factory(requireContext())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentCustomersBinding.inflate(inflater, container, false)
         return binding.root
     }
 
