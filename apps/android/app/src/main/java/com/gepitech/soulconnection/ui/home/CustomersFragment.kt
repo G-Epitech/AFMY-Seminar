@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,7 +36,22 @@ class CustomersFragment : Fragment() {
             adapter.notifyDataSetChanged()
         }
 
-        customerViewModel.loadCustomers(1, 10)
+        val loadButton: Button = binding.btnLoadMore
+        loadButton.setOnClickListener {
+            customerViewModel.loadNextPage()
+        }
+
+        customerViewModel.isLastPage.observe(viewLifecycleOwner) { isLastPage ->
+            loadButton.visibility = if (isLastPage) View.GONE else View.VISIBLE
+        }
+
+        if (customerViewModel.isLastPage.value == false){
+            loadButton.visibility = View.VISIBLE
+            customerViewModel.loadCustomers(1, 10)
+        } else {
+            loadButton.visibility = View.GONE
+        }
+
     }
 
     override fun onDestroyView() {

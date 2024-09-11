@@ -16,15 +16,13 @@ import retrofit2.Response
 class CustomersViewModel(private val repository: CustomersRepository) : ViewModel() {
     private val _customers = MutableLiveData<List<Customers>>()
     val customers: LiveData<List<Customers>> get() = _customers
+    private var _page = 0
+    private var _size = 10
+    private val _isLastPage = MutableLiveData<Boolean>(false)
+    val isLastPage: LiveData<Boolean> get() = _isLastPage
 
     init {
-        // Créez quelques données d'exemple
-        _customers.value = listOf(
-            Customers(1, "John", "Doe", "john.doe@example.com", "123-456-7890", "https://thispersondoesnotexist.com/"),
-            Customers(2, "Jane", "Smith", "jane.smith@example.com", "234-567-8901", "https://thispersondoesnotexist.com/"),
-            Customers(3, "Alice", "Johnson", "alice.johnson@example.com", "345-678-9012", "https://thispersondoesnotexist.com/"),
-            Customers(4, "Bob", "Williams", "bob.williams@example.com", "456-789-0123", "https://thispersondoesnotexist.com/")
-        )
+        _customers.value = listOf()
     }
 
     class Factory(private val context: Context) : ViewModelProvider.Factory {
@@ -45,6 +43,9 @@ class CustomersViewModel(private val repository: CustomersRepository) : ViewMode
                         return
                     }
                     _customers.value = _customers.value?.plus(user.items)
+                    _page = page
+                    _size = size
+                    _isLastPage.value = user.isLast
                     Log.i("MainActivity", "User: $user")
                 } else {
                     Log.e("MainActivity", "Error: ${response.errorBody()}")
@@ -55,5 +56,10 @@ class CustomersViewModel(private val repository: CustomersRepository) : ViewMode
                 Log.e("MainActivity", "Error: ${t.message}")
             }
         })
+    }
+
+    fun loadNextPage() {
+        _page++
+        loadCustomers(_page, _size)
     }
 }
