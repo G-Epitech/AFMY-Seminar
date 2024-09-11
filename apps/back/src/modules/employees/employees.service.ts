@@ -156,17 +156,31 @@ export class EmployeesService {
     return convertEmployee(employee);
   }
 
-  async getEmployeeById(id: number): Promise<Employee | null> {
+  async getEmployeeById(
+    id: number,
+    options: { numberOfCustomers?: boolean } = {},
+  ): Promise<Employee | null> {
     const employee = await this._prismaService.employee.findFirst({
       where: {
         id,
+      },
+      include: {
+        coachees: {
+          select: {
+            _count: true,
+          },
+        },
       },
     });
 
     if (!employee) {
       return null;
     }
-    return convertEmployee(employee);
+
+    return {
+      ...convertEmployee(employee),
+      numberOfCustomers: employee.coachees?.length,
+    };
   }
 
   async getEmployeeByEmailWithCredentials(

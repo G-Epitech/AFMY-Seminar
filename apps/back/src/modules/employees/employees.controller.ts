@@ -126,6 +126,7 @@ export class EmployeesController {
     }
     return {
       ...employee,
+      numberOfCustomers: employee.numberOfCustomers,
       photo: this._imagesService.getLinkOf({
         id: employee.id,
         type: ImageTokenType.EMPLOYEE,
