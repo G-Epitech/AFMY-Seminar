@@ -1,4 +1,4 @@
-import { OutGetCustomersDTO, OutGetEmployeesDTO, QueryGetEmployeesDTO } from "@seminar/common";
+import { OutGetEmployeesDTO, QueryGetEmployeesDTO } from "@seminar/common";
 import { call } from "../call";
 
 export function list(query?: QueryGetEmployeesDTO) {
