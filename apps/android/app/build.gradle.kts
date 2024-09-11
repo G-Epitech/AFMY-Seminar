@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -60,4 +61,5 @@ dependencies {
     implementation(libs.loggingInterceptor)
     implementation(libs.glide)
     implementation(libs.recyclerview)
+
 }

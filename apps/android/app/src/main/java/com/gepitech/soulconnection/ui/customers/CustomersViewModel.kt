@@ -1,4 +1,4 @@
-package com.gepitech.soulconnection.ui.home
+package com.gepitech.soulconnection.ui.customers
 
 import android.content.Context
 import android.util.Log
@@ -7,15 +7,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.gepitech.soulconnection.api.customers.CustomersRepository
-import com.gepitech.soulconnection.data.Customers
+import com.gepitech.soulconnection.data.Customer
 import com.gepitech.soulconnection.data.PageResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class CustomersViewModel(private val repository: CustomersRepository) : ViewModel() {
-    private val _customers = MutableLiveData<List<Customers>>()
-    val customers: LiveData<List<Customers>> get() = _customers
+    private val _customers = MutableLiveData<List<Customer>>()
+    val customers: LiveData<List<Customer>> get() = _customers
     private var _page = 0
     private var _size = 10
     private val _isLastPage = MutableLiveData<Boolean>(false)
@@ -34,8 +34,8 @@ class CustomersViewModel(private val repository: CustomersRepository) : ViewMode
     fun loadCustomers(page: Int, size: Int) {
         val call = repository.getCustomers(page, size)
 
-        call.enqueue(object : Callback<PageResponse<Customers>> {
-            override fun onResponse(call: Call<PageResponse<Customers>>, response: Response<PageResponse<Customers>>) {
+        call.enqueue(object : Callback<PageResponse<Customer>> {
+            override fun onResponse(call: Call<PageResponse<Customer>>, response: Response<PageResponse<Customer>>) {
                 if (response.isSuccessful) {
                     val user = response.body()
                     if (user == null) {
@@ -52,8 +52,9 @@ class CustomersViewModel(private val repository: CustomersRepository) : ViewMode
                 }
             }
 
-            override fun onFailure(call: Call<PageResponse<Customers>>, t: Throwable) {
+            override fun onFailure(call: Call<PageResponse<Customer>>, t: Throwable) {
                 Log.e("MainActivity", "Error: ${t.message}")
+                _page--
             }
         })
     }

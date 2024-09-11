@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.gepitech.soulconnection.ui.home.CustomersFragment"
+        android:name="com.gepitech.soulconnection.ui.customers.CustomersFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
@@ -22,4 +22,10 @@
         android:name="com.gepitech.soulconnection.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_customer_details"
+        android:name="com.gepitech.soulconnection.ui.customer.CustomerFragment"
+        android:label="Customer Details"
+        tools:layout="@layout/fragment_customer_details" />
 </navigation>
