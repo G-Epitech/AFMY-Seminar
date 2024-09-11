@@ -259,6 +259,13 @@ export class EmployeesService {
               : undefined,
           },
         },
+        include: {
+          coachees: {
+            select: {
+              _count: true,
+            },
+          },
+        },
         take: limit,
         skip,
       })
@@ -277,6 +284,7 @@ export class EmployeesService {
               ? convertPhotoFormat(employee.photoFormat)
               : null,
             permission: convertPermission(employee.permission),
+            numberOfCustomers: employee.coachees?.length || 0,
           }),
         ),
       );

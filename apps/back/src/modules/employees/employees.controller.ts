@@ -228,7 +228,16 @@ export class EmployeesController {
     );
     const isLast = customersCount <= page * size + customers.length;
     return {
-      items: customers,
+      items: customers.map((customer) => ({
+        ...customer,
+        photo: this._imagesService.getLinkOf({
+          id: customer.id,
+          type: ImageTokenType.CUSTOMER,
+        }),
+        photoFormat: customer.photoFormat
+          ? customer.photoFormat
+          : PhotoFormat.PNG,
+      })),
       isLast,
       size: customers.length,
       index: page,
