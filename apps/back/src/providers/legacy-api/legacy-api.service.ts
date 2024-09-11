@@ -73,12 +73,15 @@ export class LegacyApiService {
       headers.Authorization = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${process.env.LEGACY_API_URL}${path}`, {
-      method,
-      headers,
-      body: 'body' in data ? JSON.stringify(data.body) : undefined,
-    });
-
-    return this.handleResponse<R>(response);
+    try {
+      const response = await fetch(`${process.env.LEGACY_API_URL}${path}`, {
+        method,
+        headers,
+        body: 'body' in data ? JSON.stringify(data.body) : undefined,
+      });
+      return await this.handleResponse<R>(response);
+    } catch (e) {
+      throw new LegacyApiError('Unknown error', 500, e);
+    }
   }
 }

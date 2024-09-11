@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -11,15 +12,15 @@ import {
   Query,
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
-import {
-  OutGetMeDto,
-  Permission,
-  PhotoFormat,
-  QueryGetEmployeesCountDTO,
-} from '@seminar/common';
 import { ImagesService } from '../images/images.service';
 import { ImageTokenType } from '../../types/images';
 import {
+  Customer,
+  OutGetMeDto,
+  Permission,
+  PhotoFormat,
+  Page,
+  QueryGetEmployeesCountDTO,
   ParamGetEmployeeDTO,
   OutGetEmployeeDTO,
   InGetEmployeeDTO,
@@ -28,6 +29,8 @@ import {
   OutDeleteEmployeeDTO,
   QueryGetEmployeesDTO,
   OutGetEmployeesDTO,
+  QueryGetEmployeeCustomersDTO,
+  ParamGetEmployeeCustomersDTO,
 } from '@seminar/common';
 import { PermissionsService } from '../permissions/permissions.service';
 import { UpdateEmployeeCandidate } from '../../types/employees';
@@ -199,6 +202,36 @@ export class EmployeesController {
     await this._employeesService.deleteEmployeeById(id);
     return {
       deleted: true,
+    };
+  }
+
+  @Get(':id/customers')
+  async getEmployeeCustomers(
+    @Param() { id }: ParamGetEmployeeCustomersDTO,
+    @Query() { page, size }: QueryGetEmployeeCustomersDTO,
+  ): Promise<Page<Customer>> {
+    const employee = await this._employeesService.getEmployeeById(id);
+
+    if (!employee || !this._permissionsService.canAccessEmployee(id)) {
+      throw new NotFoundException(`Employee with id ${id} not found`);
+    }
+
+    if (employee.permission !== Permission.COACH) {
+      throw new BadRequestException(`Employee with id ${id} is not a coach`);
+    }
+    const customersCount =
+      await this._employeesService.getCoachCustomersCount(id);
+    const customers = await this._employeesService.getCoachCustomers(
+      id,
+      size,
+      page * size,
+    );
+    const isLast = customersCount <= page * size + customers.length;
+    return {
+      items: customers,
+      isLast,
+      size: customers.length,
+      index: page,
     };
   }
 }

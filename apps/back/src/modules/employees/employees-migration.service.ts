@@ -63,6 +63,7 @@ export class EmployeesMigrationService extends EmployeesService {
       );
       return requests.data;
     } catch (error) {
+      console.log(error);
       return null;
     }
   }
@@ -124,6 +125,7 @@ export class EmployeesMigrationService extends EmployeesService {
         credentials: credentials?.at(0),
       };
     } catch (error) {
+      console.log(error);
       return null;
     }
   }
