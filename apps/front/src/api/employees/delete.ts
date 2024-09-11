@@ -1,7 +1,7 @@
-import { Customer } from "@seminar/common";
+import { Employee } from "@seminar/common";
 import { call } from "../call";
 
-export function _delete(id: Customer["id"]) {
+export function _delete(id: Employee["id"]) {
     return call<undefined, undefined>(
       "DELETE",
       `/employee/${id}`,

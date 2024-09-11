@@ -40,20 +40,20 @@ export default function CoachesTableActions(
 
       const updatedCoaches = table.getCoreRowModel().rows
         .map(row => row.original)
-        .filter(customer => !selectedRowsIDs.includes(customer.id));
+        .filter(coach => !selectedRowsIDs.includes(coach.id));
       setCoaches(updatedCoaches);
       table.setRowSelection({});
 
       toast({
         title: "Success",
-        description: "The customers have been deleted",
+        description: "The coaches have been deleted",
         variant: "default",
       });
     } catch (error) {
       console.error(error);
       toast({
         title: "Error",
-        description: "An error occurred while deleting the customers",
+        description: "An error occurred while deleting the coaches",
         variant: "destructive",
       });
     }
