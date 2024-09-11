@@ -103,6 +103,7 @@ export default function Coaches() {
       </h3>
       <CoachesTable
         coaches={allEmployees}
+        setCoaches={setAllEmployees}
         isLastPage={isLastPage}
         handleNextPage={handleNextPage}
         maxRows={numberOfCoaches}
