@@ -36,6 +36,9 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    viewBinding {
+        enable = true
+    }
 }
 
 dependencies {
@@ -56,4 +59,5 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.loggingInterceptor)
     implementation(libs.glide)
+    implementation(libs.recyclerview)
 }

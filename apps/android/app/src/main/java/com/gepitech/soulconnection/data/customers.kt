@@ -12,4 +12,5 @@ data class Customers(
     val surname: String,
     val email: String,
     val phone: String,
+    val photo: String,
 )

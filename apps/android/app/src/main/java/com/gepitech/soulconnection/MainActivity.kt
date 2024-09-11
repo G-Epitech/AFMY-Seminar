@@ -16,8 +16,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
-import com.gepitech.soulconnection.api.RetrofitInstance
-import com.gepitech.soulconnection.api.employees.me.EmployeesMeService
+import com.gepitech.soulconnection.api.employees.me.EmployeesMeRepository
 import com.gepitech.soulconnection.api.employees.me.get.EmployeesMeGETResponse
 import com.gepitech.soulconnection.constants.config.API_URL
 import com.gepitech.soulconnection.databinding.ActivityMainBinding
@@ -32,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var emmployeesMeService: EmployeesMeService
+    private lateinit var employeesMeRepository: EmployeesMeRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,7 +93,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initApiInterfaces() {
-        emmployeesMeService = RetrofitInstance.getInstance({ getSavedToken() }).create(EmployeesMeService::class.java)
+        employeesMeRepository = EmployeesMeRepository(this)
     }
 
     private fun authenticated(callback: (Boolean) -> Unit) {
@@ -106,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.i("MainActivity", "Token: $token")
-        val call = emmployeesMeService.getMe()
+        val call = employeesMeRepository.getMe()
         call.enqueue(object : Callback<EmployeesMeGETResponse> {
             override fun onResponse(call: Call<EmployeesMeGETResponse>, response: Response<EmployeesMeGETResponse>) {
                 if (response.isSuccessful) {
@@ -137,6 +136,9 @@ class MainActivity : AppCompatActivity() {
     private fun setEmployeeData(user: EmployeesMeGETResponse) {
         val imageView = findViewById<ImageView>(R.id.imageProfile);
         Log.i("MainActivity", "ImageView: $imageView");
+        if (imageView == null) {
+            return
+        }
         Glide.with(this)
             .load(API_URL + user.photo)
             .circleCrop()

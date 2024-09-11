@@ -11,8 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.gepitech.soulconnection.api.RetrofitInstance
-import com.gepitech.soulconnection.api.auth.login.AuthLoginService
+import com.gepitech.soulconnection.api.auth.login.AuthLoginRepository
 import com.gepitech.soulconnection.api.auth.login.post.LoginPOSTRequest
 import com.gepitech.soulconnection.api.auth.login.post.LoginPOSTResponse
 import com.google.android.material.snackbar.Snackbar
@@ -22,7 +21,7 @@ import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var authLoginService: AuthLoginService
+    private lateinit var authLoginRepository: AuthLoginRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,12 +63,12 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun getApiInterfaces() {
-        authLoginService = RetrofitInstance.getInstance({ getSavedToken() }).create(AuthLoginService::class.java)
+        authLoginRepository = AuthLoginRepository(this)
     }
 
     private fun login(username: String, password: String, view: View) {
         val loginRequest = LoginPOSTRequest(username, password)
-        val call = authLoginService.login(loginRequest)
+        val call = authLoginRepository.login(loginRequest)
 
         call.enqueue(object : Callback<LoginPOSTResponse> {
             override fun onResponse(call: Call<LoginPOSTResponse>, response: Response<LoginPOSTResponse>) {
