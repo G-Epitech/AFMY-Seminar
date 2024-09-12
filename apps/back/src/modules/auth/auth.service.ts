@@ -13,6 +13,7 @@ import { EmployeesMigrationService } from '../employees/employees-migration.serv
 import {
   EmployeeWithCredentials,
   EmployeeWithLegacyData,
+  UpdateEmployeeCandidate,
 } from '../../types/employees';
 import { PrismaService } from 'src/providers';
 import { MailService } from './mail.service';
@@ -174,6 +175,21 @@ export class AuthService {
       });
 
       this._mailService.sendPasswordResetEmail(email, resetToken);
+    }
+  }
+
+  public async resetPassword(token: string, password: string): Promise<void> {
+    const reset = await this._prismaService.resetPassword.findFirst({
+      where: { token },
+    });
+
+    if (reset && reset.expiryDate > new Date()) {
+      await this._prismaService.credentials.update({
+        where: { id: reset.employeeId },
+        data: {
+          password: await this._employeesService.hashPassword(password),
+        },
+      });
     }
   }
 }

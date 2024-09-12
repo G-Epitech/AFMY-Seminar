@@ -31,4 +31,12 @@ export class AuthController {
   async forgotPassword(@Body() dto: { email: string }) {
     await this._authService.forgotPassword(dto.email);
   }
+
+  @Public()
+  @Post('reset-password')
+  async resetPassword(
+    @Body() dto: { token: string; password: string },
+  ) {
+    await this._authService.resetPassword(dto.token, dto.password);
+  }
 }
