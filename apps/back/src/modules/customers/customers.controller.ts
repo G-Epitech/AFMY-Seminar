@@ -66,6 +66,7 @@ import {
   ParamPostCreateCustomerClotheDTO,
   ParamPostCreateCustomerEncounterDTO,
   ParamPostCreateCustomerPaymentDTO,
+  Permission,
   PhotoFormat,
   QueryGetCustomerClothesDTO,
   QueryGetCustomerEncountersDTO,
@@ -226,7 +227,10 @@ export class CustomersController {
       phone: customer.phone ? customer.phone : null,
       photo: photo ? this.imagesService.convertFileToBase64(photo) : null,
       address: customer.address ? customer.address : null,
-      coachId: customer.coachId ? customer.coachId : null,
+      coachId:
+        this.authEmployeeContext.employee.permission === Permission.MANAGER
+          ? (customer.coachId ?? null)
+          : this.authEmployeeContext.employee.id,
       photoFormat: customer.photoFormat ? customer.photoFormat : null,
       country: customer.country ? customer.country : null,
     };
