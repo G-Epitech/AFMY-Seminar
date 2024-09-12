@@ -6,9 +6,9 @@ import { Subtitle } from "@/components/text/subtitle";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { AstrologicalSign, Compatibility, Customer } from "@seminar/common";
 import { useEffect, useState } from "react";
-import { RoundChart } from "./round";
-import { Radar } from "./radar";
 import { ZodiacSign } from "@/components/compatibility/zodiac-sign";
+import { RoundChart } from "@/components/compatibility/round";
+import { Radar } from "@/components/compatibility/radar";
 
 export default function CompatibilityPage() {
   const [customerA, setCustomerA] = useState<Customer | null>(null);
@@ -93,7 +93,7 @@ export default function CompatibilityPage() {
               setInput={setInputA}
             />
             <div className="absolute scale-[1000%] left-0 top-0 transform translate-x-36 translate-y-64 opacity-5">
-              <ZodiacSign sign={customerA?.sign || AstrologicalSign.ARIES} />
+              <ZodiacSign sign={customerA?.sign} />
             </div>
             <i
               className="fa-sharp fa-solid fa-wave-pulse fa-2xl"
@@ -108,7 +108,7 @@ export default function CompatibilityPage() {
               setInput={setInputB}
             />
             <div className="absolute scale-x-[1000%] z-0 scale-y-[1000%] right-0 top-0 transform -translate-x-36 translate-y-64 opacity-5">
-              <ZodiacSign sign={customerB?.sign || AstrologicalSign.ARIES} />
+              <ZodiacSign sign={customerB?.sign} />
             </div>
           </div>
         </CardHeader>

@@ -1,6 +1,6 @@
 'use client';
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { AstrologicalSign, Employee, Gender, Page, Permission, PhotoFormat } from '@seminar/common';
+import { Employee, Gender, Page, Permission, PhotoFormat } from '@seminar/common';
 import CoachesTable from '@/components/coaches/table';
 import { Subtitle } from '@/components/text/subtitle';
 import api from '@/api';
@@ -38,7 +38,7 @@ export default function Coaches() {
   const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
   const [fetchedPages, setFetchedPages] = useState<number[]>([]);
   const [filteredPages, setFilteredPages] = useState<number[]>([]);
-  const [searchFilter, setSearchFilter] = useState<string>('');
+  const [searchFilter, setSearchFilter] = useState<string>("");
   const [isLastPage, setIsLastPage] = useState<boolean>(true);
 
   const [newEmployee, setNewEmployee] = useState<Partial<Employee>>({
@@ -84,7 +84,7 @@ export default function Coaches() {
     }
   }
 
-  const fecthCoaches = async (index: number, size: number) => {
+  const fetchCoaches = async (index: number, size: number) => {
     const nbCoaches = await api.employees.count({
       permission: Permission.COACH,
     });
@@ -94,7 +94,7 @@ export default function Coaches() {
     const response = await api.employees.list({
       page: index,
       size,
-      permission: Permission.COACH
+      permission: Permission.COACH,
     });
     if (response && response.data) {
       setLastCoachesPage(response.data);
@@ -105,26 +105,33 @@ export default function Coaches() {
       toast({
         title: "Uh oh! Something went wrong.",
         description: "There was a problem with your request.",
-        action: <ToastAction
-          altText="Try again"
-          onClick={() =>
-            fecthCoaches(lastCoachesPage.index, lastCoachesPage.size)
-          }
-        >
-          Try again
-        </ToastAction>,
-      })
+        action: (
+          <ToastAction
+            altText="Try again"
+            onClick={() =>
+              fetchCoaches(lastCoachesPage.index, lastCoachesPage.size)
+            }
+          >
+            Try again
+          </ToastAction>
+        ),
+      });
     }
   };
 
   useEffect(() => {
-    fecthCoaches(lastCoachesPage.index, lastCoachesPage.size);
+    fetchCoaches(lastCoachesPage.index, lastCoachesPage.size);
   }, []);
 
-  const handleFilteredNextPage = async (table: ReturnType<typeof useReactTable<Employee>>) => {
+  const handleFilteredNextPage = async (
+    table: ReturnType<typeof useReactTable<Employee>>,
+  ) => {
     const tableState = table.getState();
     if (filteredPages.includes(tableState.pagination.pageIndex + 1)) {
-      if (tableState.pagination.pageIndex + 1 === lastFilteredPage.index && lastFilteredPage.isLast) {
+      if (
+        tableState.pagination.pageIndex + 1 === lastFilteredPage.index &&
+        lastFilteredPage.isLast
+      ) {
         setIsLastPage(true);
       }
       table.setPageIndex(tableState.pagination.pageIndex + 1);
@@ -138,20 +145,25 @@ export default function Coaches() {
     });
     if (response && response.ok) {
       setLastFilteredPage(response.data);
-      setFilteredEmployees(prev => [...prev, ...response.data.items]);
+      setFilteredEmployees((prev) => [...prev, ...response.data.items]);
       table.setPageIndex(response.data.index);
-      setFilteredPages(prev => [...prev, response.data.index]);
+      setFilteredPages((prev) => [...prev, response.data.index]);
       setIsLastPage(response.data.isLast);
     }
   };
 
-  const handleNextPage = async (table: ReturnType<typeof useReactTable<Employee>>) => {
+  const handleNextPage = async (
+    table: ReturnType<typeof useReactTable<Employee>>,
+  ) => {
     if (searchFilter.length > 0) {
       return handleFilteredNextPage(table);
     }
     const tableState = table.getState();
     if (fetchedPages.includes(tableState.pagination.pageIndex + 1)) {
-      if (tableState.pagination.pageIndex + 1 === lastCoachesPage.index && lastCoachesPage.isLast) {
+      if (
+        tableState.pagination.pageIndex + 1 === lastCoachesPage.index &&
+        lastCoachesPage.isLast
+      ) {
         setIsLastPage(true);
       }
       table.setPageIndex(tableState.pagination.pageIndex + 1);
@@ -160,21 +172,23 @@ export default function Coaches() {
     const response = await api.employees.list({
       page: lastCoachesPage.index + 1,
       size: lastCoachesPage.size,
-      permission: Permission.COACH
+      permission: Permission.COACH,
     });
     console.log(response);
     if (response && response.ok) {
       setLastCoachesPage(response.data);
-      setAllEmployees(prev => [...prev, ...response.data.items]);
+      setAllEmployees((prev) => [...prev, ...response.data.items]);
       table.setPageIndex(response.data.index);
-      setFetchedPages(prev => [...prev, response.data.index]);
+      setFetchedPages((prev) => [...prev, response.data.index]);
       setIsLastPage(response.data.isLast);
     } else {
       console.error(response);
     }
   };
 
-  const handlePreviousPage = async (table: ReturnType<typeof useReactTable<Employee>>) => {
+  const handlePreviousPage = async (
+    table: ReturnType<typeof useReactTable<Employee>>,
+  ) => {
     const tableState = table.getState();
     table.setPageIndex(tableState.pagination.pageIndex - 1);
     setIsLastPage(false);
@@ -187,7 +201,7 @@ export default function Coaches() {
   }, [allEmployees]);
 
   const handleSearch = async () => {
-    if (searchFilter === '') {
+    if (searchFilter === "") {
       setFilteredEmployees([]);
       return;
     }
@@ -206,7 +220,7 @@ export default function Coaches() {
     } else {
       console.error(response);
     }
-  }
+  };
 
   useEffect(() => {
     handleSearch();

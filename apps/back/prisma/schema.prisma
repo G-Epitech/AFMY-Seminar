@@ -128,7 +128,8 @@ model Event {
   id              Int        @id @default(autoincrement())
   legacyId        Int?       @unique
   title           String
-  date            DateTime
+  start           DateTime
+  end             DateTime
   maxParticipants Int
   location        Location   @relation(fields: [locationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   locationId      Int

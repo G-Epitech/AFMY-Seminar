@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -16,15 +17,13 @@ import {
 import { EmployeesService } from './employees.service';
 import {
   InPostCreateEmployeeDTO,
+  Customer,
   OutGetMeDto,
   OutPostCreateEmployeeDTO,
   Permission,
   PhotoFormat,
+  Page,
   QueryGetEmployeesCountDTO,
-} from '@seminar/common';
-import { ImagesService } from '../images/images.service';
-import { ImageTokenType } from '../../types/images';
-import {
   ParamGetEmployeeDTO,
   OutGetEmployeeDTO,
   InGetEmployeeDTO,
@@ -33,7 +32,11 @@ import {
   OutDeleteEmployeeDTO,
   QueryGetEmployeesDTO,
   OutGetEmployeesDTO,
+  QueryGetEmployeeCustomersDTO,
+  ParamGetEmployeeCustomersDTO,
 } from '@seminar/common';
+import { ImagesService } from '../images/images.service';
+import { ImageTokenType } from '../../types/images';
 import { PermissionsService } from '../permissions/permissions.service';
 import { CreateEmployeeCandidate, UpdateEmployeeCandidate } from '../../types/employees';
 import { AuthEmployeeContext } from '../auth/auth.employee.context';
@@ -93,14 +96,12 @@ export class EmployeesController {
   ): Promise<OutGetEmployeesDTO> {
     const employeesCount =
       await this._employeesService.getEmployeesCount(filters);
+
     const isLast = employeesCount <= page * size + size;
-    const startIndex = isLast
-      ? Math.max(0, employeesCount - size)
-      : page * size;
     const items = await this._employeesService.getEmployees(
       filters,
       size,
-      startIndex,
+      size * page,
     );
 
     return {
@@ -184,6 +185,7 @@ export class EmployeesController {
     }
     return {
       ...employee,
+      numberOfCustomers: employee.numberOfCustomers,
       photo: this._imagesService.getLinkOf({
         id: employee.id,
         type: ImageTokenType.EMPLOYEE,
@@ -256,6 +258,45 @@ export class EmployeesController {
     await this._employeesService.deleteEmployeeById(id);
     return {
       deleted: true,
+    };
+  }
+
+  @Get(':id/customers')
+  async getEmployeeCustomers(
+    @Param() { id }: ParamGetEmployeeCustomersDTO,
+    @Query() { page, size }: QueryGetEmployeeCustomersDTO,
+  ): Promise<Page<Customer>> {
+    const employee = await this._employeesService.getEmployeeById(id);
+
+    if (!employee || !this._permissionsService.canAccessEmployee(id)) {
+      throw new NotFoundException(`Employee with id ${id} not found`);
+    }
+
+    if (employee.permission !== Permission.COACH) {
+      throw new BadRequestException(`Employee with id ${id} is not a coach`);
+    }
+    const customersCount =
+      await this._employeesService.getCoachCustomersCount(id);
+    const customers = await this._employeesService.getCoachCustomers(
+      id,
+      size,
+      page * size,
+    );
+    const isLast = customersCount <= page * size + customers.length;
+    return {
+      items: customers.map((customer) => ({
+        ...customer,
+        photo: this._imagesService.getLinkOf({
+          id: customer.id,
+          type: ImageTokenType.CUSTOMER,
+        }),
+        photoFormat: customer.photoFormat
+          ? customer.photoFormat
+          : PhotoFormat.PNG,
+      })),
+      isLast,
+      size: customers.length,
+      index: page,
     };
   }
 }
