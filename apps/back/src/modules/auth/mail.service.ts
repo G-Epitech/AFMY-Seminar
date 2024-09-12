@@ -7,11 +7,11 @@ export class MailService {
 
   constructor() {
     this._transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT),
       auth: {
-        user: 'mikayla.frami98@ethereal.email',
-        pass: 'pTgNdhBnm5MaUHfzcq'
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD
       }
     });
   }
@@ -21,7 +21,7 @@ export class MailService {
       from: '"Fred Foo 👻"',
       to: email,
       subject: "Password reset",
-      html: `<a href="http://localhost:3000/reset-password?token=${token}">Reset password</a>`
+      html: `<a href="http://localhost:3000/auth/reset-password?token=${token}">Reset password</a>`
     }
 
     await this._transporter.sendMail(mailOptions);

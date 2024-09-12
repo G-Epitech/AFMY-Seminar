@@ -1,12 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useEffect, useState } from "react";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import { useAppSelector } from "@/store";
 import { Employee } from "@seminar/common";
-import { authError, authLoading } from "@/store/utils";
+import { authError } from "@/store/utils";
 import { useRouter } from "next/navigation";
 import { UserMenuDisplay } from "./user";
 
@@ -36,7 +35,7 @@ export function MainMenu() {
 
     useEffect(() => {
         if (authError(user)) {
-            return router.push("/login");
+            return router.push("/auth/login");
         }
 
         return;

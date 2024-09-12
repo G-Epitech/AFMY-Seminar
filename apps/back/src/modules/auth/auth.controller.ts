@@ -2,7 +2,7 @@ import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { BadRequest } from '../../classes/responses';
-import { InPostAuthLogInDto, OutPostAuthLogInDto } from '@seminar/common';
+import { InPostAuthForgotPasswordDto, InPostAuthLogInDto, InPostAuthResetPasswordDto, OutPostAuthLogInDto } from '@seminar/common';
 
 @Controller('/auth')
 export class AuthController {
@@ -28,15 +28,20 @@ export class AuthController {
 
   @Public()
   @Post('forgot-password')
-  async forgotPassword(@Body() dto: { email: string }) {
+  async forgotPassword(@Body() dto: InPostAuthForgotPasswordDto) {
     await this._authService.forgotPassword(dto.email);
+    return { message: 'If the email exists, a reset link will be sent' };
   }
 
   @Public()
   @Post('reset-password')
   async resetPassword(
-    @Body() dto: { token: string; password: string },
+    @Body() dto: InPostAuthResetPasswordDto,
   ) {
-    await this._authService.resetPassword(dto.token, dto.password);
+    const success = await this._authService.resetPassword(dto.token, dto.password);
+    if (!success) {
+      throw new BadRequest({ message: 'Invalid token' });
+    }
+    return { message: 'Successfully reset password' };
   }
 }

@@ -178,18 +178,44 @@ export class AuthService {
     }
   }
 
-  public async resetPassword(token: string, password: string): Promise<void> {
+  public async resetPassword(token: string, password: string): Promise<boolean> {
     const reset = await this._prismaService.resetPassword.findFirst({
       where: { token },
     });
 
+    console.log(reset);
+
     if (reset && reset.expiryDate > new Date()) {
-      await this._prismaService.credentials.update({
-        where: { id: reset.employeeId },
-        data: {
-          password: await this._employeesService.hashPassword(password),
-        },
+      const credentialsExists = await this._prismaService.credentials.findFirst({
+        where: { employeeId: reset.employeeId },
       });
+
+      if (credentialsExists) {
+        await this._prismaService.credentials.updateMany({
+          where: { employeeId: reset.employeeId },
+          data: {
+            password: await this._employeesService.hashPassword(password),
+          },
+        });
+      } else {
+        const employee = await this._employeesService.getEmployeeById(
+          reset.employeeId,
+        );
+
+        if (!employee) {
+          throw new Error('Employee not found');
+        }
+
+        await this._prismaService.credentials.create({
+          data: {
+            password: await this._employeesService.hashPassword(password),
+            employeeId: employee.id,
+            email: employee.email,
+          },
+        });
+      }
+      return true;
     }
+    return false;
   }
 }
