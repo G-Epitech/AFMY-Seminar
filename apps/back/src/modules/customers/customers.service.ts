@@ -143,7 +143,6 @@ export class CustomersService {
           payements: true,
         },
       });
-      console.log(customers, limit, skip);
       return customers.map(
         (customer): Customer => ({
           id: customer.id,
