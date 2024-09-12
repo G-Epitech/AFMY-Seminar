@@ -120,6 +120,7 @@ export class CustomersMigrationService extends CustomersService {
         )
       ).filter((c) => !!c);
     } catch (error) {
+      console.log(error);
       return [];
     }
   }
