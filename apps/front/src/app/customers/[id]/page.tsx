@@ -33,21 +33,21 @@ export default function CustomerPage() {
     if (response && response.data) {
       setCustomer(response.data);
     }
-  }
+  };
 
   const fetchEncounters = async () => {
     const response = await api.customers.encounters.list(Number(id));
     if (response && response.data) {
       setEncounters(response.data.items);
     }
-  }
+  };
 
   const fetchPayments = async () => {
     const response = await api.customers.payments.list(Number(id));
     if (response && response.data) {
       setPayments(response.data.items);
     }
-  }
+  };
 
   useEffect(() => {
     fetchCustomer();
@@ -73,26 +73,37 @@ export default function CustomerPage() {
 
   const totalEncounters = encounters.length;
   const positiveEncounters = encounters.filter(
-    (e) => e.rating && e.rating > 3
+    (e) => e.rating && e.rating > 3,
   ).length;
   const inProgressEncounters = encounters.filter(
-    (e) => e.status === EncounterStatus.PENDING
+    (e) => e.status === EncounterStatus.PENDING,
   ).length;
 
   return (
     <main>
-      <div className="flex">
+      <div className="flex justify-between">
         <Subtitle text="Customer Details" />
-        <Link href="/customers" className="ml-auto">
-          <Button className="gap-2" variant="secondary">
-            <ArrowLongLeftIcon className="size-5" />
-            Back
-          </Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/customers" className="ml-auto">
+            <Button className="gap-2" variant="secondary">
+              <ArrowLongLeftIcon className="size-5" />
+              Back
+            </Button>
+          </Link>
+          <Link
+            href={"/customers/" + customer?.id + "/closet"}
+            className="ml-auto"
+          >
+            <Button className="gap-2" variant="default">
+              <i className="fas fa-clothes-hanger" />
+              Closet
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <div className="py-6 flex lg:flex-row flex-col gap-5">
-        {customer &&
+        {customer && (
           <CustomerProfile
             customer={customer}
             coach={coach}
@@ -100,7 +111,7 @@ export default function CustomerPage() {
             positiveEncounters={positiveEncounters}
             inProgressEncounters={inProgressEncounters}
           />
-        }
+        )}
 
         <Card className="lg:basis-3/4 pt-4">
           <CardContent className="flex flex-col gap-5">

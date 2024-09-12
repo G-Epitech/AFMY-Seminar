@@ -8,6 +8,7 @@ import {
   Encounter,
   IdOf,
   Payment,
+  ClothesFilters,
 } from '@seminar/common';
 import {
   Clothe as PrismaClothe,
@@ -138,11 +139,25 @@ export class CustomersService {
         },
         take: limit,
         skip,
+        include: {
+          payements: true,
+        },
       })
       .then((customers) =>
         customers.map(
-          (customer: PrismaCustomer): Customer => ({
-            ...customer,
+          (customer): Customer => ({
+            id: customer.id,
+            legacyId: customer.legacyId ? customer.legacyId : null,
+            email: customer.email,
+            name: customer.name,
+            surname: customer.surname,
+            description: customer.description,
+            birthDate: customer.birthDate,
+            phone: customer.phone ? customer.phone : null,
+            address: customer.address ? customer.address : null,
+            coachId: customer.coachId ? customer.coachId : null,
+            createdAt: customer.createdAt,
+            country: customer.country,
             gender: convertGender(customer.gender),
             sign: convertAstrologicalSign(customer.sign),
             photo: customer.photo
@@ -154,6 +169,15 @@ export class CustomersService {
             photoFormat: customer.photoFormat
               ? convertPhotoFormat(customer.photoFormat)
               : null,
+            paymentMethods: customer.payements
+              .reduce(
+                (acc, payment) => [
+                  ...acc,
+                  convertPaymentMethod(payment.method),
+                ],
+                [],
+              )
+              .filter((value, index, self) => self.indexOf(value) === index),
           }),
         ),
       );
@@ -668,8 +692,11 @@ export class CustomersService {
 
   async getCustomerClothes(
     id: IdOf<Customer>,
-    limit?: number,
-    skip?: number,
+    {
+      limit,
+      skip,
+      filters,
+    }: { limit?: number; skip?: number; filters?: ClothesFilters } = {},
   ): Promise<Clothe[] | null> {
     return this._prismaService.customer
       .findUnique({
@@ -680,6 +707,11 @@ export class CustomersService {
           clothes: {
             take: limit,
             skip,
+            where: {
+              type: filters?.type
+                ? convertClotheTypeToPrisma(filters.type)
+                : undefined,
+            },
           },
         },
       })
@@ -842,7 +874,10 @@ export class CustomersService {
       });
   }
 
-  async getCustomerClothesCount(id: IdOf<Customer>): Promise<number> {
+  async getCustomerClothesCount(
+    id: IdOf<Customer>,
+    filters?: ClothesFilters,
+  ): Promise<number> {
     return this._prismaService.clothe.count({
       where: {
         customers: {
@@ -850,6 +885,9 @@ export class CustomersService {
             id,
           },
         },
+        type: filters?.type
+          ? convertClotheTypeToPrisma(filters.type)
+          : undefined,
       },
     });
   }

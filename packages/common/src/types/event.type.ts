@@ -14,9 +14,15 @@ export type MeetingEvent = {
   id: number;
   legacyId: number | null;
   title: string;
-  date: Date;
+  start: Date;
+  end: Date;
   maxParticipants: number;
   locationId: IdOf<EventLocation>;
   type: string;
   employeeId: IdOf<Employee>;
+};
+
+export type EventsFilters = {
+  month?: number;
+  year: number;
 };

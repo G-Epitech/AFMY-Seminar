@@ -122,8 +122,9 @@ export class CustomersController {
     const customerCount =
       await this.customersService.getCustomersCount(filters);
 
+    const pageIndex = Math.floor(customerCount / size);
     const isLast = customerCount <= page * size + size;
-    const startIndex = isLast ? Math.max(0, customerCount - size) : page * size;
+    const startIndex = pageIndex * size;
     const items = (
       await this.customersService.getCustomers(filters, size, startIndex)
     ).map((customer: Customer): Customer => {
@@ -140,7 +141,7 @@ export class CustomersController {
     });
 
     return {
-      index: page,
+      index: pageIndex,
       size: items.length,
       isLast,
       items,
@@ -264,8 +265,9 @@ export class CustomersController {
     const paymentCount =
       await this.customersService.getCustomerPaymentsCount(id);
 
+    const pageIndex = Math.floor(paymentCount / size);
     const isLast = paymentCount < page * size + size;
-    const startIndex = isLast ? Math.max(0, paymentCount - size) : page * size;
+    const startIndex = pageIndex * size;
     const items = await this.customersService.getCustomerPayments(
       id,
       size,
@@ -273,7 +275,7 @@ export class CustomersController {
     );
 
     return {
-      index: page,
+      index: pageIndex,
       size: items.length,
       isLast,
       items,
@@ -532,7 +534,7 @@ export class CustomersController {
   @Get(':id/clothes')
   async getCustomerClothes(
     @Param() { id }: ParamGetCustomerDTO,
-    @Query() { page, size }: QueryGetCustomerClothesDTO,
+    @Query() { page, size, type }: QueryGetCustomerClothesDTO,
   ): Promise<OutGetCustomerClothesDTO> {
     if (
       !(await this.customersService.doesCustomerExist(id)) ||
@@ -544,13 +546,16 @@ export class CustomersController {
     const clothesCount =
       await this.customersService.getCustomerClothesCount(id);
 
+    const pageIndex = Math.floor(clothesCount / size);
     const isLast = clothesCount < page * size + size;
-    const startIndex = isLast ? Math.max(0, clothesCount - size) : page * size;
-    const items = await this.customersService.getCustomerClothes(
-      id,
-      size,
-      startIndex,
-    );
+    const startIndex = pageIndex * size;
+    const items = await this.customersService.getCustomerClothes(id, {
+      limit: size,
+      skip: startIndex,
+      filters: {
+        type,
+      },
+    });
 
     if (items === null) {
       throw new NotFoundException(`Customer with id ${id} not found`);

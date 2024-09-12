@@ -3,6 +3,7 @@ import { CustomersService } from './customers.service';
 import { LegacyApiService } from '../../providers/legacy-api/legacy-api.service';
 import {
   AstrologicalSign,
+  ClothesFilters,
   Customer,
   CustomersFilters,
   EncounterStatus,
@@ -13,6 +14,7 @@ import {
   ClotheLegacyDto,
   CustomerLegacyDto,
   EncounterLegacyDto,
+  PaymentHistoryLegacyDto,
   ShortEncounterLegacyDto,
 } from '../../types/legacy-api/dtos';
 import {
@@ -20,11 +22,13 @@ import {
   convertClotheTypeToPrisma,
   convertEncounterStatusToPrisma,
   convertGenderToPrisma,
+  convertPaymentMethodToPrisma,
   convertPhotoFormatToPrisma,
 } from '../../utils';
 import {
   legacyApiConvertClotheType,
   legacyApiConvertGender,
+  legacyApiConvertPaymentMethod,
 } from '../../providers/legacy-api/legacy-api-convertors';
 
 @Injectable()
@@ -471,9 +475,12 @@ export class CustomersMigrationService extends CustomersService {
     return super.getCustomersCount(filters);
   }
 
-  public async getCustomerClothesCount(id: IdOf<Customer>): Promise<number> {
+  public async getCustomerClothesCount(
+    id: IdOf<Customer>,
+    filters?: ClothesFilters,
+  ): Promise<number> {
     await this.syncCustomerClothes(id);
-    return super.getCustomerClothesCount(id);
+    return super.getCustomerClothesCount(id, filters);
   }
 
   public async getCustomerEncountersCount(id: IdOf<Customer>): Promise<number> {
@@ -484,5 +491,53 @@ export class CustomersMigrationService extends CustomersService {
   public async getEncountersSources(): Promise<string[]> {
     await this.syncEncounters();
     return super.getEncountersSources();
+  }
+
+  public async getCustomerPaymentsCount(id: IdOf<Customer>): Promise<number> {
+    await this.syncCustomerPayments(id);
+    return super.getCustomerPaymentsCount(id);
+  }
+
+  private async getLegacyCustomerPayments(
+    id: IdOf<Customer>,
+  ): Promise<PaymentHistoryLegacyDto[]> {
+    if (!this._authEmployeeContext.isLegacyAuthenticated) return [];
+    try {
+      const res = await this._legacyApiService.request(
+        'GET /customers/{customer_id}/payments_history',
+        {
+          parameters: {
+            customer_id: id,
+          },
+        },
+        this._authEmployeeContext.employee.legacyToken!,
+      );
+      return res.data;
+    } catch (error) {
+      return [];
+    }
+  }
+
+  private async syncCustomerPayments(id: IdOf<Customer>): Promise<void> {
+    if (!this._authEmployeeContext.isLegacyAuthenticated) return;
+
+    try {
+      const payments = await this.getLegacyCustomerPayments(id);
+      await this._prismaService.payment.createMany({
+        data: payments.map((payment) => ({
+          legacyId: payment.id,
+          customerId: id,
+          date: new Date(payment.date),
+          amount: payment.amount,
+          method: convertPaymentMethodToPrisma(
+            legacyApiConvertPaymentMethod(payment.payment_method),
+          ),
+          comment: payment.comment,
+        })),
+        skipDuplicates: true,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

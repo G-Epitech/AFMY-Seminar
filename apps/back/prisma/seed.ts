@@ -1,4 +1,13 @@
-import { PrismaClient, Gender, AstrologicalSign, PhotoFormat, PaymentMethod, Permission, EncounterStatus, ClothesType } from '@prisma/client';
+import {
+  AstrologicalSign,
+  ClothesType,
+  EncounterStatus,
+  Gender,
+  PaymentMethod,
+  Permission,
+  PhotoFormat,
+  PrismaClient,
+} from '@prisma/client';
 import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
@@ -12,8 +21,7 @@ const NUMBER_OF_ENCOUNTERS = 1100;
 const NUMBER_OF_CLOTHES = 1800;
 const NUMBER_OF_TIPS = 320;
 
-async function main() {
-
+async function main(): Promise<void> {
   console.log('Seeding database...');
 
   // Clear all data
@@ -33,7 +41,7 @@ async function main() {
     },
   });
   for (let i = 0; i < NUMBER_OF_EMPLOYEES; i++) {
-    var randomEmail = faker.internet.email();
+    let randomEmail = faker.internet.email();
     while (existingEmails.some((e) => e.email === randomEmail)) {
       randomEmail = faker.internet.email();
     }
@@ -44,7 +52,10 @@ async function main() {
         email: randomEmail,
         birthDate: faker.date.past(),
         gender: faker.helpers.arrayElement([Gender.MA, Gender.FE, Gender.OT]),
-        permission: faker.helpers.arrayElement([Permission.MANAGER, Permission.COACH]),
+        permission: faker.helpers.arrayElement([
+          Permission.MANAGER,
+          Permission.COACH,
+        ]),
         role: faker.person.jobTitle(),
       },
     });
@@ -73,7 +84,11 @@ async function main() {
         sign: faker.helpers.arrayElement(Object.values(AstrologicalSign)),
         phone: faker.phone.number(),
         photo: faker.image.avatar(),
-        photoFormat: faker.helpers.arrayElement([PhotoFormat.JPEG, PhotoFormat.PNG, PhotoFormat.GIF]),
+        photoFormat: faker.helpers.arrayElement([
+          PhotoFormat.JPEG,
+          PhotoFormat.PNG,
+          PhotoFormat.GIF,
+        ]),
         country: faker.helpers.arrayElement(availableCountries),
         createdAt: faker.date.recent({ days: 60 }),
       },
@@ -93,7 +108,11 @@ async function main() {
       data: {
         date: faker.date.recent(),
         amount: faker.number.int({ min: 10, max: 100 }),
-        method: faker.helpers.arrayElement([PaymentMethod.CARD, PaymentMethod.BANK_TRANSFER, PaymentMethod.PAYPAL]),
+        method: faker.helpers.arrayElement([
+          PaymentMethod.CARD,
+          PaymentMethod.BANK_TRANSFER,
+          PaymentMethod.PAYPAL,
+        ]),
         customerId: faker.helpers.arrayElement(customers).id,
       },
     });
@@ -111,11 +130,15 @@ async function main() {
     const biggestLegacyId = await prisma.event.findFirst({
       orderBy: { legacyId: 'desc' },
     });
+    const start = faker.date.recent({ days: 60 });
+    const end = new Date(start);
+    end.setHours(start.getHours() + faker.number.int({ min: 1, max: 5 }));
     await prisma.event.create({
       data: {
         legacyId: biggestLegacyId?.legacyId ? biggestLegacyId.legacyId + 1 : 1,
         title: faker.lorem.words(3),
-        date: faker.date.recent({ days: 60 }),
+        start,
+        end,
         maxParticipants: faker.number.int({ min: 1, max: 10 }),
         location: {
           create: {
@@ -143,8 +166,18 @@ async function main() {
         date: faker.date.recent({ days: 60 }),
         rating: faker.number.int({ min: 0, max: 5 }),
         comment: faker.lorem.sentence(),
-        source: faker.helpers.arrayElement(['Social media', 'Dating app', 'Friends', 'Family', 'Other']),
-        status: faker.helpers.arrayElement([EncounterStatus.PENDING, EncounterStatus.DONE, EncounterStatus.CANCELED]),
+        source: faker.helpers.arrayElement([
+          'Social media',
+          'Dating app',
+          'Friends',
+          'Family',
+          'Other',
+        ]),
+        status: faker.helpers.arrayElement([
+          EncounterStatus.PENDING,
+          EncounterStatus.DONE,
+          EncounterStatus.CANCELED,
+        ]),
         isPositive: faker.datatype.boolean(),
       },
     });

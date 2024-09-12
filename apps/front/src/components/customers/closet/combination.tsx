@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetContent,
@@ -7,21 +7,25 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
-import { Clothe, ClotheType } from "@seminar/common"
+} from "@/components/ui/sheet";
+import { Clothe, ClotheType } from "@seminar/common";
+import { config } from "@/lib/config";
 
 export interface CustomerClosetItemsProps {
-  clothes: Clothe[],
-  selectedItemId: Record<string, number | null>,
+  clothes: Clothe[];
+  selectedItemId: Record<string, number | null>;
 }
 
-export function CustomerClosetCombination(
-  { clothes, selectedItemId }: CustomerClosetItemsProps
-) {
+export function CustomerClosetCombination({
+  clothes,
+  selectedItemId,
+}: CustomerClosetItemsProps) {
   if (!selectedItemId) {
     return null;
   }
-  const selectedClothes = clothes.filter(clothe => clothe.id === selectedItemId[clothe.type])
+  const selectedClothes = clothes.filter(
+    (clothe) => clothe.id === selectedItemId[clothe.type],
+  );
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -35,18 +39,27 @@ export function CustomerClosetCombination(
           </SheetDescription>
         </SheetHeader>
         <div className="flex flex-col space-y-2">
-          {[ClotheType.HAT_CAP, ClotheType.TOP, ClotheType.BOTTOM, ClotheType.SHOES].map(type => {
-            const clothe = selectedClothes.find(c => c.type === type)
+          {[
+            ClotheType.HAT_CAP,
+            ClotheType.TOP,
+            ClotheType.BOTTOM,
+            ClotheType.SHOES,
+          ].map((type) => {
+            const clothe = selectedClothes.find((c) => c.type === type);
             if (!clothe) return null;
             return (
               <div key={type} className="flex flex-col items-center space-x-2">
                 <Label>{type}</Label>
-                <img src={`data:image/png;base64,${clothe.image}`} alt={clothe.type} className="w-24 h-32 rounded-md" />
+                <img
+                  src={config.api.url + clothe.image}
+                  alt={clothe.type}
+                  className="w-24 h-32 rounded-md"
+                />
               </div>
-            )
+            );
           })}
         </div>
       </SheetContent>
     </Sheet>
-  )
+  );
 }
