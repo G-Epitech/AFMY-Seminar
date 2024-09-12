@@ -123,9 +123,8 @@ export class CustomersController {
     const customerCount =
       await this.customersService.getCustomersCount(filters);
 
-    const pageIndex = Math.floor(customerCount / size);
     const isLast = customerCount <= page * size + size;
-    const startIndex = pageIndex * size;
+    const startIndex = page * size;
     const items = (
       await this.customersService.getCustomers(filters, size, startIndex)
     ).map((customer: Customer): Customer => {
@@ -140,9 +139,8 @@ export class CustomersController {
           : PhotoFormat.PNG,
       };
     });
-
     return {
-      index: pageIndex,
+      index: page,
       size: items.length,
       isLast,
       items,
@@ -151,7 +149,14 @@ export class CustomersController {
 
   @Get('count')
   async getCustomersCount(): Promise<number> {
-    return await this.customersService.getCustomersCount();
+    const filters: { coachId: number | undefined } = {
+      coachId: undefined,
+    };
+
+    if (this.authEmployeeContext.employee.permission === Permission.COACH) {
+      filters.coachId = this.authEmployeeContext.employee.id;
+    }
+    return await this.customersService.getCustomersCount(filters);
   }
 
   @Get(':id')
@@ -269,9 +274,8 @@ export class CustomersController {
     const paymentCount =
       await this.customersService.getCustomerPaymentsCount(id);
 
-    const pageIndex = Math.floor(paymentCount / size);
     const isLast = paymentCount < page * size + size;
-    const startIndex = pageIndex * size;
+    const startIndex = page * size;
     const items = await this.customersService.getCustomerPayments(
       id,
       size,
@@ -279,7 +283,7 @@ export class CustomersController {
     );
 
     return {
-      index: pageIndex,
+      index: page,
       size: items.length,
       isLast,
       items,

@@ -101,8 +101,8 @@ export class CustomersService {
     limit?: number,
     skip?: number,
   ): Promise<Customer[]> {
-    return this._prismaService.customer
-      .findMany({
+    try {
+      const customers = await this._prismaService.customer.findMany({
         where: {
           OR: filters?.name
             ? [
@@ -142,45 +142,44 @@ export class CustomersService {
         include: {
           payements: true,
         },
-      })
-      .then((customers) =>
-        customers.map(
-          (customer): Customer => ({
-            id: customer.id,
-            legacyId: customer.legacyId ? customer.legacyId : null,
-            email: customer.email,
-            name: customer.name,
-            surname: customer.surname,
-            description: customer.description,
-            birthDate: customer.birthDate,
-            phone: customer.phone ? customer.phone : null,
-            address: customer.address ? customer.address : null,
-            coachId: customer.coachId ? customer.coachId : null,
-            createdAt: customer.createdAt,
-            country: customer.country,
-            gender: convertGender(customer.gender),
-            sign: convertAstrologicalSign(customer.sign),
-            photo: customer.photo
-              ? this._imagesService.getLinkOf({
-                  type: ImageTokenType.CUSTOMER,
-                  id: customer.id,
-                })
-              : null,
-            photoFormat: customer.photoFormat
-              ? convertPhotoFormat(customer.photoFormat)
-              : null,
-            paymentMethods: customer.payements
-              .reduce(
-                (acc, payment) => [
-                  ...acc,
-                  convertPaymentMethod(payment.method),
-                ],
-                [],
-              )
-              .filter((value, index, self) => self.indexOf(value) === index),
-          }),
-        ),
+      });
+      return customers.map(
+        (customer): Customer => ({
+          id: customer.id,
+          legacyId: customer.legacyId ? customer.legacyId : null,
+          email: customer.email,
+          name: customer.name,
+          surname: customer.surname,
+          description: customer.description,
+          birthDate: customer.birthDate,
+          phone: customer.phone ? customer.phone : null,
+          address: customer.address ? customer.address : null,
+          coachId: customer.coachId ? customer.coachId : null,
+          createdAt: customer.createdAt,
+          country: customer.country,
+          gender: convertGender(customer.gender),
+          sign: convertAstrologicalSign(customer.sign),
+          photo: customer.photo
+            ? this._imagesService.getLinkOf({
+                type: ImageTokenType.CUSTOMER,
+                id: customer.id,
+              })
+            : null,
+          photoFormat: customer.photoFormat
+            ? convertPhotoFormat(customer.photoFormat)
+            : null,
+          paymentMethods: customer.payements
+            .reduce(
+              (acc, payment) => [...acc, convertPaymentMethod(payment.method)],
+              [],
+            )
+            .filter((value, index, self) => self.indexOf(value) === index),
+        }),
       );
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
   }
 
   async getCustomerById(id: IdOf<Customer>): Promise<Customer | null> {
