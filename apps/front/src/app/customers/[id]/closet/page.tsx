@@ -24,7 +24,7 @@ export default function ClosetPage() {
   const fetchCustomerClothes = async () => {
     await api.customers.list();
     const response = await api.customers.clothes({ id: parseInt(id) });
-    console.log(response);
+
     if (response) {
       setClothes(response.data.items);
       setSelectedItemIds(response.data.items.reduce((acc, c) => {
