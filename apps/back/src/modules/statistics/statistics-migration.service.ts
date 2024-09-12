@@ -5,11 +5,8 @@ import { AuthEmployeeContext } from '../auth/auth.employee.context';
 import {
   Encounter as PrismaEncounter,
   EncounterStatus as PrismaEncounterStatus,
-  Event as PrismaEvent,
-  Location as PrismaEventLocation,
 } from '@prisma/client';
 import { Encounter, EncounterStatus, IdOf } from '@seminar/common';
-import { EventLegacyDto } from '../../types/legacy-api/dtos';
 import { EmployeesMigrationService } from '../employees/employees-migration.service';
 import { CreateCustomerEncounterCandidate } from '../../types/customers';
 import { CustomersMigrationService } from '../customers/customers-migration.service';
@@ -30,119 +27,6 @@ export class StatisticsMigrationService {
 
   @Inject(CustomersMigrationService)
   private readonly _customersMigrationService: CustomersMigrationService;
-
-  public async syncEvents(): Promise<void> {
-    if (!this._authEmployeeContext.isLegacyAuthenticated) {
-      return;
-    }
-    const events = await this._legacyApiService.request(
-      'GET /events',
-      {},
-      this._authEmployeeContext.employee.legacyToken!,
-    );
-
-    let toCreate: EventLegacyDto[] = [];
-
-    const locationsToCreate: Omit<PrismaEventLocation, 'id'>[] = [];
-
-    const existingLegacyIds: number[] = (
-      await this._prismaService.event.findMany({
-        select: {
-          legacyId: true,
-        },
-      })
-    )
-      .filter((event) => event.legacyId)
-      .map((event) => event.legacyId!);
-
-    events.data = events.data.filter(
-      (event) => !existingLegacyIds.includes(event.id),
-    );
-
-    for (const event of events.data) {
-      const eventToCreate = await this._legacyApiService.request(
-        'GET /events/{event_id}',
-        {
-          parameters: {
-            event_id: event.id,
-          },
-        },
-        this._authEmployeeContext.employee.legacyToken!,
-      );
-
-      locationsToCreate.push({
-        name: eventToCreate.data.location_name,
-        x: eventToCreate.data.location_x,
-        y: eventToCreate.data.location_y,
-      });
-
-      toCreate.push(eventToCreate.data);
-    }
-
-    toCreate = toCreate.filter((event) => event);
-
-    if (!toCreate.length) {
-      console.log('No events to sync');
-      return;
-    }
-
-    await this._employeesMigrationService.syncEmployees();
-
-    await this._prismaService.location.createMany({
-      data: locationsToCreate,
-      skipDuplicates: true,
-    });
-
-    const locations = (
-      await this._prismaService.location.findMany({
-        select: {
-          id: true,
-          name: true,
-          x: true,
-          y: true,
-        },
-      })
-    ).map((location): [string, number] => {
-      return [location.name + location.x + location.y, location.id];
-    });
-
-    const locationsMap = new Map<string, number>(locations);
-    const employees = await this._prismaService.employee.findMany({
-      select: {
-        id: true,
-        legacyId: true,
-      },
-    });
-
-    const employeesMap = new Map<number, number>(
-      employees
-        .filter((employee) => employee.legacyId)
-        .map((employee) => [employee.legacyId!, employee.id]),
-    );
-    console.log(employeesMap);
-    const data = toCreate.map((event): Omit<PrismaEvent, 'id'> => {
-      console.log(
-        `Looking for: ${event.employee_id}`,
-        employeesMap.get(event.employee_id),
-      );
-      return {
-        locationId: locationsMap.get(
-          event.location_name + event.location_x + event.location_y,
-        )!,
-        title: event.name,
-        maxParticipants: event.max_participants,
-        employeeId: employeesMap.get(event.employee_id)!,
-        date: new Date(event.date),
-        legacyId: event.id,
-        type: event.type,
-      };
-    });
-
-    await this._prismaService.event.createMany({
-      data,
-      skipDuplicates: true,
-    });
-  }
 
   public async syncEncounters(): Promise<void> {
     if (!this._authEmployeeContext.isLegacyAuthenticated) {

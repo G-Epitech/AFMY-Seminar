@@ -12,23 +12,21 @@ import {
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import {
+  InGetEmployeeDTO,
+  InPatchEmployeeDTO,
+  OutDeleteEmployeeDTO,
+  OutGetEmployeeDTO,
+  OutGetEmployeesDTO,
   OutGetMeDto,
+  ParamDeleteEmployeeDTO,
+  ParamGetEmployeeDTO,
   Permission,
   PhotoFormat,
   QueryGetEmployeesCountDTO,
+  QueryGetEmployeesDTO,
 } from '@seminar/common';
 import { ImagesService } from '../images/images.service';
 import { ImageTokenType } from '../../types/images';
-import {
-  ParamGetEmployeeDTO,
-  OutGetEmployeeDTO,
-  InGetEmployeeDTO,
-  InPatchEmployeeDTO,
-  ParamDeleteEmployeeDTO,
-  OutDeleteEmployeeDTO,
-  QueryGetEmployeesDTO,
-  OutGetEmployeesDTO,
-} from '@seminar/common';
 import { PermissionsService } from '../permissions/permissions.service';
 import { UpdateEmployeeCandidate } from '../../types/employees';
 import { AuthEmployeeContext } from '../auth/auth.employee.context';
@@ -78,10 +76,10 @@ export class EmployeesController {
   ): Promise<OutGetEmployeesDTO> {
     const employeesCount =
       await this._employeesService.getEmployeesCount(filters);
+
+    const pageIndex = Math.floor(employeesCount / size);
     const isLast = employeesCount <= page * size + size;
-    const startIndex = isLast
-      ? Math.max(0, employeesCount - size)
-      : page * size;
+    const startIndex = pageIndex * size;
     const items = await this._employeesService.getEmployees(
       filters,
       size,

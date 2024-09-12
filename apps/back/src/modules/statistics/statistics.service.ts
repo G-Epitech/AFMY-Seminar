@@ -224,7 +224,7 @@ export class StatisticsService {
   public async getEventsCount(timeframe: TimeFrame): Promise<number> {
     return this._prismaService.event.count({
       where: {
-        date: {
+        start: {
           gte: timeframe.start,
           lte: timeframe.end,
         },

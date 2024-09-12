@@ -18,5 +18,10 @@
     "front:dev": "npm run dev --workspace=@seminar/front",
     "front:start": "npm run start --workspace=@seminar/front",
     "postinstall": "npm run build --workspace=@seminar/common"
+  },
+  "dependencies": {
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15"
   }
 }
