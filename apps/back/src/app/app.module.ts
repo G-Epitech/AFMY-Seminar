@@ -7,6 +7,7 @@ import { LegacyApiModule } from '../providers/legacy-api/legacy-api.module';
 import { AuthGuard } from '../modules/auth/guards/jwt-auth.guard';
 import { StatisticsModule } from '../modules/statistics/statistics.module';
 import { ImagesModule } from '../modules/images/images.module';
+import { EventsModule } from '../modules/events/events.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ImagesModule } from '../modules/images/images.module';
     CustomersModule,
     StatisticsModule,
     ImagesModule,
+    EventsModule,
   ],
   controllers: [],
   providers: [
