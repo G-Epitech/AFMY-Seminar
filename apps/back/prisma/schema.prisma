@@ -87,22 +87,23 @@ enum Permission {
 }
 
 model Employee {
-  id          Int           @id @default(autoincrement())
-  legacyId    Int?          @unique
-  email       String        @unique
-  name        String
-  surname     String
-  birthDate   DateTime
-  gender      Gender
-  phone       String?
-  photo       String?
-  photoFormat PhotoFormat?
-  address     String?
-  permission  Permission
-  role        String
-  coachees    Customer[]
-  events      Event[]
-  credentials Credentials[]
+  id             Int           @id @default(autoincrement())
+  legacyId       Int?          @unique
+  email          String        @unique
+  name           String
+  surname        String
+  birthDate      DateTime
+  gender         Gender
+  phone          String?
+  photo          String?
+  photoFormat    PhotoFormat?
+  address        String?
+  permission     Permission
+  role           String
+  coachees       Customer[]
+  events         Event[]
+  credentials    Credentials[]
+  resetPasswords ResetPassword[]
 }
 
 model Credentials {
@@ -177,4 +178,12 @@ model Clothe {
   type      ClothesType
   image     String
   customers Customer[]  @relation("ClotheOwner")
+}
+
+model ResetPassword {
+  id          Int       @id @default(autoincrement())
+  employee    Employee   @relation(fields: [employeeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  employeeId  Int
+  token       String
+  expiryDate  DateTime
 }

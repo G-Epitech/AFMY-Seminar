@@ -93,27 +93,34 @@ export class EmployeesService {
 
   async createEmployee(
     candidate: CreateEmployeeCandidate,
-    password: string,
+    password?: string,
   ): Promise<Employee> {
     await this.preventDuplicatedFields({
       email: candidate.email,
       legacyId: candidate.legacyId,
     });
 
-    const hashedPassword = await this.hashPassword(password);
+    const data = {
+      ...candidate,
+      gender: convertGenderToPrisma(candidate.gender),
+      permission: convertPermissionToPrisma(candidate.permission),
+      photoFormat: candidate.photoFormat ? convertPhotoFormatToPrisma(candidate.photoFormat) : undefined,
+      credentials: {}
+    };
+
+    if (password) {
+      data.credentials = {
+        create: {
+          email: candidate.email,
+          password: await this.hashPassword(password),
+        },
+      };
+    }
     const employee = await this._prismaService.employee.create({
       data: {
-        ...candidate,
-        gender: convertGenderToPrisma(candidate.gender),
-        permission: convertPermissionToPrisma(candidate.permission),
-        photoFormat: null,
-        credentials: {
-          create: {
-            email: candidate.email,
-            password: hashedPassword,
-          },
-        },
-      },
+        ...data,
+        photo: candidate.photo,
+      }
     });
     return convertEmployee(employee);
   }
