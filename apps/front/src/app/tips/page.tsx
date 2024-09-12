@@ -23,11 +23,10 @@ export default function TipsPage() {
     };
 
     const deleteTip = async (id: number) => {
-        const res = await api.tips._delete(id);
-
-        if (!res || !res.ok) return;
+        await api.tips._delete(id);
 
         setTips([...tips.filter((tip) => tip.id !== id)]);
+        setSelected(-1);
     }
 
     useEffect(() => {
