@@ -49,27 +49,28 @@ export default function CustomerPage() {
     }
   };
 
+  const fetchCoach = async () => {
+    if (customer && customer.coachId) {
+      const response = await api.employees.get(customer.coachId);
+      if (response && response.data) {
+        setCoach(response.data);
+      }
+    } else {
+      setCoach(null);
+    }
+  };
+
   useEffect(() => {
     fetchCustomer();
     fetchEncounters();
     fetchPayments();
   }, []);
 
-  const coach: Employee = {
-    id: 2,
-    email: "nicolas.latourne@soul.com",
-    name: "Nicolas Latourne",
-    surname: "Nico",
-    birthDate: new Date("1990-01-01"),
-    gender: Gender.MA,
-    phone: "+1 234 567 890",
-    photo: "/customers/1/photo",
-    address: "551 Swanson Street, Melbourne, Victoria 3053 Australia",
-    permission: Permission.COACH,
-    role: "Coach",
-    legacyId: 1,
-    photoFormat: PhotoFormat.PNG,
-  };
+  useEffect(() => {
+    if (customer) fetchCoach();
+  }, [customer]);
+
+  const [coach, setCoach] = useState<Employee | null | "pending">("pending");
 
   const totalEncounters = encounters.length;
   const positiveEncounters = encounters.filter(

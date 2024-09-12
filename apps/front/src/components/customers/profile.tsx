@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Separator } from "../ui/separator";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function ShortDetail({
   label,
@@ -29,6 +30,20 @@ function ShortDetail({
   );
 }
 
+function CoachDetail({ coach }: { coach: Employee | null | "pending" }) {
+  if (!coach || coach === "pending") {
+    return <ShortDetail label="Coach" value={coach ? "-" : "Not set"} />;
+  } else {
+    return (
+      <ShortDetail
+        label="Coach"
+        value={`${coach.name} ${coach.surname}`}
+        link={"/coaches/" + coach.id}
+      />
+    );
+  }
+}
+
 export function CustomerProfile({
   customer,
   coach,
@@ -37,7 +52,7 @@ export function CustomerProfile({
   inProgressEncounters,
 }: {
   customer: Customer;
-  coach: Employee;
+  coach: Employee | null | "pending";
   totalEncounters: number;
   positiveEncounters: number;
   inProgressEncounters: number;
@@ -92,11 +107,7 @@ export function CustomerProfile({
           value={customer.address || "Info unavailable"}
         />
         <ShortDetail label="Last Activity" value={"Info unavailable"} />
-        <ShortDetail
-          label="Coach"
-          value={coach.name}
-          link={"/coachs/" + coach.id}
-        />
+        <CoachDetail coach={coach} />
       </CardContent>
     </Card>
   );
