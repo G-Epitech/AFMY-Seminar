@@ -139,7 +139,6 @@ export class CustomersController {
           : PhotoFormat.PNG,
       };
     });
-    console.log(items);
     return {
       index: page,
       size: items.length,
