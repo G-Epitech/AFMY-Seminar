@@ -100,7 +100,7 @@ export class CustomersController {
   @Inject(ImagesService)
   private readonly imagesService: ImagesService;
 
-  constructor() { }
+  constructor() {}
 
   /**
    * Get customers paginated
@@ -212,8 +212,6 @@ export class CustomersController {
       photoFormat: updated.photoFormat ? updated.photoFormat : PhotoFormat.PNG,
     };
   }
-
-
 
   @Post()
   @UseInterceptors(FileInterceptor('photo'))

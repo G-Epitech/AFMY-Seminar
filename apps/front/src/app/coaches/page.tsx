@@ -60,10 +60,6 @@ export default function Coaches() {
     fetchCoaches(lastCoachesPage.index, lastCoachesPage.size);
   }, []);
 
-  useEffect(() => {
-    console.log(allEmployees);
-  }, [allEmployees]);
-
   const handleNextPage = async (
     table: ReturnType<typeof useReactTable<Employee>>,
   ) => {

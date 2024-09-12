@@ -5,8 +5,16 @@ import { customersColumns } from "./columns";
 import api from "@/api";
 import { useAppSelector } from "@/store";
 import { Button } from "@/components/ui/button";
+import { CoachAssignCustomerDialog } from "@/components/coaches/customers/dialogs";
+import { useState } from "react";
 
-export function CoachCustomers({ coach }: { coach: Employee }) {
+export function CoachCustomers({
+  coach,
+  onCustomerAssigned,
+}: {
+  coach: Employee;
+  onCustomerAssigned: (customer: Customer) => void;
+}) {
   async function fetchCoachCustomers(
     page: number,
     size: number,
@@ -29,21 +37,38 @@ export function CoachCustomers({ coach }: { coach: Employee }) {
     (state) => state.auth.user,
   );
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   return (
-    <Card className="w-full">
-      <CardHeader className={"flex-row flex-grow items-center justify-between"}>
-        <CardTitle>Customers</CardTitle>
-        {user?.permission === Permission.MANAGER ? (
-          <Button size={"sm"}>Assign customer</Button>
-        ) : null}
-      </CardHeader>
-      <CardContent>
-        <InfiniteTable
-          fetchData={fetchCoachCustomers}
-          fetchSize={10}
-          columns={customersColumns}
-        />
-      </CardContent>
-    </Card>
+    <>
+      <CoachAssignCustomerDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        coach={coach}
+        onCustomerAssigned={onCustomerAssigned}
+      />
+      <Card className="w-full" key="coach-customers-card">
+        <CardHeader
+          className={"flex-row flex-grow items-center justify-between"}
+        >
+          <CardTitle>Customers</CardTitle>
+          {user?.permission === Permission.MANAGER ? (
+            <Button size={"sm"} onClick={() => setIsDialogOpen(true)}>
+              Assign customer
+            </Button>
+          ) : null}
+        </CardHeader>
+        <CardContent>
+          <InfiniteTable
+            fetchData={fetchCoachCustomers}
+            fetchSize={10}
+            columns={customersColumns}
+            state={{
+              numberOfCustomers: coach.numberOfCustomers,
+            }}
+          />
+        </CardContent>
+      </Card>
+    </>
   );
 }

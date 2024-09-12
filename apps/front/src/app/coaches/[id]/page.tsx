@@ -4,7 +4,7 @@ import api from "@/api";
 import { Subtitle } from "@/components/text/subtitle";
 import { Button } from "@/components/ui/button";
 import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
-import { Employee } from "@seminar/common";
+import { Customer, Employee } from "@seminar/common";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,12 +14,16 @@ import { CoachCustomers } from "@/components/coaches/customers";
 export default function CustomerPage() {
   const id = useParams().id;
   const [coach, setCoach] = useState<Employee | null>(null);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
 
   const fetchCoach = async () => {
+    if (isFetching) return;
+    setIsFetching(true);
     const response = await api.employees.get(Number(id));
     if (response && response.data) {
       setCoach(response.data);
     }
+    setIsFetching(false);
   };
 
   useEffect(() => {
@@ -41,7 +45,9 @@ export default function CustomerPage() {
       <div className="py-6 flex lg:flex-row flex-col gap-5">
         {coach && <CoachProfile coach={coach} className="lg:basis-1/4" />}
         <div className="lg:basis/3-4 flex flex-col gap-3 grow ">
-          {coach && <CoachCustomers coach={coach} />}
+          {coach && (
+            <CoachCustomers coach={coach} onCustomerAssigned={fetchCoach} />
+          )}
         </div>
       </div>
     </main>
