@@ -64,6 +64,7 @@ export class AuthService {
 
       return response.data.access_token;
     } catch (error) {
+      console.log(error);
       return null;
     }
   }

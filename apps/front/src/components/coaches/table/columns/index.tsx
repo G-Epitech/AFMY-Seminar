@@ -5,11 +5,11 @@ import { phoneColumn } from "./phone";
 import { numberOfCustomersColumn } from "./numberOfCustomers";
 import { actionsColumn } from "./actions";
 
-export const coachesColumns = [
+export const columns = [
   selectColumn,
   coachColumn,
   emailColumn,
   phoneColumn,
   numberOfCustomersColumn,
   actionsColumn,
-]
+];

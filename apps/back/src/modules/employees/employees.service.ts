@@ -9,11 +9,13 @@ import * as bcrypt from 'bcrypt';
 import { FieldsError } from '../../classes/errors/fields.error';
 import {
   ALREADY_USED,
+  Customer,
   Employee,
   EmployeesCountFilters,
   EmployeesFilters,
 } from '@seminar/common';
 import {
+  convertCustomer,
   convertEmployee,
   convertGender,
   convertGenderToPrisma,
@@ -161,12 +163,23 @@ export class EmployeesService {
       where: {
         id,
       },
+      include: {
+        coachees: {
+          select: {
+            _count: true,
+          },
+        },
+      },
     });
 
     if (!employee) {
       return null;
     }
-    return convertEmployee(employee);
+
+    return {
+      ...convertEmployee(employee),
+      numberOfCustomers: employee.coachees?.length,
+    };
   }
 
   async getEmployeeByEmailWithCredentials(
@@ -246,6 +259,13 @@ export class EmployeesService {
               : undefined,
           },
         },
+        include: {
+          coachees: {
+            select: {
+              _count: true,
+            },
+          },
+        },
         take: limit,
         skip,
       })
@@ -264,6 +284,7 @@ export class EmployeesService {
               ? convertPhotoFormat(employee.photoFormat)
               : null,
             permission: convertPermission(employee.permission),
+            numberOfCustomers: employee.coachees?.length || 0,
           }),
         ),
       );
@@ -302,6 +323,30 @@ export class EmployeesService {
             ? convertPermissionToPrisma(filters.permission)
             : undefined,
         },
+      },
+    });
+  }
+
+  async getCoachCustomers(
+    id: number,
+    limit?: number,
+    skip?: number,
+  ): Promise<Customer[]> {
+    const customers = await this._prismaService.customer.findMany({
+      where: {
+        coachId: id,
+      },
+      take: limit,
+      skip,
+    });
+
+    return customers.map(convertCustomer);
+  }
+
+  async getCoachCustomersCount(id: number): Promise<number> {
+    return this._prismaService.customer.count({
+      where: {
+        coachId: id,
       },
     });
   }

@@ -4,6 +4,7 @@ import {
   IsDate,
   IsEmail,
   IsEnum,
+  IsInt,
   IsNumber,
   IsOptional,
   IsPhoneNumber,
@@ -56,6 +57,10 @@ export class InPatchCustomerDTO {
   @IsString()
   @IsOptional()
   public country?: string;
+
+  @IsInt()
+  @IsOptional()
+  public coachId?: number | null;
 }
 
 export class ParamPatchCustomerDTO {

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -12,18 +13,22 @@ import {
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import {
-  InGetEmployeeDTO,
-  InPatchEmployeeDTO,
-  OutDeleteEmployeeDTO,
-  OutGetEmployeeDTO,
-  OutGetEmployeesDTO,
+  Customer,
   OutGetMeDto,
-  ParamDeleteEmployeeDTO,
-  ParamGetEmployeeDTO,
   Permission,
   PhotoFormat,
+  Page,
   QueryGetEmployeesCountDTO,
+  ParamGetEmployeeDTO,
+  OutGetEmployeeDTO,
+  InGetEmployeeDTO,
+  InPatchEmployeeDTO,
+  ParamDeleteEmployeeDTO,
+  OutDeleteEmployeeDTO,
   QueryGetEmployeesDTO,
+  OutGetEmployeesDTO,
+  QueryGetEmployeeCustomersDTO,
+  ParamGetEmployeeCustomersDTO,
 } from '@seminar/common';
 import { ImagesService } from '../images/images.service';
 import { ImageTokenType } from '../../types/images';
@@ -124,6 +129,7 @@ export class EmployeesController {
     }
     return {
       ...employee,
+      numberOfCustomers: employee.numberOfCustomers,
       photo: this._imagesService.getLinkOf({
         id: employee.id,
         type: ImageTokenType.EMPLOYEE,
@@ -196,6 +202,45 @@ export class EmployeesController {
     await this._employeesService.deleteEmployeeById(id);
     return {
       deleted: true,
+    };
+  }
+
+  @Get(':id/customers')
+  async getEmployeeCustomers(
+    @Param() { id }: ParamGetEmployeeCustomersDTO,
+    @Query() { page, size }: QueryGetEmployeeCustomersDTO,
+  ): Promise<Page<Customer>> {
+    const employee = await this._employeesService.getEmployeeById(id);
+
+    if (!employee || !this._permissionsService.canAccessEmployee(id)) {
+      throw new NotFoundException(`Employee with id ${id} not found`);
+    }
+
+    if (employee.permission !== Permission.COACH) {
+      throw new BadRequestException(`Employee with id ${id} is not a coach`);
+    }
+    const customersCount =
+      await this._employeesService.getCoachCustomersCount(id);
+    const customers = await this._employeesService.getCoachCustomers(
+      id,
+      size,
+      page * size,
+    );
+    const isLast = customersCount <= page * size + customers.length;
+    return {
+      items: customers.map((customer) => ({
+        ...customer,
+        photo: this._imagesService.getLinkOf({
+          id: customer.id,
+          type: ImageTokenType.CUSTOMER,
+        }),
+        photoFormat: customer.photoFormat
+          ? customer.photoFormat
+          : PhotoFormat.PNG,
+      })),
+      isLast,
+      size: customers.length,
+      index: page,
     };
   }
 }
