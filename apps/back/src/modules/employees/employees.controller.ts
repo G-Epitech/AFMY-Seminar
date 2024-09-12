@@ -8,11 +8,16 @@ import {
   NotFoundException,
   Param,
   Patch,
+  Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import {
+  InPostCreateEmployeeDTO,
   OutGetMeDto,
+  OutPostCreateEmployeeDTO,
   Permission,
   PhotoFormat,
   QueryGetEmployeesCountDTO,
@@ -30,9 +35,13 @@ import {
   OutGetEmployeesDTO,
 } from '@seminar/common';
 import { PermissionsService } from '../permissions/permissions.service';
-import { UpdateEmployeeCandidate } from '../../types/employees';
+import { CreateEmployeeCandidate, UpdateEmployeeCandidate } from '../../types/employees';
 import { AuthEmployeeContext } from '../auth/auth.employee.context';
 import { Allow } from './decorators/allow.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { MailService } from '../auth/mail.service';
+import * as crypto from 'crypto';
+import { PrismaService } from 'src/providers';
 
 @Controller('employees')
 export class EmployeesController {
@@ -47,6 +56,12 @@ export class EmployeesController {
 
   @Inject(AuthEmployeeContext)
   protected readonly _authEmployeeContext: AuthEmployeeContext;
+
+  @Inject(MailService)
+  private readonly _mailService: MailService;
+
+  @Inject(PrismaService)
+  private readonly _prismaService: PrismaService;
 
   @Get('me')
   async getMe(): Promise<OutGetMeDto> {
@@ -102,6 +117,47 @@ export class EmployeesController {
           ? employee.photoFormat
           : PhotoFormat.PNG,
       })),
+    };
+  }
+
+  @Post()
+  @UseInterceptors(FileInterceptor('photo'))
+  async createEmployee(
+    @Body() employee: InPostCreateEmployeeDTO,
+    @UploadedFile() photo?: Express.Multer.File,
+  ): Promise<OutPostCreateEmployeeDTO> {
+    const candidate: CreateEmployeeCandidate = {
+      ...employee,
+      legacyId: null,
+      birthDate: new Date(employee.birthDate),
+      phone: employee.phone ? employee.phone : null,
+      photo: photo ? this._imagesService.convertFileToBase64(photo) : null,
+      address: employee.address ? employee.address : null,
+      photoFormat: employee.photoFormat ? employee.photoFormat : null,
+    };
+    const created = await this._employeesService.createEmployee(candidate);
+
+    const token = crypto.randomBytes(20).toString('hex');
+    await this._mailService.sendPasswordResetEmail(
+      created.email,
+      token,
+    )
+    const expiryDate = new Date();
+    expiryDate.setHours(expiryDate.getHours() + 1);
+    await this._prismaService.resetPassword.create({
+      data: {
+        token,
+        employeeId: created.id,
+        expiryDate,
+      },
+    });
+    return {
+      ...created,
+      photo: this._imagesService.getLinkOf({
+        id: created.id,
+        type: ImageTokenType.EMPLOYEE,
+      }),
+      photoFormat: created.photoFormat ? created.photoFormat : PhotoFormat.PNG,
     };
   }
 

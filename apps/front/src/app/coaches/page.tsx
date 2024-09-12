@@ -41,7 +41,9 @@ export default function Coaches() {
   const [searchFilter, setSearchFilter] = useState<string>('');
   const [isLastPage, setIsLastPage] = useState<boolean>(true);
 
-  const [newEmployee, setNewEmployee] = useState<Partial<Employee>>();
+  const [newEmployee, setNewEmployee] = useState<Partial<Employee>>({
+    permission: Permission.COACH,
+  });
   const [photo, setPhoto] = useState<File | null>(null);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
@@ -58,7 +60,6 @@ export default function Coaches() {
     for (const key in newEmployee) {
       form.append(key, newEmployee[key as keyof (typeof newEmployee)]! as string);
     }
-    form.append("permission", Permission.COACH.toString());
     const response = await fetch(`${config.api.url}/employees`, {
       method: "POST",
       cache: "no-cache",
