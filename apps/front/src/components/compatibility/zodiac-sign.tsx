@@ -16,7 +16,8 @@ const zodiacSigns: { [key in AstrologicalSign]: string } = {
   Pisces: "/zodiac-signs/pisces.svg",
 };
 
-export function ZodiacSign({ sign }: { sign: AstrologicalSign }) {
+export function ZodiacSign({ sign }: { sign: AstrologicalSign | undefined }) {
+  if (!sign) return <></>;
   return (
     <Image priority src={zodiacSigns[sign]} width={24} height={24} alt={sign} />
   );
