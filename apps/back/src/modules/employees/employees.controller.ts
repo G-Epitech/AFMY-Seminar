@@ -121,11 +121,13 @@ export class EmployeesController {
   }
 
   @Post()
+  @Allow(Permission.MANAGER)
   @UseInterceptors(FileInterceptor('photo'))
   async createEmployee(
     @Body() employee: InPostCreateEmployeeDTO,
     @UploadedFile() photo?: Express.Multer.File,
   ): Promise<OutPostCreateEmployeeDTO> {
+    console.log(photo);
     const candidate: CreateEmployeeCandidate = {
       ...employee,
       legacyId: null,

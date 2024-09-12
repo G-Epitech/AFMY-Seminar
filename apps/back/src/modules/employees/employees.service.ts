@@ -102,7 +102,7 @@ export class EmployeesService {
       ...candidate,
       gender: convertGenderToPrisma(candidate.gender),
       permission: convertPermissionToPrisma(candidate.permission),
-      photoFormat: null,
+      photoFormat: candidate.photoFormat ? convertPhotoFormatToPrisma(candidate.photoFormat) : undefined,
       credentials: {}
     };
 
@@ -115,7 +115,10 @@ export class EmployeesService {
       };
     }
     const employee = await this._prismaService.employee.create({
-      data
+      data: {
+        ...data,
+        photo: candidate.photo,
+      }
     });
     return convertEmployee(employee);
   }
