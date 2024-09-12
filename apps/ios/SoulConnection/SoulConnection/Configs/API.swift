@@ -11,4 +11,4 @@ struct APIConfigModel {
     var url: String
 }
 
-var APIConfig = APIConfigModel(url: "http://127.0.0.1:4000")
+var APIConfig = APIConfigModel(url: "http://10.29.126.31:4000")

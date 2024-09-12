@@ -28,10 +28,6 @@ struct CustomerView: View {
                     ImageView(urlString: "\(APIConfig.url)\(customer.photo!)")
                         .frame(width: 70, height: 70)
                         .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
-                        .overlay {
-                            Circle().stroke(.white, lineWidth: 4)
-                        }
-                        .shadow(radius: 7)
                         .padding(.trailing)
                     Text("\(customer.name) \(customer.surname)")
                         .font(.title2)
@@ -44,7 +40,7 @@ struct CustomerView: View {
                         .foregroundStyle(.orange)
                     Text("Email")
                     Spacer()
-                    Link(customer.email, destination: URL(string: "mailto://\(customer.email)")!)
+                    Link(customer.email, destination: URL(string: "mailto:\(customer.email)")!)
                         .foregroundStyle(Color.orange)
                 }
                 HStack {
@@ -103,6 +99,16 @@ struct CustomerView: View {
                     Text("Country")
                     Spacer()
                     Text(customer.country ?? "Not provided")
+                }
+            } footer: {
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Text("Made by @TekMath")
+                        Image(systemName: "sparkles")
+                        Spacer()
+                    }
                 }
             }
         }

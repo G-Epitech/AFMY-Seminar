@@ -14,8 +14,7 @@ struct CustomerRow: View {
         HStack {
             ImageView(urlString: "\(APIConfig.url)\(customer.photo!)")
                 .frame(width: 50, height: 50).clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
-            Text(customer.name)
-            Text(customer.surname)
+            Text("\(customer.name) \(customer.surname)")
             
             Spacer()
         }
