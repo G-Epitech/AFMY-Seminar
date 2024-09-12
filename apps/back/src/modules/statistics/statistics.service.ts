@@ -77,23 +77,17 @@ export class StatisticsService {
   public async getCustomersByCoachAverage(
     timeframe: TimeFrame,
   ): Promise<number> {
-    const customers = await this._prismaService.customer.findMany({
+    const customersCount = await this._prismaService.customer.count({
       where: {
         createdAt: {
           gte: timeframe.start,
           lte: timeframe.end,
         },
       },
-      select: {
-        coachId: true,
-      },
     });
+    const coachesCount = await this._prismaService.employee.count();
 
-    const coaches = customers
-      .map((customer) => customer.coachId)
-      .filter((coachId, index, self) => self.indexOf(coachId) === index);
-
-    return customers.length / coaches.length;
+    return customersCount / coachesCount;
   }
 
   private getHistoryStep(timeframe: TimeFrame): 'month' | 'week' | 'day' {

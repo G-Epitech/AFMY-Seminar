@@ -79,6 +79,11 @@ export default function LoginPage() {
                     />
                     <Button onClick={handleLogin}>Connection</Button>
                 </div>
+                <div className="mt-3 flex justify-center">
+                    <Button variant="link" onClick={() => router.push("/auth/forgot-password")}>
+                        Forgot password ?
+                    </Button>
+                </div>
             </div>
         </main>
     );
