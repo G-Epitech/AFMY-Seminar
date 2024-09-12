@@ -130,7 +130,7 @@ async function main(): Promise<void> {
     const biggestLegacyId = await prisma.event.findFirst({
       orderBy: { legacyId: 'desc' },
     });
-    const start = faker.date.recent({ days: 60 });
+    const start = faker.date.recent({ days: 640 });
     const end = new Date(start);
     end.setHours(start.getHours() + faker.number.int({ min: 1, max: 5 }));
     await prisma.event.create({
