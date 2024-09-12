@@ -6,9 +6,9 @@ import { Subtitle } from "@/components/text/subtitle";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { AstrologicalSign, Compatibility, Customer } from "@seminar/common";
 import { useEffect, useState } from "react";
-import { RoundChart } from "./round";
-import { Radar } from "./radar";
 import { ZodiacSign } from "@/components/compatibility/zodiac-sign";
+import { RoundChart } from "@/components/compatibility/round";
+import { Radar } from "@/components/compatibility/radar";
 
 export default function CompatibilityPage() {
   const [customerA, setCustomerA] = useState<Customer | null>(null);
