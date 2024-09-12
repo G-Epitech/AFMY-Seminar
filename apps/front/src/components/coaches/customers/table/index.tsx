@@ -7,13 +7,16 @@ import { useAppSelector } from "@/store";
 import { Button } from "@/components/ui/button";
 import { CoachAssignCustomerDialog } from "@/components/coaches/customers/dialogs";
 import { useState } from "react";
+import { CoachUnassignCustomerDialog } from "@/components/coaches/customers/dialogs/unassign";
 
 export function CoachCustomers({
   coach,
   onCustomerAssigned,
+  onCustomerUnassigned,
 }: {
   coach: Employee;
   onCustomerAssigned: (customer: Customer) => void;
+  onCustomerUnassigned: (customer: Customer) => void;
 }) {
   async function fetchCoachCustomers(
     page: number,
@@ -33,27 +36,53 @@ export function CoachCustomers({
     };
   }
 
+  async function onCustomerAssignedMiddleware(customer: Customer) {
+    setIsDialogAssignOpen(false);
+    onCustomerAssigned(customer);
+  }
+
+  async function onCustomerUnassignedMiddleware(customer: Customer) {
+    setIsDialogUnassignOpen(false);
+    onCustomerUnassigned(customer);
+  }
+
   const user = useAppSelector<Employee | null | undefined>(
     (state) => state.auth.user,
   );
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogAssignOpen, setIsDialogAssignOpen] = useState(false);
+  const [isDialogUnassignOpen, setIsDialogUnassignOpen] = useState(false);
+  const [customerToUnassign, setCustomerToUnassign] =
+    useState<Customer | null>();
+  const columns = customersColumns((c) => {
+    setCustomerToUnassign(c);
+    setIsDialogUnassignOpen(true);
+  });
 
   return (
     <>
       <CoachAssignCustomerDialog
-        open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
+        open={isDialogAssignOpen}
+        onOpenChange={setIsDialogAssignOpen}
         coach={coach}
         onCustomerAssigned={onCustomerAssigned}
       />
+      {customerToUnassign ? (
+        <CoachUnassignCustomerDialog
+          customer={customerToUnassign}
+          coach={coach}
+          open={isDialogUnassignOpen}
+          onCustomerUnassigned={onCustomerUnassignedMiddleware}
+          onOpenChange={setIsDialogUnassignOpen}
+        />
+      ) : null}
       <Card className="w-full" key="coach-customers-card">
         <CardHeader
           className={"flex-row flex-grow items-center justify-between"}
         >
           <CardTitle>Customers</CardTitle>
           {user?.permission === Permission.MANAGER ? (
-            <Button size={"sm"} onClick={() => setIsDialogOpen(true)}>
+            <Button size={"sm"} onClick={() => setIsDialogAssignOpen(true)}>
               Assign customer
             </Button>
           ) : null}
@@ -62,7 +91,7 @@ export function CoachCustomers({
           <InfiniteTable
             fetchData={fetchCoachCustomers}
             fetchSize={10}
-            columns={customersColumns}
+            columns={columns}
             state={{
               numberOfCustomers: coach.numberOfCustomers,
             }}

@@ -46,7 +46,11 @@ export default function CustomerPage() {
         {coach && <CoachProfile coach={coach} className="lg:basis-1/4" />}
         <div className="lg:basis/3-4 flex flex-col gap-3 grow ">
           {coach && (
-            <CoachCustomers coach={coach} onCustomerAssigned={fetchCoach} />
+            <CoachCustomers
+              coach={coach}
+              onCustomerAssigned={fetchCoach}
+              onCustomerUnassigned={fetchCoach}
+            />
           )}
         </div>
       </div>

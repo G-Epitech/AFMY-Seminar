@@ -60,7 +60,7 @@ export class InPatchCustomerDTO {
 
   @IsInt()
   @IsOptional()
-  public coachId?: number;
+  public coachId?: number | null;
 }
 
 export class ParamPatchCustomerDTO {

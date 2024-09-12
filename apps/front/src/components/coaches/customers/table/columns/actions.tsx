@@ -12,7 +12,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Customer } from "@seminar/common";
 import { useRouter } from "next/navigation";
 
-export const actionsColumn: ColumnDef<Customer> = {
+export const actionsColumn = (
+  onUnassignCustomer: (customer: Customer) => void,
+): ColumnDef<Customer> => ({
   id: "actions",
   header: () => <div className="text-right">Actions</div>,
   enableHiding: false,
@@ -43,7 +45,7 @@ export const actionsColumn: ColumnDef<Customer> = {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => alert(`Unassign customer`)}
+              onClick={() => onUnassignCustomer(customer)}
               className="text-destructive"
             >
               Unassign customer
@@ -53,4 +55,4 @@ export const actionsColumn: ColumnDef<Customer> = {
       </div>
     );
   },
-};
+});
