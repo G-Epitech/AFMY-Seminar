@@ -108,7 +108,7 @@ export default function Coaches() {
       size: lastCoachesPage.size,
       permission: Permission.COACH
     });
-    console.log(response);
+
     if (response && response.ok) {
       setLastCoachesPage(response.data);
       setAllEmployees(prev => [...prev, ...response.data.items]);

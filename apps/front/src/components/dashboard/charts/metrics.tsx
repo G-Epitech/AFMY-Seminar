@@ -11,7 +11,6 @@ export function DashbordMetrics({
   number,
   performance,
 }: DashboardMetricsProps) {
-  console.log("DashboardMetricsProps", { title, number, performance });
   return (
     <div className="flex flex-col items-center gap-1 px-4 pb-3 sm:pb-4">
       <div className="text-sm text-text-secondary text-center">{title}</div>
