@@ -8,75 +8,53 @@ import { Tip } from "@seminar/common";
 import { useEffect, useState } from "react";
 
 export default function TipsPage() {
-    const [tips, setTips] = useState<Tip[]>([
-        {
-            id: 0,
-            title: "Help to choose the rights shoes",
-            content:
-                "It's important to choose the right shoes for your sport. The right shoes can help prevent injury and make your sport more enjoyable.",
-            legacyId: 0,
-        },
-        {
-            id: 1,
-            title: "Help to choose the rights shoes",
-            content:
-                "It's important to choose the right shoes for your sport. The right shoes can help prevent injury and make your sport more enjoyable.",
-            legacyId: 0,
-        },
-        {
-            id: 2,
-            title: "Help to choose the rights shoes",
-            content:
-                "It's important to choose the right shoes for your sport. The right shoes can help prevent injury and make your sport more enjoyable.",
-            legacyId: 0,
-        },
-    ]);
+  const [tips, setTips] = useState<Tip[]>([]);
 
-    const [selected, setSelected] = useState<number>(-1);
+  const [selected, setSelected] = useState<number>(-1);
 
-    const getTips = async () => {
-        const tips = await api.tips.get();
+  const getTips = async () => {
+    const tips = await api.tips.list();
 
-        if (!tips || !tips.ok) return;
+    if (!tips || !tips.ok) return;
 
-        setTips(tips.data);
-    };
+    setTips(tips.data.tips);
+  };
 
-    useEffect(() => {
-        getTips();
-    }, []);
+  useEffect(() => {
+    getTips();
+  }, []);
 
-    return (
-        <main>
-            <Subtitle text="Tips Coaches" />
+  return (
+    <main>
+      <Subtitle text="Tips Coaches" />
 
-            <div className="flex flex-col gap-1 mt-2">
-                {tips.map((tip) => (
-                    <div
-                        className="w-full border rounded-sm"
-                        key={tip.id}
-                    >
-                        <div className="p-4 flex items-center" onClick={() => setSelected(selected === tip.id ? -1 : tip.id)}>
-                            <h3 className="text-md">{tip.title}</h3>
-                            <div className="ml-auto">
-                                {selected !== tip.id ? (
-                                    <ChevronDownIcon className="size-5 text-primary" />
-                                ) : (
-                                    <ChevronDownIcon className="size-5 text-primary transform rotate-180" />
-                                )}
-                            </div>
-                        </div>
-                        {selected === tip.id && (
-                            <div>
-                                <Separator />
-                                <div className="p-4">
-                                <p className="text-sm">{tip.content}</p>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                ))}
+      <div className="flex flex-col gap-1 mt-2">
+        {tips.map((tip) => (
+          <div className="w-full border rounded-sm" key={tip.id}>
+            <div
+              className="p-4 flex items-center"
+              onClick={() => setSelected(selected === tip.id ? -1 : tip.id)}
+            >
+              <h3 className="text-md">{tip.title}</h3>
+              <div className="ml-auto">
+                {selected !== tip.id ? (
+                  <ChevronDownIcon className="size-5 text-primary" />
+                ) : (
+                  <ChevronDownIcon className="size-5 text-primary transform rotate-180" />
+                )}
+              </div>
             </div>
-        </main>
-    );
+            {selected === tip.id && (
+              <div>
+                <Separator />
+                <div className="p-4">
+                  <p className="text-sm">{tip.content}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </main>
+  );
 }

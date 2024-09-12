@@ -8,6 +8,7 @@ import { AuthGuard } from '../modules/auth/guards/jwt-auth.guard';
 import { StatisticsModule } from '../modules/statistics/statistics.module';
 import { ImagesModule } from '../modules/images/images.module';
 import { EventsModule } from '../modules/events/events.module';
+import { TipsModule } from '../modules/tips/tips.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { EventsModule } from '../modules/events/events.module';
     StatisticsModule,
     ImagesModule,
     EventsModule,
+    TipsModule,
   ],
   controllers: [],
   providers: [

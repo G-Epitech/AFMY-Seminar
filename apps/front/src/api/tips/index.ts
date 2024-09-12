@@ -1,7 +1,7 @@
-import { get } from "./get";
+import { list } from "./list";
 
 const tips = {
-    get,
-}
+  list,
+};
 
 export default tips;
