@@ -25,4 +25,10 @@ export class AuthController {
       },
     };
   }
+
+  @Public()
+  @Post('forgot-password')
+  async forgotPassword(@Body() dto: { email: string }) {
+    await this._authService.forgotPassword(dto.email);
+  }
 }

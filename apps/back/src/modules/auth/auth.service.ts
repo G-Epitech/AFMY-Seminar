@@ -14,6 +14,8 @@ import {
   EmployeeWithCredentials,
   EmployeeWithLegacyData,
 } from '../../types/employees';
+import { PrismaService } from 'src/providers';
+import { MailService } from './mail.service';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +33,12 @@ export class AuthService {
 
   @Inject(LegacyApiService)
   private readonly _legacyApiService: LegacyApiService;
+
+  @Inject(PrismaService)
+  private readonly _prismaService: PrismaService;
+
+  @Inject(MailService)
+  private readonly _mailService: MailService;
 
   private readonly algorithm = 'aes-256-cbc';
   private readonly key = Buffer.from(process.env.ENCRYPTION_KEY!, 'hex');
@@ -147,5 +155,25 @@ export class AuthService {
 
   public isValidTokenPayload(payload: Partial<TokenPayload>): boolean {
     return 'sub' in payload && 'tokenType' in payload;
+  }
+
+  public async forgotPassword(email: string): Promise<void> {
+    const employee = await this._employeesService.getEmployeeByEmail(email);
+
+    if (employee) {
+      const expiryDate = new Date();
+      expiryDate.setHours(expiryDate.getHours() + 1);
+      const resetToken = crypto.randomBytes(20).toString('hex');
+
+      await this._prismaService.resetPassword.create({
+        data: {
+          token: resetToken,
+          employeeId: employee.id,
+          expiryDate
+        },
+      });
+
+      this._mailService.sendPasswordResetEmail(email, resetToken);
+    }
   }
 }
