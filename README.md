@@ -18,5 +18,8 @@ If it's the first time you use this project, run `npm run build` to install all 
 Once you've done that, you can access the project at [`http://localhost:3000`](http://localhost:3000).
 When you're done, you can clean containers with `npm run clean`.
 
+### Tips
+If you want to, you can fill database with random data by running the command `npm run seed` in the folder `./apps/back`
+
 #
 Made by [Flavien Chenu](https://github.com/flavien-chenu), [Renard Fute](https://github.com/RenardFute), [TekMath](https://github.com/tekmath) & [Yann Masson](https://github.com/Yann-Masson)
