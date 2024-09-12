@@ -7,13 +7,13 @@ import events from "./events";
 import tips from "./tips";
 
 const api = {
-    call,
-    auth,
-    employees,
-    customers,
-    statistics,
-    tips,
-    events,
+  call,
+  auth,
+  employees,
+  customers,
+  statistics,
+  tips,
+  events,
 };
 
 export default api;
