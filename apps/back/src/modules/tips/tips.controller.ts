@@ -13,11 +13,11 @@ import { TipsService } from './tips.service';
 import { AuthEmployeeContext } from '../auth/auth.employee.context';
 import {
   GetTipsDto,
-  IdOf,
   InPatchTipDto,
+  ParamDeleteTipDto,
+  ParamPatchTipDto,
   Permission,
   PostCreateTipDto,
-  Tip,
 } from '@seminar/common';
 import { Allow } from '../employees/decorators/allow.decorator';
 
@@ -39,7 +39,7 @@ export class TipsController {
   @Patch(':id')
   @Allow(Permission.MANAGER)
   async updateTip(
-    @Param('id') id: IdOf<Tip>,
+    @Param() { id }: ParamPatchTipDto,
     @Body() body: InPatchTipDto,
   ): Promise<void> {
     if (!(await this._tipsService.doesTipExist(id))) {
@@ -52,7 +52,7 @@ export class TipsController {
   @Delete(':id')
   @Allow(Permission.MANAGER)
   @HttpCode(204)
-  async deleteTip(@Param('id') id: IdOf<Tip>): Promise<void> {
+  async deleteTip(@Param() { id }: ParamDeleteTipDto): Promise<void> {
     if (!(await this._tipsService.doesTipExist(id))) {
       return;
     }
@@ -60,7 +60,7 @@ export class TipsController {
     await this._tipsService.deleteTip(id);
   }
 
-  @Post(':id/create')
+  @Post('create')
   @Allow(Permission.MANAGER)
   async createTip(@Body() body: PostCreateTipDto): Promise<void> {
     await this._tipsService.createTip({ ...body, legacyId: null });
