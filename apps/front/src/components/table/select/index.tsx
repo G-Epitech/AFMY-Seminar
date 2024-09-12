@@ -1,5 +1,15 @@
 import { Table } from "@/components/ui/datat-table";
-import { ColumnDef, ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable,
+  VisibilityState,
+} from "@tanstack/react-table";
 import React, { useState } from "react";
 import SelectTableFooter from "./footer";
 import SelectTableBody from "./body";
@@ -23,7 +33,9 @@ export interface SelectTableProps<T> {
   filterSearchPlaceholder?: string;
   filterSearchColumn?: keyof T;
   filterColumn?: boolean;
-  actionComponent?: (props: { table: ReturnType<typeof useReactTable<T>> }) => React.ReactNode;
+  actionComponent?: (props: {
+    table: ReturnType<typeof useReactTable<T>>;
+  }) => React.ReactNode;
   isLastPage: boolean;
   handleNextPage: (table: ReturnType<typeof useReactTable<T>>) => void;
   handlePreviousPage: (table: ReturnType<typeof useReactTable<T>>) => void;
@@ -31,13 +43,23 @@ export interface SelectTableProps<T> {
   setFilter: (filter: string) => void;
 }
 
-export default function SelectTable<T>(
-  { data, columns, filterSearchColumn, filterSearchPlaceholder, filterColumn, actionComponent, isLastPage, handleNextPage, handlePreviousPage, maxRows, setFilter }: SelectTableProps<T>
-) {
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = useState({})
+export default function SelectTable<T>({
+  data,
+  columns,
+  filterSearchColumn,
+  filterSearchPlaceholder,
+  filterColumn,
+  actionComponent,
+  isLastPage,
+  handleNextPage,
+  handlePreviousPage,
+  maxRows,
+  setFilter,
+}: SelectTableProps<T>) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data: data,
@@ -57,7 +79,7 @@ export default function SelectTable<T>(
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <Card className="p-4">
@@ -90,5 +112,5 @@ export default function SelectTable<T>(
         />
       </CardContent>
     </Card>
-  )
+  );
 }

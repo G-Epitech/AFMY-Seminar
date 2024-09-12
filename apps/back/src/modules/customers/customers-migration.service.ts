@@ -53,6 +53,7 @@ export class CustomersMigrationService extends CustomersService {
       );
       return customer.data;
     } catch (error) {
+      console.log(error);
       return null;
     }
   }
@@ -177,6 +178,7 @@ export class CustomersMigrationService extends CustomersService {
       );
       return res.data;
     } catch (error) {
+      console.log(error);
       return [];
     }
   }
@@ -197,6 +199,7 @@ export class CustomersMigrationService extends CustomersService {
       );
       return res.data;
     } catch (error) {
+      console.log(error);
       return null;
     }
   }
@@ -275,6 +278,7 @@ export class CustomersMigrationService extends CustomersService {
         },
       });
     } catch (error) {
+      console.log(error);
       return;
     }
   }
@@ -295,6 +299,7 @@ export class CustomersMigrationService extends CustomersService {
       );
       return res.data;
     } catch (error) {
+      console.log(error);
       return [];
     }
   }
@@ -316,6 +321,7 @@ export class CustomersMigrationService extends CustomersService {
       );
       return encounter.data;
     } catch (error) {
+      console.log(error);
       return null;
     }
   }
@@ -383,6 +389,7 @@ export class CustomersMigrationService extends CustomersService {
         await Promise.all(newIds.map((id) => this.getLegacyEncounterById(id)))
       ).filter((e) => !!e);
     } catch (error) {
+      console.log(error);
       return [];
     }
   }

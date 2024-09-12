@@ -6,6 +6,7 @@ import encounters from "./encounters";
 import { get } from "./get";
 import { list } from "./list";
 import payments from "./payments";
+import { update } from "./update";
 
 const customers = {
     get,
@@ -13,6 +14,7 @@ const customers = {
     clothes,
     list,
     count,
+    update,
     encounters,
     payments,
     "delete": _delete,

@@ -15,7 +15,7 @@ export default function Home() {
 
     useEffect(() => {
       if (authLoading(user)) return;
-      if (authError(user)) return router.push("/login");
+      if (authError(user)) return router.push("/auth/login");
 
       return router.push("/dashboard");
     }, [user, router])

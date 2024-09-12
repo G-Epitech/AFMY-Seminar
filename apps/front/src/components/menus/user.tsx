@@ -25,7 +25,11 @@ export function UserMenuDisplay({
         credentials.remove();
         dispatch(setUser(null));
 
-        router.push("/login");
+        router.push("/auth/login");
+    }
+
+    const forgotPassword = async () => {
+        router.push("/auth/forgot-password");
     }
 
     if (!user) {
@@ -49,6 +53,9 @@ export function UserMenuDisplay({
             <DropdownMenuContent>
                 <DropdownMenuLabel>{`${user.name} ${user.surname}`}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={forgotPassword}>
+                    Forgot password
+                </DropdownMenuItem>
                 <DropdownMenuItem className=" text-red-500" onClick={disconnect}>
                     Disconnect
                 </DropdownMenuItem>

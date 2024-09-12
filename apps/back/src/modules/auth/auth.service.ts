@@ -13,7 +13,10 @@ import { EmployeesMigrationService } from '../employees/employees-migration.serv
 import {
   EmployeeWithCredentials,
   EmployeeWithLegacyData,
+  UpdateEmployeeCandidate,
 } from '../../types/employees';
+import { PrismaService } from 'src/providers';
+import { MailService } from './mail.service';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +34,12 @@ export class AuthService {
 
   @Inject(LegacyApiService)
   private readonly _legacyApiService: LegacyApiService;
+
+  @Inject(PrismaService)
+  private readonly _prismaService: PrismaService;
+
+  @Inject(MailService)
+  private readonly _mailService: MailService;
 
   private readonly algorithm = 'aes-256-cbc';
   private readonly key = Buffer.from(process.env.ENCRYPTION_KEY!, 'hex');
@@ -64,6 +73,7 @@ export class AuthService {
 
       return response.data.access_token;
     } catch (error) {
+      console.log(error);
       return null;
     }
   }
@@ -147,5 +157,66 @@ export class AuthService {
 
   public isValidTokenPayload(payload: Partial<TokenPayload>): boolean {
     return 'sub' in payload && 'tokenType' in payload;
+  }
+
+  public async forgotPassword(email: string): Promise<void> {
+    const employee = await this._employeesService.getEmployeeByEmail(email);
+
+    if (employee) {
+      const expiryDate = new Date();
+      expiryDate.setHours(expiryDate.getHours() + 1);
+      const resetToken = crypto.randomBytes(20).toString('hex');
+
+      await this._prismaService.resetPassword.create({
+        data: {
+          token: resetToken,
+          employeeId: employee.id,
+          expiryDate
+        },
+      });
+
+      this._mailService.sendPasswordResetEmail(email, resetToken);
+    }
+  }
+
+  public async resetPassword(token: string, password: string): Promise<boolean> {
+    const reset = await this._prismaService.resetPassword.findFirst({
+      where: { token },
+    });
+
+    console.log(reset);
+
+    if (reset && reset.expiryDate > new Date()) {
+      const credentialsExists = await this._prismaService.credentials.findFirst({
+        where: { employeeId: reset.employeeId },
+      });
+
+      if (credentialsExists) {
+        await this._prismaService.credentials.updateMany({
+          where: { employeeId: reset.employeeId },
+          data: {
+            password: await this._employeesService.hashPassword(password),
+          },
+        });
+      } else {
+        const employee = await this._employeesService.getEmployeeById(
+          reset.employeeId,
+        );
+
+        if (!employee) {
+          throw new Error('Employee not found');
+        }
+
+        await this._prismaService.credentials.create({
+          data: {
+            password: await this._employeesService.hashPassword(password),
+            employeeId: employee.id,
+            email: employee.email,
+          },
+        });
+      }
+      return true;
+    }
+    return false;
   }
 }
